@@ -1,0 +1,54 @@
+/* Header.css */
+.header {
+  background-color: #ff4081;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  width: 100%; /* Ensure full width */
+  /* ... other header styles ... */
+}
+
+/* Style for the logo link */
+.header .logo-link {
+  text-decoration: none; /* Removes underline */
+  color: white; /* Sets the text color to white */
+}
+
+.header-buttons {
+  display: flex;
+  /* Add any other styling for the button container */
+}
+
+.header-button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  text-decoration: none;
+  color: white; /* Adjust as needed */
+  background-color: #009688; /* Adjust as needed */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block; /* Or 'inline-flex' if you prefer */
+  /* Set a maximum width if needed */
+  max-width: 15px; /* Example value, adjust as needed */
+}
+
+.header-button:hover {
+  background-color: #007f6b; /* Adjust hover color as needed */
+}
+.dropdown-button {
+  padding: 10px 15px; /* Adjust padding as needed */
+  margin: 5px 0; /* Adjust margin as needed */
+  text-decoration: none;
+  color: white; /* Adjust text color as needed */
+  background-color: #009688; /* Adjust background color as needed */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block; /* This will make each button take full width of its container */
+  width: auto; /* This ensures the button width is based on its content */
+}
+
+.dropdown-button:hover {
+  background-color: #007f6b; /* Adjust hover color as needed */
+}

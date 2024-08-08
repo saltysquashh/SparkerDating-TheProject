@@ -1,0 +1,42 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using sparker.Database;
+using sparker.Models;
+using System.Threading.Tasks;
+
+public class ChatHub : Hub
+{
+    private readonly ApplicationDbContext _context;
+
+    public ChatHub(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public override async Task OnConnectedAsync()
+    {
+        await Clients.Caller.SendAsync("ReceiveMessage", "System", "Connected to chat hub");
+    }
+
+    public async Task SendMessage(int matchId, int senderId, int receiverId, string message)
+    {
+        var chatMessage = new ChatMessage
+        {
+            Match_Id = matchId,
+            Sender_Id = senderId,
+            Receiver_Id = receiverId,
+            Content = message,
+            Time_Stamp = DateTime.Now
+        };
+
+        _context.ChatMessages.Add(chatMessage);
+        await _context.SaveChangesAsync();
+
+        await Clients.All.SendAsync("ReceiveMessage", senderId, message);
+
+        await Clients.Caller.SendAsync("MessageSentConfirmation", "Message sent successfully");
+    }
+
+
+}

@@ -1,0 +1,21 @@
+.matches-container {
+    padding: 20px;
+}
+
+.match-list {
+    list-style: none;
+    padding: 0;
+}
+
+.match-item {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.match-item:hover {
+    background-color: #f0f0f0;
+}

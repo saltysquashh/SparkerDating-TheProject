@@ -1,0 +1,87 @@
+.customization-page-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 15px;
+    margin-top: 20px;
+}
+
+.image-thumbnail {
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.image-thumbnail img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.image-thumbnail img:hover {
+    transform: scale(1.1);
+}
+
+.image-thumbnail button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    border: none;
+    background-color: red;
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.full-image-viewer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000;
+}
+
+.full-image-viewer img {
+    max-width: 100%;
+    max-height: 80vh;
+    border-radius: 10px;
+}
+
+.full-image-viewer button {
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.bio-section {
+    margin-bottom: 50px; /* Half the total desired space */
+}
+
+.image-upload-section {
+    margin-top: 25px; /* Other half of the total desired space */
+}
+
+/* Additional responsive adjustments if needed */
+@media (max-width: 600px) {
+    .image-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}

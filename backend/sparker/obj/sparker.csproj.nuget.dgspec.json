@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating_Gen2\\backend\\sparker\\sparker.csproj": {}
+    "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating-TheProject\\backend\\sparker\\sparker.csproj": {}
   },
   "projects": {
-    "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating_Gen2\\backend\\sparker\\sparker.csproj": {
+    "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating-TheProject\\backend\\sparker\\sparker.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating_Gen2\\backend\\sparker\\sparker.csproj",
+        "projectUniqueName": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating-TheProject\\backend\\sparker\\sparker.csproj",
         "projectName": "sparker",
-        "projectPath": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating_Gen2\\backend\\sparker\\sparker.csproj",
+        "projectPath": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating-TheProject\\backend\\sparker\\sparker.csproj",
         "packagesPath": "C:\\Users\\joach\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating_Gen2\\backend\\sparker\\obj\\",
+        "outputPath": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating-TheProject\\backend\\sparker\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\joach\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -42,15 +42,11 @@
           "dependencies": {
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[8.0.7, )"
             },
             "Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter": {
               "target": "Package",
               "version": "[8.0.0, )"
-            },
-            "Microsoft.AspNetCore.SignalR": {
-              "target": "Package",
-              "version": "[1.1.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",

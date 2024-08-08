@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "iPu/hlIPMHAZLVzC4Hk68coiKJXNpyGG1QTWNFdArHQ=",
+  "Hash": "HK4PhIpV5fo8xuptozGiXkQA8izlCjWL/leXxsJ3X0Y=",
   "Source": "sparker",
   "BasePath": "_content/sparker",
   "Mode": "Default",
@@ -47,10 +47,10 @@
       "OriginalItemSpec": "C:\\Users\\joach\\.nuget\\packages\\microsoft.aspnetcore.components.quickgrid\\8.0.0\\staticwebassets\\QuickGrid.razor.js"
     },
     {
-      "Identity": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating_Gen2\\backend\\sparker\\obj\\Debug\\net8.0\\scopedcss\\bundle\\sparker.styles.css",
+      "Identity": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating-TheProject\\backend\\sparker\\obj\\Debug\\net8.0\\scopedcss\\bundle\\sparker.styles.css",
       "SourceId": "sparker",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating_Gen2\\backend\\sparker\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
+      "ContentRoot": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating-TheProject\\backend\\sparker\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
       "BasePath": "_content/sparker",
       "RelativePath": "sparker.styles.css",
       "AssetKind": "All",
@@ -63,7 +63,7 @@
       "AssetTraitValue": "ApplicationBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating_Gen2\\backend\\sparker\\obj\\Debug\\net8.0\\scopedcss\\bundle\\sparker.styles.css"
+      "OriginalItemSpec": "C:\\Users\\joach\\Documents\\Github\\Svendeprøve\\SparkerDating-TheProject\\backend\\sparker\\obj\\Debug\\net8.0\\scopedcss\\bundle\\sparker.styles.css"
     }
   ]
 }

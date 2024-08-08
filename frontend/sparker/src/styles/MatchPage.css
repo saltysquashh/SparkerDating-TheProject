@@ -1,0 +1,33 @@
+.match-page-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.match-page-loading, .match-page-error {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.match-bio {
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.match-images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.match-image-thumbnail {
+    flex-basis: calc(33.333% - 10px);
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+}
+
+.match-image-thumbnail img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
