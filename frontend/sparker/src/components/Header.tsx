@@ -8,7 +8,7 @@ import logoImage from '../images/LogoV2.png';
 const Header = () => {
     const { user, logout } = useContext(AuthContext);
 
-    console.log("User logged in:", user); // Debug: Check the user state
+    console.log("User logged in:", user);
     const navigate = useNavigate();
     
   //   const navigateToProfile = () => {
@@ -25,6 +25,7 @@ const userOptions = [
     { label: 'Matches', action: () => navigate('/matches') },
     { label: 'Swipe history', action: () => navigate('/swipehistory') },
     { label: 'Profile', action: () => navigate('/profile') },
+    { label: 'Admin panel', action: () => navigate('/adminpanel') },
     { label: 'Log out', action: logout }
 ];
 

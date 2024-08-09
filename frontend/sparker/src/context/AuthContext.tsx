@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 type UserType = {
     id: string;
     firstName: string;
-    lastName: string;
+    isAdmin: boolean;
 };
 
 type AuthContextType = {

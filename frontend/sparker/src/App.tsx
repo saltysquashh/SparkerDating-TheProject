@@ -22,6 +22,7 @@ import MatchChatPage from './components/MatchChatPage';
 import DatePlanningPage from './components/DatePlanningPage';
 import SwipeHistoryPage from './components/SwipeHistoryPage';
 import SwipeDetailsPage from './components/SwipeDetailsPage';
+import AdminPanelPage from './components/AdminPanelPage';
 
 function App() {
 
@@ -52,6 +53,7 @@ function App() {
         <Route path="/matches/match/:matchId/:matchUserId/dateplanning" element={<DatePlanningPage />} /> {/* MatchPage as a separate route */}
         <Route path="/swipehistory" element={<SwipeHistoryPage />} /> {/* Add this line */}
         <Route path="/swipehistory/swipedetails/:swipeId/:swipeUserId" element={<SwipeDetailsPage />} /> {/* MatchPage as a separate route */}
+        <Route path="/adminpanel" element={<AdminPanelPage />} /> {/* Add this line */}
       </Routes>
     </Router>
     </AuthProvider>

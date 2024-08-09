@@ -3,6 +3,7 @@ interface UserType {
     firstName: string;
     lastName: string;
     bio: string;
+    isAdmin: boolean;
 }
 
 export default UserType;
