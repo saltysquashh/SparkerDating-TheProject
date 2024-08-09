@@ -20,7 +20,6 @@ namespace sparker.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // ... existing configurations ...
 
             modelBuilder.Entity<ChatMessage>()
                 .HasOne(m => m.Match)

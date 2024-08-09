@@ -19,8 +19,7 @@ using System.Text;
 
 public class UsersController : ControllerBase
 {
-    // Inject services if needed
-
+    // DI
     private readonly ApplicationDbContext _context;
     private readonly PasswordHasher<User> _passwordHasher;
     private readonly IConfiguration _configuration;
@@ -37,6 +36,8 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
+        // Validate the input data
+        // Check if the user already exists
 
 
         var user = new User
@@ -177,6 +178,22 @@ public class UsersController : ControllerBase
         return Ok(userBio);
     }
 
+    [HttpGet("useremailexists/{email}")]
+    public async Task<IActionResult> CheckUserEmailExists(string email)
+    {
+        bool exists = true;
+
+        var user = await _context.Users
+                         .FirstOrDefaultAsync(u => u.Email == email);
+
+        if (user == null)
+        {
+            exists = false;
+        }
+
+        return Ok(exists);
+    }
+
 
     [HttpPut("userbio/{id}")]
     // [Authorize]
@@ -211,7 +228,7 @@ public class UsersController : ControllerBase
 
 
 
-
+    // ryk op i toppen?
     // private så Swagger ikke antager at det skal være et http kald og fejler
     private string GenerateJwtToken(string userId)
     {
@@ -239,8 +256,67 @@ public class UsersController : ControllerBase
         return _context.Users.Any(e => e.Id == id);
     }
 
+    [HttpGet("nextswipeuser/{userId}")]
+    public async Task<IActionResult> GetNextSwipeUser(int userId)
+    {
+
+        var nextUser = await FetchNextUser(userId);
+        if (nextUser == null)
+        {
+            return NotFound("No suitable matches found.");
+        }
+        return Ok(nextUser); // Return the DTO instead of the full User entity
+    }
+
+    private async Task<NextUserDTO> FetchNextUser(int userId)
+    {
+        var userPreferences = await _context.Preferences
+                                            .FirstOrDefaultAsync(p => p.User_Id == userId);
+        if (userPreferences == null)
+        {
+            //return NotFound("User preferences not found. Check if user has preferences selected on their user profile.");
+        }
+
+        // Retrieve users who have not been swiped by the swiping user and who have not disliked the swiping user, and are not the swiping user themselves
+        var potentialMatches = await _context.Users
+            .Where(u => u.Id != userId && // Exclude the current user
+                       !_context.Swipes.Any(s => (s.Swiper_UserId == userId && s.Swiped_UserId == u.Id) ||
+                                                 (s.Swiper_UserId == u.Id && s.Swiped_UserId == userId && !s.Liked)))
+            .Include(u => u.Preference) // Ensure to load preferences for potential matches
+            .ToListAsync();
 
 
+        // Filter users based on swiping user's preferences (gender and age)
+        potentialMatches = potentialMatches.Where(u =>
+            (userPreferences.Sex == null || userPreferences.Sex == "Both" || u.Gender == userPreferences.Sex) &&
+            (userPreferences.Age_Min == null || DateUtils.CalculateAge(u.Birthdate) >= userPreferences.Age_Min) &&
+            (userPreferences.Age_Max == null || DateUtils.CalculateAge(u.Birthdate) <= userPreferences.Age_Max)
+        ).ToList();
+
+        // Further filter based on whether the potential match's preferences fit the swiper's user-info
+        var swiperUserInfo = _context.Users.FirstOrDefault(x => x.Id == userId);
+        var swiperAge = DateUtils.CalculateAge(swiperUserInfo.Birthdate);
+        var finalMatches = potentialMatches.Where(u =>
+            (u.Preference != null) &&
+            (u.Preference.Sex == null || u.Preference.Sex == "Both" || u.Preference.Sex == swiperUserInfo.Gender) &&
+            (u.Preference.Age_Min == null || DateUtils.CalculateAge(_context.Users.FirstOrDefault(x => x.Id == userId).Birthdate) >= u.Preference.Age_Min) &&
+            (u.Preference.Age_Max == null || DateUtils.CalculateAge(_context.Users.FirstOrDefault(x => x.Id == userId).Birthdate) <= u.Preference.Age_Max)
+        ).ToList();
+
+
+        var nextUserDto = finalMatches.Select(u => new NextUserDTO
+        {
+            Id = u.Id,
+            Name = u.First_Name + " " + u.Last_Name,
+            Age = DateUtils.CalculateAge(u.Birthdate),
+            Gender = u.Gender,
+            Bio = u.Bio,
+            // Map other properties as needed
+        }).FirstOrDefault();
+
+
+        return (nextUserDto);
+    }
 
 
 }

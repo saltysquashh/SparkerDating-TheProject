@@ -17,7 +17,6 @@ namespace sparker.Controllers
 
     public class PreferencesController : ControllerBase
     {
-        // Inject services if needed
 
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;

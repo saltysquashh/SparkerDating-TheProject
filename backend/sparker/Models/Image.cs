@@ -8,7 +8,5 @@ namespace sparker.Models
         public int Id { get; set; } // PK
         public int User_Id { get; set; }
         public byte[]? Image_Data { get; set; }
-
-        // date
     }
 }

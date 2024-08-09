@@ -19,7 +19,6 @@
 
         public class MessagesController : ControllerBase
         {
-            // Dependency injection
 
             private readonly ApplicationDbContext _context;
             private readonly IConfiguration _configuration;

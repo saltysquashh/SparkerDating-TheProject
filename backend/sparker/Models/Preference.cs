@@ -17,7 +17,5 @@ namespace sparker.Models
         
         // Foreign key for User
         public User User { get; set; }
-        // public virtual User User { get; set; } // Navigation property (i stedet for linjen over?)
-
     }
 }

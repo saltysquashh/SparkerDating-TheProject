@@ -2,7 +2,7 @@
 using sparker.Database;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using sparker.Models; // Replace with your actual namespace for models
+using sparker.Models;
 using System.Threading.Tasks;
 
 namespace sparker.Controllers

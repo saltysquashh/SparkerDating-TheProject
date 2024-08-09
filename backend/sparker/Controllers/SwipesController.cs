@@ -12,7 +12,6 @@ namespace sparker.Controllers
     [Route("[controller]")]
     public class SwipesController : ControllerBase
     {
-        // dependency injection
 
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
@@ -77,77 +76,73 @@ namespace sparker.Controllers
         }
 
 
-        [HttpGet("nextswipeuser/{userId}")]
-        public async Task<IActionResult> GetNextSwipeUser(int userId)
+        [HttpGet("getswipesbyuser/{userId}")]
+        public async Task<IActionResult> GetSwipes(int userId)
         {
-
-            var nextUser = await FetchNextUser(userId);
-            if (nextUser == null)
-            {
-                return NotFound("No suitable matches found.");
-            }
-            return Ok(nextUser); // Return the DTO instead of the full User entity
-        }
-
-        private int CalculateAge(DateTime birthdate)
-        {
-            var today = DateTime.Today;
-            var age = today.Year - birthdate.Year;
-            if (birthdate.Date > today.AddYears(-age)) age--;
-            return age;
-        }
-
-
-
-
-        private async Task<NextUserDTO> FetchNextUser(int userId)
-        {
-            var userPreferences = await _context.Preferences
-                                                .FirstOrDefaultAsync(p => p.User_Id == userId);
-            if (userPreferences == null)
-            {
-                //return NotFound("User preferences not found. Check if user has preferences selected on their user profile.");
-            }
-
-            // Retrieve users who have not been swiped by the swiping user and who have not disliked the swiping user, and are not the swiping user themselves
-            var potentialMatches = await _context.Users
-                .Where(u => u.Id != userId && // Exclude the current user
-                           !_context.Swipes.Any(s => (s.Swiper_UserId == userId && s.Swiped_UserId == u.Id) ||
-                                                     (s.Swiper_UserId == u.Id && s.Swiped_UserId == userId && !s.Liked)))
-                .Include(u => u.Preference) // Ensure to load preferences for potential matches
+            var swipes = await _context.Swipes
+                .Where(s => s.Swiper_UserId == userId)
                 .ToListAsync();
 
+            var userIDs = swipes.Select(s => s.Swiper_UserId == userId ? s.Swiped_UserId : s.Swiper_UserId).Distinct().ToList();
+            var users = await _context.Users.Where(u => userIDs.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u);
 
-            // Filter users based on swiping user's preferences (gender and age)
-            potentialMatches = potentialMatches.Where(u =>
-                (userPreferences.Sex == null || u.Gender == userPreferences.Sex) &&
-                (userPreferences.Age_Min == null || CalculateAge(u.Birthdate) >= userPreferences.Age_Min) &&
-                (userPreferences.Age_Max == null || CalculateAge(u.Birthdate) <= userPreferences.Age_Max)
-            ).ToList();
+            // Fetch user images and convert to Base64 string
+            var userImages = await _context.Images
+                .Where(i => userIDs.Contains(i.User_Id))
+                .GroupBy(i => i.User_Id)
+                .Select(g => new { UserId = g.Key, ImageData = g.FirstOrDefault().Image_Data }) // Assuming there's an ImageData property
+                .ToDictionaryAsync(g => g.UserId, g => Convert.ToBase64String(g.ImageData));
 
-            // Further filter based on whether the potential match's preferences fit the swiper's user-info
-            var swiperUserInfo = _context.Users.FirstOrDefault(x => x.Id == userId);
-            var swiperAge = CalculateAge(swiperUserInfo.Birthdate);
-            var finalMatches = potentialMatches.Where(u =>
-                (u.Preference != null) &&
-                (u.Preference.Sex == null || u.Preference.Sex == _context.Users.FirstOrDefault(x => x.Id == userId).Gender) &&
-                (u.Preference.Age_Min == null || CalculateAge(_context.Users.FirstOrDefault(x => x.Id == userId).Birthdate) >= u.Preference.Age_Min) &&
-                (u.Preference.Age_Max == null || CalculateAge(_context.Users.FirstOrDefault(x => x.Id == userId).Birthdate) <= u.Preference.Age_Max)
-            ).ToList();
+            var swipeHistoryDTOs = new List<SwipeHistoryDTO>();
 
-
-            var nextUserDto = finalMatches.Select(u => new NextUserDTO
+            foreach (var swipe in swipes)
             {
-                Id = u.Id,
-                Name = u.First_Name + " " + u.Last_Name,
-                Age = CalculateAge(u.Birthdate),
-                Gender = u.Gender,
-                Bio = u.Bio,
-                // Map other properties as needed
-            }).FirstOrDefault();
+                var swipedUserId = swipe.Swiper_UserId == userId ? swipe.Swiped_UserId : swipe.Swiper_UserId;
+                var swipedUser = users[swipedUserId];
 
+                var swipeHistoryDTO = new SwipeHistoryDTO
+                {
+                    Id = swipe.Id,
+                    SwipedAt = swipe.Swiped_At,
+                    SwipedUserId = swipe.Swiped_UserId,
+                    SwipedName = swipedUser.First_Name + " " + swipedUser.Last_Name,
+                    SwipedBio = swipedUser.Bio,
+                    SwipedImageData = userImages.ContainsKey(swipedUserId) ? userImages[swipedUserId] : null, // Set Base64 image data
+                    SwipedAge = DateUtils.CalculateAge(swipedUser.Birthdate),
+                    SwipedGender = swipedUser.Gender,
+                    Liked = swipe.Liked,
+                    IsMatch = await CheckIfUsersMatched(swipe.Swiper_UserId, swipe.Swiped_UserId)
+                };
 
-            return(nextUserDto);
+                swipeHistoryDTOs.Add(swipeHistoryDTO);
+            }
+
+            return Ok(swipeHistoryDTOs);
+        }
+
+        private async Task<bool> CheckIfUsersMatched(int userId1, int userId2)
+        {
+            return await _context.Matches.AnyAsync(m =>
+                (m.User1_Id == userId1 && m.User2_Id == userId2) ||
+                (m.User1_Id == userId2 && m.User2_Id == userId1));
+        }
+
+        [HttpDelete("delete/{swipeId}")]
+        public async Task<IActionResult> DeleteMatch(int swipeId)
+        {
+            // find the swipe directly by its Id
+            var swipe = await _context.Swipes.FindAsync(swipeId);
+            if (swipe == null)
+            {
+                return NotFound("Swipe not found.");
+            }
+
+            // delete swipe
+            _context.Swipes.Remove(swipe);
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Swipe deleted successfully.");
         }
     }
 
