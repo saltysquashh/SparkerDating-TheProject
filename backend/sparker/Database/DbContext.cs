@@ -17,6 +17,8 @@ namespace sparker.Database
         public DbSet<Swipe> Swipes { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<Admin> Admins { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
