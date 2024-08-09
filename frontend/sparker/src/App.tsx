@@ -5,7 +5,7 @@ import {
   Route
 } from 'react-router-dom';
 import Header from './components/Header';
-import HomePage from './components/HomePage'; 
+import HomePage from './components/HomePage';
 import RegisterPage from './components/RegisterPage';
 import LoginPage from './components/LoginPage';
 import { AuthProvider } from './context/AuthContext';
@@ -20,6 +20,8 @@ import MatchPage from './components/MatchPage';
 import { ChakraProvider } from '@chakra-ui/react';
 import MatchChatPage from './components/MatchChatPage';
 import DatePlanningPage from './components/DatePlanningPage';
+import SwipeHistoryPage from './components/SwipeHistoryPage';
+import SwipeDetailsPage from './components/SwipeDetailsPage';
 
 function App() {
 
@@ -48,6 +50,8 @@ function App() {
         <Route path="/matches/match/:matchId/:matchUserId" element={<MatchPage />} /> {/* MatchPage as a separate route */}
         <Route path="/matches/match/:matchId/chat/:matchUserId" element={<MatchChatPage />} /> {/* MatchPage as a separate route */}
         <Route path="/matches/match/:matchId/:matchUserId/dateplanning" element={<DatePlanningPage />} /> {/* MatchPage as a separate route */}
+        <Route path="/swipehistory" element={<SwipeHistoryPage />} /> {/* Add this line */}
+        <Route path="/swipehistory/swipedetails/:swipeId/:swipeUserId" element={<SwipeDetailsPage />} /> {/* MatchPage as a separate route */}
       </Routes>
     </Router>
     </AuthProvider>

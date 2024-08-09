@@ -4,7 +4,6 @@ import * as signalR from '@microsoft/signalr';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-
 export const createHubConnection = (setMessages) => {
     const hubConnection = new signalR.HubConnectionBuilder()
         .withUrl('http://localhost:5001/chatHub')

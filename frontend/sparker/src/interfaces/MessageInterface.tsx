@@ -1,5 +1,5 @@
 interface Message {
-  messageId?: number; // Make messageId optional
+  messageId?: number;
   senderId: number;
   content: string;
   time_Stamp?: string;

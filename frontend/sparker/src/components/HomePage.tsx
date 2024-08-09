@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/HomePage.css';
 import {useNavigate } from 'react-router-dom';
-import Navbar from './Navbar'; 
+import Navbar from './Navbar';
 
 const HomePage = () => {
     
@@ -17,8 +17,8 @@ const HomePage = () => {
   return (
 
     <div className="homepage-background">
-      <div className='mainpageText'>
-        <h1>Sparker</h1>
+      <div className='homepage-title'>
+        <h1>Welcome to Sparker</h1>
       </div>
     </div>
 

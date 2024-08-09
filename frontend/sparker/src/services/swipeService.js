@@ -1,8 +1,9 @@
-// swipeService.js
+// swipeActionService.js
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL; // Base URL from .env file
+const API_URL = process.env.REACT_APP_API_URL;
 
+// Function to send a swipe action
 export const sendSwipeAction = async (swiperUserId, swipedUserId, liked) => {
     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
     try {
@@ -22,20 +23,46 @@ export const sendSwipeAction = async (swiperUserId, swipedUserId, liked) => {
     }
 };
 
-export const fetchNextSwipeUser = async (userId) => {
+export const fetchSwipesByUser = async (userId) => {
     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
     try {
-        const response = await axios.get(`${API_URL}/swipes/nextswipeuser/${userId}`, {
+        const response = await axios.get(`${API_URL}/swipes/getswipesbyuser/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
             }
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching next swipe user:', error);
+        console.error('Error fetching swipes:', error);
         throw error;
     }
 };
+
+export const deleteSwipe = async (swipeId) => {
+    try {
+        const response = await axios.delete(`${API_URL}/swipes/delete/${swipeId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting match:', error);
+        throw error;
+    }
+};
+
+// // Function to fetch the next swipe user
+// export const fetchNextSwipeUser = async (userId) => {
+//     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
+//     try {
+//         const response = await axios.get(`${API_URL}/swipes/nextswipeuser/${userId}`, {
+//             headers: {
+//                 'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+//             }
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error fetching next swipe user:', error);
+//         throw error;
+//     }
+// };
 
 // Handle Axios response and error globally (optional, based on your preference)
 axios.interceptors.response.use(

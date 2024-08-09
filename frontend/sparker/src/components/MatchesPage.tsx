@@ -44,16 +44,18 @@ const MatchesPage = () => {
     }
 
     return (
+        <div className="global-container">
         <div className="matches-container">
             <h2>Your Matches</h2>
             <ul className="match-list">
                 {matches.map((match) => (
                     <li key={match.matchedUserId} onClick={() => handleMatchClick(match.matchId, match.matchedUserId)} className="match-item">
                         {match.imageData && <img src={`data:image/png;base64,${match.imageData}`} alt={`${match.matchedName}`} className="match-image" />}
-                        {match.matchedName} - You matched on {new Date(match.matchedAt).toLocaleDateString()}
+                        {match.matchedName} - You matched with {match.matchedName} on {new Date(match.matchedAt).toLocaleDateString()}
                     </li>
                 ))}
             </ul>
+        </div>
         </div>
     );
 };

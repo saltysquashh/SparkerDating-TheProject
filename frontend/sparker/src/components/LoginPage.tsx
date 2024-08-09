@@ -1,11 +1,11 @@
 // LoginPage.tsx
 import React, { useState, ChangeEvent, FormEvent, useContext } from 'react';
-import '../styles/LoginPage.css'; // Create and use a similar CSS file as RegisterPage.css
-import { loginUser } from '../services/userService'; // Adjust the path as needed
+import '../styles/LoginPage.css';
+import { loginUser } from '../services/userService'; 
 import axios, { AxiosError } from 'axios';
 import UserType from '../interfaces/UserInterface';
 import { AuthContext } from '../context/AuthContext';
-import '../styles/ProfilePage.css'; // Import the CSS file
+import '../styles/ProfilePage.css';
 import { setAuthToken } from '../utilities/authToken';
 
 const LoginPage = () => {
@@ -21,7 +21,7 @@ const LoginPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-// In login component
+// In your login component
     const { login } = useContext(AuthContext);
 
 
@@ -38,6 +38,7 @@ const LoginPage = () => {
     
             login(userData); // Update the user context
             alert('Login successful');
+            // Optionally, navigate the user to a different page or update the state
               
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -62,7 +63,7 @@ return (
       <div className="login-container">
           <h1>Login Page</h1>
           {user ? (
-          <p>Welcome, {user.firstName}!</p>
+          <p>Welcome, {user.firstName}!</p> // TypeScript now knows about user.firstName
           ) : (
               <form onSubmit={handleLogin}>
                   <input

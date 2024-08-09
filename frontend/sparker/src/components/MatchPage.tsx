@@ -29,8 +29,8 @@ const MatchPage = () => {
         const loadData = async () => {
             setIsLoading(true);
             try {
-                const matchUserInfo = await fetch_UserInfo(matchUserId); // kan disse calls ordnes i 1 request? 
-                const userImages = await fetchUserImages(matchUserId); // kan disse calls ordnes i 1 request?
+                const matchUserInfo = await fetch_UserInfo(matchUserId); // kan disse calls ordnes i 1 request? (med en dto der samler modellerne)
+                const userImages = await fetchUserImages(matchUserId); // kan disse calls ordnes i 1 request? (med en dto der samler modellerne)
                 setUserInfo(matchUserInfo);
                 setImages(userImages);
             } catch (error) {
@@ -55,7 +55,7 @@ const MatchPage = () => {
         navigate(`/matches/match/${matchId}/chat/${matchUserId}`);
     };
 
-    const handleUnmatchClick = async () => { // async da der foretages kald
+    const handleUnmatchClick = async () => { // async da der foretages http kald
 
         try {
             const responseMsg = await deleteMatch(matchId, userId);
@@ -99,7 +99,7 @@ const MatchPage = () => {
                     </div>
                 ))}
             </div>
-            <Button onClick={() => handleChatClick()} colorScheme='blue'>Open Chat</Button>
+            <Button onClick={() => handleChatClick()} colorScheme='blue'>Chat</Button>
             {/* <Button onClick={() => handleUnmatchClick()} colorScheme='red'>Unmatch</Button> */}
             <Button onClick={onOpen} colorScheme='red'>Unmatch</Button>
             <p>Need date ideas? Try the Date Planner function!</p>

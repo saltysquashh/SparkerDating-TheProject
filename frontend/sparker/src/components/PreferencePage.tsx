@@ -84,7 +84,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 
     return (
-        <div className="homepage-background">
+        <div className="global-container">
         <div className="preference-container">
         <div className="form-section">
                 <h2>Match preferences</h2>

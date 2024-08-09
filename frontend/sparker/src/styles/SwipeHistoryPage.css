@@ -1,0 +1,43 @@
+.swipes-container {
+    padding: 20px;
+}
+
+.swipe-list {
+    list-style: none;
+    padding: 0;
+}
+
+.swipe-item {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: white;
+    background-color: rgb(235, 101, 101);
+}
+
+.swipe-item:hover {
+    background-color: #f0f0f0;
+}
+
+.swipe-image {
+    width: 100px; /* Set the desired width */
+    height: 100px; /* Set the desired height */
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.swipeuser-images {
+    width: 100px; /* Set the desired width */
+    height: 100px; /* Set the desired height */
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.swipeuser-title {
+    font-size: x-large;
+font-family:'Courier New', Courier, monospace;
+color: white;
+}

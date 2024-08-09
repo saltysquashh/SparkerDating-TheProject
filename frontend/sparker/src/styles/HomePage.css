@@ -44,8 +44,8 @@
     width: 100vw; /* Full width of the viewport */
 }
   
-.mainpageText {
-  position: absolute; /* Add this */
+.homepage-title {
+  position: fixed; /* Add this */
   top: 50%; /* Center vertically */
   left: 50%; /* Center horizontally */
   transform: translate(-50%, -50%); /* Adjust for precise centering */

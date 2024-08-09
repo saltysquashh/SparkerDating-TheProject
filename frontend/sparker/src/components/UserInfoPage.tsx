@@ -5,6 +5,7 @@ import { fetch_UserInfo, update_UserInfo } from '../services/userService';
 import { AuthContext } from '../context/AuthContext';
 import { Button } from '@chakra-ui/react';
 
+
 const UserInfoPage = () => {
     
     const [user_Info, setUserInfo] = useState({
@@ -79,7 +80,7 @@ const UserInfoPage = () => {
 
 
     return (
-        <div className="homepage-background">
+
         <div className="user-info-container">
             <div className="form-section">
                 <h2>User information</h2>
@@ -94,11 +95,12 @@ const UserInfoPage = () => {
                         <option value="Other">Other</option>
                     </select>
                     <input type="email" name="email" value={user_Info.email} onChange={handleUserInfoChange} placeholder="Email" />
-                    <Button type="submit" colorScheme='blue'>Update Information</Button>
+                    <Button type="submit" colorScheme='blue'>Save</Button>
                 </form>
         </div>
         </div>
-        </div>
+
+
     );
 }
 

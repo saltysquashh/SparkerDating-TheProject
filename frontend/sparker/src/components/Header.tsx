@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import '../styles/Header.css';
+import { Link, useNavigate } from 'react-router-dom'; 
+import '../styles/Header.css'; 
 import { AuthContext } from '../context/AuthContext';
 import Dropdown from './Dropdown';
+import logoImage from '../images/LogoV2.png'; 
 
 const Header = () => {
     const { user, logout } = useContext(AuthContext);
@@ -10,6 +11,9 @@ const Header = () => {
     console.log("User logged in:", user); // Debug: Check the user state
     const navigate = useNavigate();
     
+  //   const navigateToProfile = () => {
+  //     navigate('/profile'); // For React Router v6
+  // };
 
   const loginOptions = [
     { label: 'Log in', action: () => navigate('/login') },
@@ -19,22 +23,25 @@ const Header = () => {
 const userOptions = [
     { label: 'Swipe', action: () => navigate('/swiping') },
     { label: 'Matches', action: () => navigate('/matches') },
+    { label: 'Swipe history', action: () => navigate('/swipehistory') },
     { label: 'Profile', action: () => navigate('/profile') },
     { label: 'Log out', action: logout }
 ];
 
 
-    return (
-      <header className="header">
-      {/* Wrap your logo (here represented as text) with Link */}
+return (
+  <header className="header">
       <Link to="/" className="logo-link">
-        <h1>Logo Here</h1>
+      <div className="sparker-title">
+          <h1>Sparker </h1>
+          </div>
+          <img src="/images/LogoV2.png" alt="Logo" className="header-logo" />
       </Link>
-            <div className="header-right">
-              <Dropdown options={user ? userOptions : loginOptions} />
-            </div>
-        </header>
-    );
+      <div className="header-right">
+          <Dropdown options={user ? userOptions : loginOptions} />
+      </div>
+  </header>
+);
 };
 
 export default Header;

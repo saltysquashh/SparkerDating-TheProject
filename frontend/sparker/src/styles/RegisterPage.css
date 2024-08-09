@@ -49,7 +49,20 @@
     background-color: #6b6e90;
   }
 
-  .datepicker-field {
-   
+  .error-message {
+    color: red;
+    font-weight: bold;
   }
   
+  .user-registration-title {
+    color: black;
+    font-size: x-large;
+  }
+
+  .next-step-button {
+    color: black;
+  }
+
+  .finish-registration-button {
+    color: black;
+  }

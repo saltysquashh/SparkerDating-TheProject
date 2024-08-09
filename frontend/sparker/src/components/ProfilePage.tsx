@@ -2,7 +2,8 @@
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure } from '@chakra-ui/react';
 import React, { ChangeEvent, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-
+import '../styles/ProfilePage.css';
+import '../styles/Global.css';
 
 
 const ProfilePage = () => {
@@ -13,17 +14,25 @@ const ProfilePage = () => {
 
 
     return (
-        <div className="profile-page">
+        <div className="global-container">
+
+            <div className='page-title'>
              <h1>Profile Page</h1>
+             </div>
             <nav>
+                <div>
                 <Link to="/profile/userinfo">User Information</Link>
+                </div>
+                <div>
                 <Link to="/profile/customization">Customization</Link>
+                </div>
+                <div>
                 <Link to="/profile/preferences">Preferences</Link>
+                </div>
             </nav>
             <Outlet /> {/* Renders the nested routes */}
 
-        </div>
-
+  </div>
         
 
 

@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 import '../styles/SwipingPage.css';
 import { AuthContext } from '../context/AuthContext';
 import SwipeUser from '../interfaces/SwipeUserInterface';
-import { fetchNextSwipeUser, sendSwipeAction } from '../services/swipeService';
+import { sendSwipeAction } from '../services/swipeService';
 import axios from 'axios';
-import { Badge, Box, Button, useToast } from '@chakra-ui/react'
 import ImageType from '../interfaces/ImageInterface';
 import { fetchUserImages } from '../services/imageService';
+import { fetchNextUserToSwipe } from '../services/userService';
 
 
 const SwipingPage = () => {
@@ -23,7 +23,7 @@ const SwipingPage = () => {
     const fetchNextUser = async () => {
         setIsLoading(true);
         try {
-            const response = await fetchNextSwipeUser(user?.id);
+            const response = await fetchNextUserToSwipe(user?.id);
             setDisplayedUser(response);
             const userImages = await fetchUserImages(response.id);
             setImages(userImages);

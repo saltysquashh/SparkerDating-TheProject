@@ -3,11 +3,6 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// export const fetchAllImages = async () => {
-//     // Replace with the correct endpoint
-//     const response = await axios.get(`${API_URL}/images`);
-//     return response.data;
-// };
 
 export const fetchUserImages = async (userId) => {
     const response = await axios.get(`${API_URL}/images/user/${userId}`);

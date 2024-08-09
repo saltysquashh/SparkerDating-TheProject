@@ -13,7 +13,6 @@ import { AuthContext } from '../context/AuthContext';
 import { steps } from 'framer-motion';
 import { render } from 'react-dom';
 
-
 const DatePlanningPage = () => {
     const { matchId } = useParams();
     const { matchUserId } = useParams();

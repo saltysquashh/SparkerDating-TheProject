@@ -29,8 +29,8 @@ const ImagePage = () => {
             }
         
             try {
-                const response = await fetch_UserBio(userId);
-                console.log("Fetched Bio:", response);
+                const response = await fetch_UserBio(userId); // Fetch user bio
+                console.log("Fetched Bio:", response); // Log the response to see its structure
         
                 setUserBio({ 
                     bio: response.bio || ''
@@ -58,9 +58,10 @@ const ImagePage = () => {
         loadImages();
 
         return () => {
+            // Revoke all object URLs on cleanup
             Object.values(imageUrls).forEach(url => URL.revokeObjectURL(url));
         };
-    }, [userId]);
+    }, [userId]); // Removed imageUrls dependency
 
 
 
@@ -69,19 +70,6 @@ const ImagePage = () => {
             setSelectedFile(event.target.files[0]);
         }
     };
-
-    // const convertToBlob = (base64: string): Blob => {
-    //     const byteString = atob(base64.split(',')[1]);
-    //     const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
-    //     const ab = new ArrayBuffer(byteString.length);
-    //     const ia = new Uint8Array(ab);
-    
-    //     for (let i = 0; i < byteString.length; i++) {
-    //         ia[i] = byteString.charCodeAt(i);
-    //     }
-    
-    //     return new Blob([ab], { type: mimeString });
-    // };
 
 
     const renderImageFromBlob = (image: ImageType) => {
@@ -105,9 +93,9 @@ const ImagePage = () => {
         if (selectedFile && userId) {
             try {
                 const response = await uploadImage(selectedFile, userId);
-                setImages([...images, response]);
+                setImages([...images, response]); // Assuming response is the new ImageType object
                 alert('Image uploaded successfully.');
-                
+                // Optionally reset the selected file
                 setSelectedFile(null);
             } catch (error) {
                 console.error('Error uploading the image:', error);
@@ -138,11 +126,11 @@ const ImagePage = () => {
         try {
             const bioData = { bio: user_Bio.bio };
             const response = await update_UserBio(userId, bioData);
-            console.log(response);
-            alert('Bio updated successfully');
+            console.log(response); // Log the response or handle it as needed
+            alert('Bio updated successfully'); // Provide feedback to the user
         } catch (error) {
             console.error('Error updating bio:', error);
-            alert('Error updating bio');
+            alert('Error updating bio'); // Provide error feedback
         }
     };
 

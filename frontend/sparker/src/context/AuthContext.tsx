@@ -8,7 +8,6 @@ type UserType = {
     id: string;
     firstName: string;
     lastName: string;
-    // Add other user fields as necessary
 };
 
 type AuthContextType = {
