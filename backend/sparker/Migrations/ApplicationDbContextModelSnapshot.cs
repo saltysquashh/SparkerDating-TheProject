@@ -27,6 +27,9 @@ namespace sparker.Migrations
                     b.Property<int>("User_Id")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Is_Master")
+                        .HasColumnType("bit");
+
                     b.HasKey("User_Id");
 
                     b.ToTable("Admins");
