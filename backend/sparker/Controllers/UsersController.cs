@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
     public UsersController(ApplicationDbContext context, IConfiguration configuration)
     {
         _context = context;
-        _passwordHasher = new PasswordHasher<User>();
+        _passwordHasher = new PasswordHasher<User>(); // new instance of PasswordHasher
 
         _configuration = configuration;
     }
@@ -83,11 +83,15 @@ public class UsersController : ControllerBase
             // Generate JWT token
             var token = GenerateJwtToken(user.Id.ToString());
 
+            // check if user id is also registered in admin table
+            var isAdmin = await IsUserAdmin(user.Id);
+
             var userResponse = new UserResponseDTO
             {
                 Id = user.Id,
                 FirstName = user.First_Name,
                 LastName = user.Last_Name,
+                IsAdmin = isAdmin,
                 Token = token // Include the token in the response
             };
 
@@ -95,6 +99,20 @@ public class UsersController : ControllerBase
         }
 
         return BadRequest("An unknown error occurred.");
+    }
+
+    // check if user is an admin
+    private async Task<bool> IsUserAdmin(int userId)
+    {
+        return await _context.Admins.AnyAsync(a => a.User_Id == userId);
+    }
+
+    // API endpoit check if a user exists as an admin
+    [HttpGet("isadmin/{userId}")]
+    public async Task<IActionResult> IsAdmin(int userId)
+    {
+        var isAdmin = await IsUserAdmin(userId);
+        return Ok(isAdmin);
     }
 
 
@@ -124,8 +142,8 @@ public class UsersController : ControllerBase
 
 
 
-
-[HttpPut("userinfo/{id}")]
+    
+    [HttpPut("userinfo/{id}")]
     // [Authorize]
     public async Task<IActionResult> UpdateUserInfo(int id, [FromBody] UpdateUserInfoDTO updateUserInfoDTO)
     {
@@ -318,5 +336,54 @@ public class UsersController : ControllerBase
         return (nextUserDto);
     }
 
+    [HttpDelete("delete/{userId}")]
+    public async Task<IActionResult> DeleteUser(int userId)
+    {
+        // find the user directly by its Id
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null)
+        {
+            return NotFound("User not found.");
+        }
+
+        // delete user
+        _context.Users.Remove(user);
+
+        await _context.SaveChangesAsync();
+
+        return Ok("User deleted successfully.");
+    }
+
+
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        // fetch all users from the database
+        var users = await _context.Users.ToListAsync();
+
+        // create a list to store the UserInfoDTOs
+        var userInfoDTOs = new List<UserInfoDTO>();
+
+        // loop through each user to populate the UserInfoDTO and check admin status
+        foreach (var user in users)
+        {
+            var isAdmin = await IsUserAdmin(user.Id);
+
+            var userInfo = new UserInfoDTO
+            {
+                Id = user.Id,
+                FirstName = user.First_Name,
+                LastName = user.Last_Name,
+                Email = user.Email,
+                Gender = user.Gender,
+                Birthdate = user.Birthdate,
+                Bio = user.Bio,
+                IsAdmin = isAdmin
+            };
+
+            userInfoDTOs.Add(userInfo);
+        }
+        return Ok(userInfoDTOs);
+    }
 
 }

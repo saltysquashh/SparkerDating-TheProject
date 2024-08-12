@@ -9,5 +9,6 @@
         public string Gender { get; set; }
         public DateTime Birthdate { get; set; }
         public string Bio { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }
