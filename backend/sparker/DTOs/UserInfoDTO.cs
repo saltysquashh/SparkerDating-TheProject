@@ -10,5 +10,6 @@
         public DateTime Birthdate { get; set; }
         public string Bio { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsMaster { get; set; }
     }
 }
