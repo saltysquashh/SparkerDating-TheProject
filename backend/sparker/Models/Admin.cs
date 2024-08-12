@@ -8,6 +8,7 @@ namespace sparker.Models
         [Key]
         [Required]
         public int User_Id { get; set; }
+        public bool Is_Master { get; set; }
 
         [ForeignKey("User_Id")]
         public virtual User User { get; set; }
