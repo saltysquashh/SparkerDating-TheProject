@@ -4,5 +4,41 @@
         <name>sparker</name>
     </assembly>
     <members>
+        <member name="T:sparker.Migrations.CreateAdminModel">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.CreateAdminModel.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.CreateAdminModel.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.CreateAdminModel.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:sparker.Migrations.CreateAdminTable">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.CreateAdminTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.CreateAdminTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.CreateAdminTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:sparker.Migrations.User_IsMaster">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.User_IsMaster.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.User_IsMaster.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.User_IsMaster.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>
