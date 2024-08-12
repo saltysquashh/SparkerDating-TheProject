@@ -1,0 +1,36 @@
+.users-container {
+    padding: 20px;
+}
+
+.user-list {
+    list-style: none;
+    padding: 0;
+}
+
+.user-item {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.user-item:hover {
+    background-color: #f0f0f0;
+}
+
+.user-image {
+    width: 40px; /* Set the desired width */
+    height: 40px; /* Set the desired height */
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.admin-panel-title {
+    flex: content;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: x-large;
+    font-family:'Courier New', Courier, monospace;
+}

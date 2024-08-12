@@ -129,4 +129,23 @@ export const checkEmailExists = async (email) => {
         throw new Error('Failed to check email');
     }
 };
-    
+
+export const fetchUsers = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/users/all`);
+        return response.data; // Assuming the API returns an array of users
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+};
+
+export const deleteUser = async (userId) => {
+    try {
+        const response = await axios.delete(`${API_URL}/users/delete/${userId}`);
+        console.log(response.data);
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        throw error;
+    }
+};    
