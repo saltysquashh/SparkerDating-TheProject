@@ -59,10 +59,21 @@
     font-size: x-large;
   }
 
-  .next-step-button {
-    color: black;
+  .next-step-button button,
+  .previous-step-button button,
+  .finish-registration-button button {
+    background-color: #4a4e69; /* Ensure the button has a background color */
+    color: white; /* Ensure the text is a contrasting color */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    opacity: 1; /* Ensure the button is fully visible */
+    display: inline-block; /* Ensure the button is displayed */
   }
-
-  .finish-registration-button {
-    color: black;
+  .next-step-button button:hover,
+  .previous-step-button button:hover,
+  .finish-registration-button button:hover {
+    background-color: #6b6e90;
   }

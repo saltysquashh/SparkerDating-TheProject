@@ -137,9 +137,9 @@ const RegisterPage = () => {
           {step === 2 && (
             <>
               <input type="password" name="password" placeholder="Password" onChange={handleChange} value={formData.password} required />
-              <input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} value={formData.confirmPassword} required />
+              <input type="password" name="confirmPassword" placeholder="Confirm password" onChange={handleChange} value={formData.confirmPassword} required />
               <div className="previous-step-button"><button type="button" onClick={handleGoPreviousStep}>Previous</button></div>
-              <div className="finish-registration-button"><button type="submit">Finish Registration</button></div>
+              <div className="finish-registration-button"><button type="submit">Finish registration</button></div>
             </>
           )}
         </form>

@@ -46,7 +46,9 @@ const MatchesPage = () => {
     return (
         <div className="global-container">
         <div className="matches-container">
-            <h2>Your Matches</h2>
+        <div className='page-title'>
+        <h1>Your Matches</h1>
+        </div>
             <ul className="match-list">
                 {matches.map((match) => (
                     <li key={match.matchedUserId} onClick={() => handleMatchClick(match.matchId, match.matchedUserId)} className="match-item">
