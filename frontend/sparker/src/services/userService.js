@@ -140,12 +140,13 @@ export const fetchUsers = async () => {
     }
 };
 
-export const deleteUser = async (userId) => {
+export const deleteUser = async (delUserId, byUserId) => {
     try {
-        const response = await axios.delete(`${API_URL}/users/delete/${userId}`);
-        console.log(response.data);
+        const response = await axios.delete(`${API_URL}/users/delete/${delUserId}/${byUserId}`);
+        // console.log(response.data);
+        return response.data;
     } catch (error) {
-        console.error('Error deleting user:', error);
+        console.error('Error deleting user:', error.response.data); // use error.response.data in all services?
         throw error;
     }
 };    

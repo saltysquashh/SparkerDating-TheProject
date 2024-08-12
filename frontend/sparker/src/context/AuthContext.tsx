@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 type UserType = {
-    id: string;
+    id: number; // was string? aug 12
     firstName: string;
     lastName: string;
     isAdmin: boolean;

@@ -44,13 +44,14 @@ const AdminPanelPage = () => {
         // navigate(`/matches/match/${matchId}/${matchUserId}`);
     };
 
-    const handleUserDelete = async (userId: number) => {
+    const handleUserDelete = async (delUserId: number, byUserId: number) => {
         try {
-            const response = await deleteUser(userId);
+            const response = await deleteUser(delUserId, byUserId);
             // navigate(`/adminpanel`); // ikke her, men først når knappet er lavet inde på user details
-            setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userId)); // prevUsers is the previous state of the 'users' array
+            alert(response)
+            setUsers((prevUsers) => prevUsers.filter((u) => u.id !== delUserId)); // prevUsers is the previous state of the 'users' array
         } catch (error) {
-            console.error("Error handling Delete User action: ", error);
+            // console.error("Error handling Delete User action: ", error);
         }
     };
 
@@ -84,10 +85,12 @@ const AdminPanelPage = () => {
                         Registration date: (Reg. date coming here)
                         </div>
                         <div>
-                        Privileges: {shownUser.isAdmin ? 'Admin' : 'User'}
+                        Type: {shownUser.isAdmin ? 'Admin' : 'User'} {shownUser.isMaster ? '(Master)' : ''}
                         </div>
-                        <div>
-                            <Button onClick={() => handleUserDelete(shownUser.id)} colorScheme='red'>Delete</Button>
+                        <div className="admin-panel-buttons">
+                            <Button onClick={() => handleUserDelete(shownUser.id, user.id)} colorScheme='green'>Promote</Button>
+                            <Button onClick={() => handleUserDelete(shownUser.id, user.id)} colorScheme='yellow'>Demote</Button>
+                            <Button onClick={() => handleUserDelete(shownUser.id, user.id)} colorScheme='red'>Delete</Button>
                         </div>
                     </li>
                 ))}

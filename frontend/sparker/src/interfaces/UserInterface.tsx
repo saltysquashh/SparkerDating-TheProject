@@ -4,6 +4,7 @@ interface UserType {
     lastName: string;
     bio: string;
     isAdmin: boolean;
+    isMaster: boolean;
 }
 
 export default UserType;
