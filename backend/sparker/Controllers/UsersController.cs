@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using sparker.Database;
 using sparker.DTOs;
 using sparker.Models;
+using sparker.Utilities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -84,14 +85,15 @@ public class UsersController : ControllerBase
             var token = GenerateJwtToken(user.Id.ToString());
 
             // check if user id is also registered in admin table
-            var isAdmin = await IsUserAdmin(user.Id);
+            
+            var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the _context is included because the function is in another class
 
-            var userResponse = new UserResponseDTO
+            var userResponse = new LoginResponseDTO
             {
                 Id = user.Id,
                 FirstName = user.First_Name,
                 LastName = user.Last_Name,
-                IsAdmin = isAdmin,
+                IsAdmin = isAdmin, // IsAdmin is included in the login response so it can be added to the authcontext on login
                 Token = token // Include the token in the response
             };
 
@@ -101,19 +103,17 @@ public class UsersController : ControllerBase
         return BadRequest("An unknown error occurred.");
     }
 
-    // check if user is an admin
-    private async Task<bool> IsUserAdmin(int userId)
-    {
-        return await _context.Admins.AnyAsync(a => a.User_Id == userId);
-    }
 
-    // API endpoit check if a user exists as an admin
+
+    // API endpoint to check if a user exists as an admin
     [HttpGet("isadmin/{userId}")]
     public async Task<IActionResult> IsAdmin(int userId)
     {
-        var isAdmin = await IsUserAdmin(userId);
+        var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, userId); // the _context is included because the function is in another class
         return Ok(isAdmin);
     }
+
+
 
 
     [HttpGet("userinfo/{id}")]
@@ -335,20 +335,41 @@ public class UsersController : ControllerBase
 
         return (nextUserDto);
     }
-
-    [HttpDelete("delete/{userId}")]
-    public async Task<IActionResult> DeleteUser(int userId)
+    [HttpDelete("delete/{delUserId}/{byUserId}")]
+    public async Task<IActionResult> DeleteUser(int delUserId, int byUserId)
     {
-        // find the user directly by its Id
-        var user = await _context.Users.FindAsync(userId);
-        if (user == null)
+        var delUser = await _context.Users.FindAsync(delUserId);
+        if (delUser == null)
         {
-            return NotFound("User not found.");
+            return NotFound("User to be deleted not found.");
         }
 
-        // delete user
-        _context.Users.Remove(user);
+        var byUser = await _context.Users.FindAsync(byUserId);
+        if (byUser == null)
+        {
+            return NotFound("The user performing the deletion was not found.");
+        }
 
+        // check if the user being deleted is an admin
+        var isDelUserAdmin = await _context.Admins.AnyAsync(a => a.User_Id == delUserId);
+
+        if (isDelUserAdmin)
+        {
+            // check if the user performingg the deletion is a master admin
+            var isByUserMasterAdmin = await _context.Admins
+                .Where(a => a.User_Id == byUserId)
+                .Select(a => a.Is_Master)
+                .FirstOrDefaultAsync();
+
+            // If the user performing the deletion is not a master admin, deny the operation
+            if (!isByUserMasterAdmin)
+            {
+                return Unauthorized("Only a master admin can delete another admin.");
+            }
+        }
+
+        // Delete the user
+        _context.Users.Remove(delUser);
         await _context.SaveChangesAsync();
 
         return Ok("User deleted successfully.");
@@ -367,7 +388,13 @@ public class UsersController : ControllerBase
         // loop through each user to populate the UserInfoDTO and check admin status
         foreach (var user in users)
         {
-            var isAdmin = await IsUserAdmin(user.Id);
+            var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the context is included because the function is in another class
+            var isMaster = false;
+
+            if (isAdmin)
+            {
+                isMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id);
+            }
 
             var userInfo = new UserInfoDTO
             {
@@ -378,7 +405,8 @@ public class UsersController : ControllerBase
                 Gender = user.Gender,
                 Birthdate = user.Birthdate,
                 Bio = user.Bio,
-                IsAdmin = isAdmin
+                IsAdmin = isAdmin,
+                IsMaster = isMaster
             };
 
             userInfoDTOs.Add(userInfo);
