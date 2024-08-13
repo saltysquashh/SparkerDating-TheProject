@@ -44,12 +44,8 @@ const SwipingPage = () => {
         if (!displayedUser || !user) return; // Check if both user and displayedUser are not null
         try {
             // Convert IDs to numbers before passing them to the function
-            const matched = await sendSwipeAction(Number(user.id), Number(displayedUser.id), liked);
-
-            // if (matched == true)
-            // {
-            //    // gør noget
-            // }
+            const resultMsg = await sendSwipeAction(Number(user.id), Number(displayedUser.id), liked);
+            alert(resultMsg);
 
             fetchNextUser().catch((error) => {
                 console.error("Error fetching next user:", error);

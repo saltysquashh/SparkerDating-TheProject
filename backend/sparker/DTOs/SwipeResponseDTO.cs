@@ -3,6 +3,6 @@
     public class SwipeResponseDTO
     {
         public bool IsMatch { get; set; }
-        public NextUserDTO NextUser { get; set; }
+        public string Message { get; set; }
     }
 }

@@ -37,6 +37,15 @@ namespace sparker.Controllers
             _context.Swipes.Add(swipe);
             await _context.SaveChangesAsync();
 
+            if (!swipeDto.Liked)
+            {
+                return Ok(new SwipeResponseDTO
+                {
+                    IsMatch = false,
+                    Message = "You passed on this user."
+                });
+            }
+
             bool isMatch = false;
 
             // Check for match
@@ -60,19 +69,11 @@ namespace sparker.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Get next user based on preferences
-            //NextUserDTO nextUser = GetNextSwipeUser(1);
-
-            // Use the extracted method to get the next user
-            //var nextUser = await FetchNextUser(swipeDto.SwiperUserId);
-
-            //var response = new SwipeResponseDTO
-            //{
-            //    IsMatch = potentialMatch != null,
-            //    // NextUser = nextUser
-            //};
-
-            return Ok(isMatch);
+            return Ok(new SwipeResponseDTO
+            {
+                IsMatch = isMatch,
+                Message = "You have a new match!"
+            });
         }
 
 
