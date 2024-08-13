@@ -79,7 +79,7 @@ const SwipeDetailsPage = () => {
                 ))}
             </div>
             {/* <Button onClick={() => handleUnswipeClick()} colorScheme='red'>Unswipe</Button> */}
-            <Button onClick={onOpen} colorScheme='red'>Unswipe</Button>
+            <Button onClick={onOpen} colorScheme='red'>Undo swipe</Button>
       
 
 <div className="Alert-Dialog-Example">
