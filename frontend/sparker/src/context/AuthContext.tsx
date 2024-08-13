@@ -28,14 +28,15 @@ type AuthProviderProps = {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<UserType | null>(null);
     const navigate = useNavigate(); // Use the useNavigate hook
-    
+
     const login = (userData: UserType) => {
         setUser(userData);
+        navigate('/');
     };
-    // const navigate = useNavigate();
+
     const logout = () => {
         setUser(null);
-        alert("You have been logged out."); // Display the alert message
+        alert("You have been logged out.");
         navigate('/'); // Navigate to the homepage
     };
 
