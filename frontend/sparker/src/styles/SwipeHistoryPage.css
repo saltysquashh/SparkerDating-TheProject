@@ -15,7 +15,14 @@
     cursor: pointer;
     transition: background-color 0.3s;
     color: white;
-    background-color: rgb(235, 101, 101);
+}
+
+.swipe-liked {
+    background-color: #53b756; /* Green for liked swipes */
+}
+
+.swipe-passed {
+    background-color: #eb6565; /* Red for passed swipes */
 }
 
 .swipe-item:hover {
@@ -38,6 +45,6 @@
 
 .swipeuser-title {
     font-size: x-large;
-font-family:'Courier New', Courier, monospace;
-color: white;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
 }

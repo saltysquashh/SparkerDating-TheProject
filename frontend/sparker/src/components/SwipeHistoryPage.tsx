@@ -49,30 +49,40 @@ const SwipeHistoryPage = () => {
 
     return (
         <div className="global-container">
-        <div className="swipes-container">
-            <h2>Your Swipes</h2>
-            <ul className="swipe-list">
-                {swipes.map((swipe) => (
-                    <li key={swipe.id} onClick={() => handleSwipeClick(swipe.id, swipe.swipedUserId)} className="swipe-item">
-                        <div className='swipeuser-images'>
-                        {swipe.swipedImageData && <img src={`data:image/png;base64,${swipe.swipedImageData}`} alt={`${swipe.swipedImageData}`} className="swipe-image" />}
-                        </div>
-                        <div className='swipeuser-title'>
-                        {swipe.swipedName} - Swiped on {new Date(swipe.swipedAt).toLocaleDateString()}
-                        </div>
-                        <div>
-                        {swipe.swipedAge}, {swipe.swipedGender}
-                        </div>
-                        <div>
-                            {swipe.isMatch ? 'You liked ' : 'You passed on '} {swipe.swipedName}
-                        </div>
-                        <div>
-                            Is a match: {swipe.isMatch ? 'Yes' : 'No'}
-                        </div>
-                    </li>
-                ))}
-            </ul>
-        </div>
+            <div className="swipes-container">
+                <h2>Your Swipes</h2>
+                <ul className="swipe-list">
+                    {swipes.map((swipe) => (
+                        <li
+                            key={swipe.id}
+                            onClick={() => handleSwipeClick(swipe.id, swipe.swipedUserId)}
+                            className={`swipe-item ${swipe.liked ? 'swipe-liked' : 'swipe-passed'}`}
+                        >
+                            <div className="swipeuser-images">
+                                {swipe.swipedImageData && (
+                                    <img
+                                        src={`data:image/png;base64,${swipe.swipedImageData}`}
+                                        alt={`${swipe.swipedImageData}`}
+                                        className="swipe-image"
+                                    />
+                                )}
+                            </div>
+                            <div className="swipeuser-title">
+                                {swipe.swipedName} - Swiped on {new Date(swipe.swipedAt).toLocaleDateString()}
+                            </div>
+                            <div>
+                                {swipe.swipedAge}, {swipe.swipedGender}
+                            </div>
+                            <div>
+                                {swipe.liked ? 'You liked ' : 'You passed on '} {swipe.swipedName}
+                            </div>
+                            <div>
+                                Is a match: {swipe.isMatch ? 'Yes' : 'No'}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 };
