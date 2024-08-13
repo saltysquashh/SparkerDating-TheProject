@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// Function to send a swipe action
+// the function to create a swipe
 export const sendSwipeAction = async (swiperUserId, swipedUserId, liked) => {
     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
     try {
