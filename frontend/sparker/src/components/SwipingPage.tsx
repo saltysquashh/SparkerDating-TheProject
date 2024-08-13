@@ -25,7 +25,7 @@ const SwipingPage = () => {
         try {
             const response = await fetchNextUserToSwipe(user?.id);
             setDisplayedUser(response);
-            const userImages = await fetchUserImages(response.id); // but the images are already included in the fetchnextuser call?
+            const userImages = await fetchUserImages(response.id); // TODO aren't the images already included in the fetchnextuser call?
             setImages(userImages);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -81,7 +81,7 @@ const SwipingPage = () => {
                         <img src={`data:image/png;base64,${image.image_Data}`} alt="Match" />
                     </div>
                 ))}
-            </div>
+            </div> 
                 <h3 className="profile-name">{displayedUser.name}, {displayedUser.age}</h3>
                 <p className="profile-description">{displayedUser.bio}</p>
                 <div className="action-buttons">
