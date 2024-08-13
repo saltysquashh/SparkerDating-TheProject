@@ -20,11 +20,6 @@ const AdminPanelPage = () => {
             navigate('/login');
         }
 
-        if (!user?.isAdmin) {
-            alert('Unauthorized.');
-            navigate('/');
-        }
-
         const loadUsers = async () => {
             if (user) {
                 try {
@@ -79,11 +74,14 @@ const AdminPanelPage = () => {
         }
     };
 
-
+    if (!user?.isAdmin) {
+        return <div className="unauthorized-container">You are not authorized as an admin.</div>;
+    }
 
     if (!user) {
         return <div>Loading...</div>; // Show loading or redirect until user is validated
     }
+
 
     return (
         <div className="global-container">

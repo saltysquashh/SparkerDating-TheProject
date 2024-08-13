@@ -40,3 +40,11 @@
 {
     font-family: 'Courier New', Courier, monospace;
 }
+
+.unauthorized-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    color: red;
+}

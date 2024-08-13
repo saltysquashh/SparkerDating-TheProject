@@ -34,7 +34,6 @@ function App() {
   return (
     <ChakraProvider>
     <AuthProvider>
-    <Router>
       <Header /> {/* Include your Header component here */}
       <Routes>
         <Route path="/" element={<HomePage />} /> {/* Set HomePage as the root route */}
@@ -55,7 +54,6 @@ function App() {
         <Route path="/swipehistory/swipedetails/:swipeId/:swipeUserId" element={<SwipeDetailsPage />} /> {/* MatchPage as a separate route */}
         <Route path="/adminpanel" element={<AdminPanelPage />} /> {/* Add this line */}
       </Routes>
-    </Router>
     </AuthProvider>
     </ChakraProvider>
   );

@@ -25,7 +25,7 @@ const userOptions = [
     { label: 'Matches', action: () => navigate('/matches') },
     { label: 'Swipe history', action: () => navigate('/swipehistory') },
     { label: 'Profile', action: () => navigate('/profile') },
-    { label: 'Admin panel', action: () => navigate('/adminpanel') },
+    ...(user?.isAdmin ? [{ label: 'Admin panel', action: () => navigate('/adminpanel') }] : []),
     { label: 'Log out', action: logout }
 ];
 
