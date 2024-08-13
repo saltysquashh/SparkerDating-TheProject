@@ -57,7 +57,18 @@ public class UsersController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return Ok(new { userId = user.Id }); // or other relevant data
+        var defaultPreference = new Preference
+        {
+            User_Id = user.Id,
+            Sex = "Both",
+            Age_Min = 18,
+            Age_Max = 99 
+        };
+
+        _context.Preferences.Add(defaultPreference);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { userId = user.Id });
     }
 
     [HttpPost("login")]
