@@ -57,7 +57,6 @@ const UserInfoPage = () => {
                         }); // Update form fields with fetched data
                     } catch (error) {
                         console.error('Error fetching user data:', error);
-                        // Handle error appropriately
                     }
                     setLoading(false);
                 };

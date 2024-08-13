@@ -149,4 +149,24 @@ export const deleteUser = async (delUserId, byUserId) => {
         console.error('Error deleting user:', error.response.data); // use error.response.data in all services?
         throw error;
     }
-};    
+};
+
+export const promoteUserToAdmin = async (userId, byUserId) => {
+    try {
+        const response = await axios.post(`${API_URL}/users/promote/${userId}/${byUserId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error promoting user:', error.response.data);
+        throw error;
+    }
+};
+
+export const demoteAdminToUser = async (adminUserId, byUserId) => {
+    try {
+        const response = await axios.post(`${API_URL}/users/demote/${adminUserId}/${byUserId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error demoting admin:', error.response.data);
+        throw error;
+    }
+};

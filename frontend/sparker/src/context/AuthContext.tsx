@@ -9,6 +9,7 @@ type UserType = {
     firstName: string;
     lastName: string;
     isAdmin: boolean;
+    isMaster: boolean;
 };
 
 type AuthContextType = {

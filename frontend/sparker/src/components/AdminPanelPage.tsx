@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/AdminPanelPage.css';
 import UserType from '../interfaces/UserInterface';
-import { deleteUser, fetchUsers } from '../services/userService';
+import { deleteUser, demoteAdminToUser, fetchUsers, promoteUserToAdmin } from '../services/userService';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, ButtonGroup, Checkbox, Stack, useDisclosure } from '@chakra-ui/react'
 
 
@@ -55,6 +55,31 @@ const AdminPanelPage = () => {
         }
     };
 
+    const handleUserPromote = async (userId: number, byUserId: number) => {
+        try {
+            const response = await promoteUserToAdmin(userId, byUserId);
+            alert(response);
+            setUsers((prevUsers) => prevUsers.map((u) => 
+                u.id === userId ? { ...u, isAdmin: true } : u
+            ));
+        } catch (error) {
+            console.error("Error promoting user: ", error);
+        }
+    };
+
+    const handleUserDemote = async (adminUserId: number, byUserId: number) => {
+        try {
+            const response = await demoteAdminToUser(adminUserId, byUserId);
+            alert(response);
+            setUsers((prevUsers) => prevUsers.map((u) => 
+                u.id === adminUserId ? { ...u, isAdmin: false, isMaster: false } : u
+            ));
+        } catch (error) {
+            console.error("Error demoting admin: ", error);
+        }
+    };
+
+
 
     if (!user) {
         return <div>Loading...</div>; // Show loading or redirect until user is validated
@@ -62,40 +87,37 @@ const AdminPanelPage = () => {
 
     return (
         <div className="global-container">
-        <div className="admin-panel-container">
-        <div className='admin-panel-title'>
-            <h1>Admin Panel</h1>
+            <div className="admin-panel-container">
+                <div className='admin-panel-title'>
+                    <h1>Admin Panel</h1>
+                </div>
+                <p>Welcome, {user.firstName}! You have administrative access.</p>
+                <h2>All Users</h2>
+                <ul className="user-list">
+                    {users.map((shownUser) => (
+                        <li key={shownUser.id} className="user-item">
+                            <div>Id: {shownUser.id}</div>
+                            <div>First name: {shownUser.firstName}</div>
+                            <div>Last name: {shownUser.lastName}</div>
+                            <div>Registration date: (Reg. date coming here)</div>
+                            <div>Type: {shownUser.isAdmin ? 'Admin' : 'User'} {shownUser.isMaster ? '(Master)' : ''}</div>
+                            {!shownUser.isMaster && (
+                                <div className="admin-panel-buttons">
+                                    {!shownUser.isAdmin && (
+                                        <Button onClick={() => handleUserPromote(shownUser.id, user.id)} colorScheme='green'>Promote to Admin</Button>
+                                    )}
+                                    {shownUser.isAdmin && (
+                                        <Button onClick={() => handleUserDemote(shownUser.id, user.id)} colorScheme='yellow'>Demote to User</Button>
+                                    )}
+                                    {!shownUser.isAdmin && (
+                                        <Button onClick={() => handleUserDelete(shownUser.id, user.id)} colorScheme='red'>Delete</Button>
+                                    )}
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
             </div>
-            <p>Welcome, {user.firstName}! You have administrative access.</p>
-            <h2>All Users</h2>
-            <ul className="user-list">
-                {users.map((shownUser) => (
-                    <li key={shownUser.id} onClick={() => handleUserClick(shownUser.id)} className="user-item">
-                        {/* {shownUser.imageData && <img src={`data:image/png;base64,${shownUser.imageData}`} alt={`${shownUser.matchedName}`} className="match-image" />} */}
-                        <div>
-                        Id: {shownUser.id}
-                        </div>
-                        <div>
-                        First name: {shownUser.firstName}
-                        </div>
-                        <div>
-                        Last name: {shownUser.lastName}
-                        </div>
-                        <div>
-                        Registration date: (Reg. date coming here)
-                        </div>
-                        <div>
-                        Type: {shownUser.isAdmin ? 'Admin' : 'User'} {shownUser.isMaster ? '(Master)' : ''}
-                        </div>
-                        <div className="admin-panel-buttons">
-                            <Button onClick={() => handleUserDelete(shownUser.id, user.id)} colorScheme='green'>Promote</Button>
-                            <Button onClick={() => handleUserDelete(shownUser.id, user.id)} colorScheme='yellow'>Demote</Button>
-                            <Button onClick={() => handleUserDelete(shownUser.id, user.id)} colorScheme='red'>Delete</Button>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-        </div>
         </div>
     );
 };

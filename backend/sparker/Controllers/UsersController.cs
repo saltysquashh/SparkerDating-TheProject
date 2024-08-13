@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using sparker.Database;
 using sparker.DTOs;
+using sparker.Migrations;
 using sparker.Models;
 using sparker.Utilities;
 using System.IdentityModel.Tokens.Jwt;
@@ -87,6 +88,7 @@ public class UsersController : ControllerBase
             // check if user id is also registered in admin table
             
             var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the _context is included because the function is in another class
+            var isMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id);
 
             var userResponse = new LoginResponseDTO
             {
@@ -94,6 +96,7 @@ public class UsersController : ControllerBase
                 FirstName = user.First_Name,
                 LastName = user.Last_Name,
                 IsAdmin = isAdmin, // IsAdmin is included in the login response so it can be added to the authcontext on login
+                IsMaster = isMaster,
                 Token = token // Include the token in the response
             };
 
@@ -374,6 +377,83 @@ public class UsersController : ControllerBase
 
         return Ok("User deleted successfully.");
     }
+
+    [HttpPost("promote/{userId}/{byUserId}")]
+    public async Task<IActionResult> PromoteUserToAdmin(int userId, int byUserId)
+    {
+        // Find the user to be promoted by their ID
+        var userToPromote = await _context.Users.FindAsync(userId);
+        if (userToPromote == null)
+        {
+            return NotFound("User to be promoted not found.");
+        }
+
+        // Find the user performing the promotion by their ID
+        var byUser = await _context.Users.FindAsync(byUserId);
+        if (byUser == null)
+        {
+            return NotFound("The user performing the promotion was not found.");
+        }
+
+        // Check if the user performing the promotion is a master admin
+        var isByUserMasterAdmin = await _context.Admins
+            .Where(a => a.User_Id == byUserId)
+            .Select(a => a.Is_Master)
+            .FirstOrDefaultAsync();
+
+        if (!isByUserMasterAdmin)
+        {
+            return Unauthorized("Only a master admin can promote another user to admin.");
+        }
+
+        // Promote the user to admin
+        var newAdmin = new Admin
+        {
+            User_Id = userToPromote.Id,
+            Is_Master = false // Default to false when promoting to a regular admin
+        };
+
+        _context.Admins.Add(newAdmin);
+        await _context.SaveChangesAsync();
+
+        return Ok("User promoted to admin successfully.");
+    }
+
+    [HttpPost("demote/{adminUserId}/{byUserId}")]
+    public async Task<IActionResult> DemoteAdminToUser(int adminUserId, int byUserId)
+    {
+        // Find the admin to be demoted by their ID
+        var adminUserToDemote = await _context.Admins.FirstOrDefaultAsync(a => a.User_Id == adminUserId);
+        if (adminUserToDemote == null)
+        {
+            return NotFound("Admin to be demoted not found.");
+        }
+
+        // Find the user performing the demotion by their ID
+        var byUser = await _context.Users.FindAsync(byUserId);
+        if (byUser == null)
+        {
+            return NotFound("The user performing the demotion was not found.");
+        }
+
+        // Check if the user performing the demotion is a master admin
+        var isByUserMasterAdmin = await _context.Admins
+            .Where(a => a.User_Id == byUserId)
+            .Select(a => a.Is_Master)
+            .FirstOrDefaultAsync();
+
+        if (!isByUserMasterAdmin)
+        {
+            return Unauthorized("Only a master admin can demote an admin to a regular user.");
+        }
+
+        // Demote the admin to a regular user by removing the entry from the Admins table
+        _context.Admins.Remove(adminUserToDemote);
+        await _context.SaveChangesAsync();
+
+        return Ok("Admin demoted to regular user successfully.");
+    }
+
 
 
     [HttpGet("all")]
