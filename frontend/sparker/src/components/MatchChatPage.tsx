@@ -72,7 +72,7 @@ const MatchChatPage = () => {
             />
             <button onClick={handleSendMessage}>Send</button>
             {messages.map((msg, index) => (
-                <div key={index}>{msg.senderId}: {msg.content}</div>
+                <div key={index}>{msg.senderName}: {msg.content}</div>
             ))}
         </div>
     );
