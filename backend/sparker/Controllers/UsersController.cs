@@ -350,7 +350,7 @@ public class UsersController : ControllerBase
         return (nextUserDto);
     }
     [HttpDelete("delete/{delUserId}/{byUserId}")]
-    public async Task<IActionResult> DeleteUser(int delUserId, int byUserId)
+    public async Task<IActionResult> DeleteUser(int delUserId, int byUserId) // Didnt have enough time to look into deletion Cascades
     {
         var delUser = await _context.Users.FindAsync(delUserId);
         if (delUser == null)
@@ -364,12 +364,12 @@ public class UsersController : ControllerBase
             return NotFound("The user performing the deletion was not found.");
         }
 
-        // check if the user being deleted is an admin
+        // Check if the user being deleted is an admin
         var isDelUserAdmin = await _context.Admins.AnyAsync(a => a.User_Id == delUserId);
 
         if (isDelUserAdmin)
         {
-            // check if the user performingg the deletion is a master admin
+            // Check if the user performing the deletion is a master admin
             var isByUserMasterAdmin = await _context.Admins
                 .Where(a => a.User_Id == byUserId)
                 .Select(a => a.Is_Master)
@@ -382,11 +382,61 @@ public class UsersController : ControllerBase
             }
         }
 
-        // Delete the user
+        // Delete related matces and chat messages
+        var matches = await _context.Matches
+            .Where(m => m.User1_Id == delUserId || m.User2_Id == delUserId)
+            .ToListAsync();
+
+        foreach (var match in matches)
+        {
+            var chatMessages = await _context.ChatMessages
+                .Where(cm => cm.Match_Id == match.Id)
+                .ToListAsync();
+
+            _context.ChatMessages.RemoveRange(chatMessages);
+        }
+
+        _context.Matches.RemoveRange(matches);
+
+        // Delete related swippes
+        var swipes = await _context.Swipes
+            .Where(s => s.Swiper_UserId == delUserId || s.Swiped_UserId == delUserId)
+            .ToListAsync();
+
+        _context.Swipes.RemoveRange(swipes);
+
+        // Delete related preferences
+        var preference = await _context.Preferences
+            .Where(p => p.User_Id == delUserId)
+            .FirstOrDefaultAsync();
+
+        if (preference != null)
+        {
+            _context.Preferences.Remove(preference);
+        }
+
+        // Delet related images
+        var images = await _context.Images
+            .Where(i => i.User_Id == delUserId)
+            .ToListAsync();
+
+        _context.Images.RemoveRange(images);
+
+        // delete related admin record if it exists
+        var adminRecord = await _context.Admins
+            .Where(a => a.User_Id == delUserId)
+            .FirstOrDefaultAsync();
+
+        if (adminRecord != null)
+        {
+            _context.Admins.Remove(adminRecord);
+        }
+
+        // Delete user
         _context.Users.Remove(delUser);
         await _context.SaveChangesAsync();
 
-        return Ok("User deleted successfully.");
+        return Ok("User and related data deleted successfully.");
     }
 
     [HttpPost("promote/{userId}/{byUserId}")]
