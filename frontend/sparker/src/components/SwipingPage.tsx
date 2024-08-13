@@ -25,7 +25,7 @@ const SwipingPage = () => {
         try {
             const response = await fetchNextUserToSwipe(user?.id);
             setDisplayedUser(response);
-            const userImages = await fetchUserImages(response.id);
+            const userImages = await fetchUserImages(response.id); // but the images are already included in the fetchnextuser call?
             setImages(userImages);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 404) {
