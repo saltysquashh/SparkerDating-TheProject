@@ -97,7 +97,7 @@ const AdminPanelPage = () => {
                             <div>Id: {shownUser.id}</div>
                             <div>First name: {shownUser.firstName}</div>
                             <div>Last name: {shownUser.lastName}</div>
-                            <div>Registration date: (Reg. date coming here)</div>
+                            <div>Registration date: {shownUser.registrationAt}</div>
                             <div>Type: {shownUser.isAdmin ? 'Admin' : 'User'} {shownUser.isMaster ? '(Master)' : ''}</div>
                             {!shownUser.isMaster && (
                                 <div className="admin-panel-buttons">

@@ -38,9 +38,7 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
-        // Validate the input data
-        // Check if the user already exists
-
+        // validate the input and check if the user already exists ?
 
         var user = new User
         {
@@ -49,6 +47,7 @@ public class UsersController : ControllerBase
             Email = registerDto.Email,
             Gender = registerDto.Gender,
             Birthdate = registerDto.Birthdate,
+            Registration_At = DateTime.Now
         };
 
         user.Password_Hash = _passwordHasher.HashPassword(user, registerDto.Password);
@@ -57,6 +56,7 @@ public class UsersController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
+        // create default preferences for the new user
         var defaultPreference = new Preference
         {
             User_Id = user.Id,
@@ -346,7 +346,6 @@ public class UsersController : ControllerBase
             // Map other properties as needed
         }).FirstOrDefault();
 
-
         return (nextUserDto);
     }
     [HttpDelete("delete/{delUserId}/{byUserId}")]
@@ -382,7 +381,7 @@ public class UsersController : ControllerBase
             }
         }
 
-        // Delete related matces and chat messages
+        // Delete related matches and chat messages
         var matches = await _context.Matches
             .Where(m => m.User1_Id == delUserId || m.User2_Id == delUserId)
             .ToListAsync();
@@ -398,7 +397,7 @@ public class UsersController : ControllerBase
 
         _context.Matches.RemoveRange(matches);
 
-        // Delete related swippes
+        // Delete related swipes
         var swipes = await _context.Swipes
             .Where(s => s.Swiper_UserId == delUserId || s.Swiped_UserId == delUserId)
             .ToListAsync();
@@ -415,14 +414,14 @@ public class UsersController : ControllerBase
             _context.Preferences.Remove(preference);
         }
 
-        // Delet related images
+        // Delete related images
         var images = await _context.Images
             .Where(i => i.User_Id == delUserId)
             .ToListAsync();
 
         _context.Images.RemoveRange(images);
 
-        // delete related admin record if it exists
+        // Delete related admin record if it exists
         var adminRecord = await _context.Admins
             .Where(a => a.User_Id == delUserId)
             .FirstOrDefaultAsync();
@@ -547,7 +546,8 @@ public class UsersController : ControllerBase
                 Birthdate = user.Birthdate,
                 Bio = user.Bio,
                 IsAdmin = isAdmin,
-                IsMaster = isMaster
+                IsMaster = isMaster,
+                RegistrationAt = user.Registration_At
             };
 
             userInfoDTOs.Add(userInfo);

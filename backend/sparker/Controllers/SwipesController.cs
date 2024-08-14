@@ -78,7 +78,7 @@ namespace sparker.Controllers
 
 
         [HttpGet("getswipesbyuser/{userId}")]
-        public async Task<IActionResult> GetSwipes(int userId)
+        public async Task<IActionResult> GetAllSwipesByUser(int userId)
         {
             var swipes = await _context.Swipes
                 .Where(s => s.Swiper_UserId == userId)

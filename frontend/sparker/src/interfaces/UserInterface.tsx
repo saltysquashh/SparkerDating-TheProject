@@ -5,6 +5,7 @@ interface UserType {
     bio: string;
     isAdmin: boolean;
     isMaster: boolean;
+    registrationAt: string;
 }
 
 export default UserType;
