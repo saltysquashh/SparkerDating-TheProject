@@ -30,8 +30,8 @@ const SwipeDetailsPage = () => {
             setIsLoading(true);
             try {
                 const response = await fetch_ShowcaseUser(swipeUserId);
+                setUserInfo(response);
                 setImages(response.images || []);
-
             } catch (error) {
                 console.error('Error fetching swipe data:', error);
             }
@@ -48,10 +48,8 @@ const SwipeDetailsPage = () => {
     if (!swipeUserInfo) {
         return <div className="swipe-page-error">Swipe not found.</div>;
     }
-
-
+    
     const handleUnswipeClick = async () => { // async da der foretages http kald
-
         try {
             const responseMsg = await deleteSwipe(swipeId);
               alert(responseMsg);
@@ -63,8 +61,6 @@ const SwipeDetailsPage = () => {
         
         navigate(`/swipes/`);
     };
-
-
 
     return (
         <div className="swipe-page-container">
