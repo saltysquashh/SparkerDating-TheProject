@@ -56,23 +56,20 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlPath);
 });
 
-// Configure other services and middleware
-// ...
-
-// Add services to the container.
+builder.Services.AddHostedService<GhostingCheckerService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder =>
-        builder.WithOrigins("http://localhost:3000") // Specify the client URL
+        builder.WithOrigins("http://localhost:3000")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials());
 });
 
-
+builder.Services.AddHostedService<GhostingCheckerService>(); // registers GhostingCheckerService as a service
 
 var app = builder.Build();
 
@@ -83,7 +80,6 @@ if (!app.Environment.IsDevelopment())
 {
 
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios...
     app.UseHsts();
 
 
@@ -117,8 +113,8 @@ app.UseSwaggerUI(options =>
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<ChatHub>("/chatHub"); // Map the SignalR Hub
-    endpoints.MapControllers(); // Map API controllers
+    endpoints.MapHub<ChatHub>("/chatHub"); // map the SignalR Hub
+    endpoints.MapControllers(); // map http controller endpoints
 });
 
 app.Run();
