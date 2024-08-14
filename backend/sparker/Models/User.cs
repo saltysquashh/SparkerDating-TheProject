@@ -14,6 +14,7 @@ namespace sparker.Models
         public string? Password_Hash { get; set; }
         public DateTime Birthdate { get; set; }
         public string? Bio { get; set; }
+        public DateTime Registration_At { get; set; }
         public virtual Preference Preference { get; set; }
     }
 }
