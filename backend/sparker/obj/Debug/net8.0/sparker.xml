@@ -64,5 +64,17 @@
         <member name="M:sparker.Migrations.AddedEntityConstraints.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:sparker.Migrations.AddIsGhostedToMatch">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddIsGhostedToMatch.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddIsGhostedToMatch.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddIsGhostedToMatch.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>
