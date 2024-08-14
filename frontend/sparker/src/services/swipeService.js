@@ -10,31 +10,22 @@ export const sendSwipeAction = async (swiperUserId, swipedUserId, liked) => {
         const response = await axios.post(`${API_URL}/swipes/swipe`, {
             SwiperUserId: swiperUserId,
             SwipedUserId: swipedUserId,
-            Liked: liked}, 
-            {
-                headers: {
+            Liked: liked
+        }, {
+            headers: {
                 'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
             }
         });
 
-        if (response.ok) {
-            // Parse the JSON response to get the SwipeResponseDTO
-            const result = await response.json();
+        // Handle the response (since Axios does not use `response.ok`)
+        const { isMatch, message } = response.data;
 
-            // Decode the DTO (essentially, just access its properties)
-            const isMatch = result.isMatch;
-            const message = result.message;
-
-            // Use the data (e.g., display the message to the user)
-            alert(message); // This will show the message in an alert box
-        } else {
-            // Handle HTTP errors
-            alert("Something went wrong, please try again.");
-        }
+        return message;
 
     } catch (error) {
+        // Handle errors
         console.error('Error during swipe action:', error);
-        throw error;
+        alert('Error during swipe action:', error);
     }
 };
 
