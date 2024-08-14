@@ -85,7 +85,7 @@ export const fetch_UserCustomization = async (userId) => {
                 'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
             }
         });
-        return response.data; // Return the data part of the response
+        return response.data;
     } catch (error) {
         console.error('Error fetching user data:', error);
         throw error;
@@ -93,15 +93,22 @@ export const fetch_UserCustomization = async (userId) => {
 };
 
 
-export const update_UserBio = async (userId, bioData) => {
+export const update_UserBio = async (userId, newBio) => {
     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
     try {
-        console.log(bioData);
-        const response = await axios.put(`${API_URL}/users/userbio/${userId}`, bioData, {
+        const response = await axios.put(`${API_URL}/users/userbio/${userId}/${newBio}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
+        if (!response.data)
+        {
+            alert('The bio was not saved, as it was unchanged.')
+        }
+        else
+        {
+            alert('Bio updated successfully');
+        }
         return response.data;
     } catch (error) {
         console.error('Error updating user info:', error);
@@ -109,7 +116,6 @@ export const update_UserBio = async (userId, bioData) => {
     }
 };
 
-// Function to fetch the next swipe user
 export const fetchNextUserToSwipe = async (userId) => {
     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
     try {
@@ -139,7 +145,7 @@ export const checkEmailExists = async (email) => {
     try {
         const response = await axios.get(`${API_URL}/users/useremailexists/${email}`)
         console.log('Raw response in service: ' + response.data)
-        return response.data; // Assuming the backend returns { exists: true/false }
+        return response.data; //
     } catch (error) {
         throw new Error('Failed to check email');
     }
@@ -158,10 +164,9 @@ export const fetchUsers = async () => {
 export const deleteUser = async (delUserId, byUserId) => {
     try {
         const response = await axios.delete(`${API_URL}/users/delete/${delUserId}/${byUserId}`);
-        // console.log(response.data);
         return response.data;
     } catch (error) {
-        console.error('Error deleting user:', error.response.data); // use error.response.data in all services?
+        console.error('Error deleting user:', error.response.data);
         throw error;
     }
 };

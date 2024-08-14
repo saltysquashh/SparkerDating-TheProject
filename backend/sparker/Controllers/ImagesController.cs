@@ -66,8 +66,7 @@ namespace sparker.Controllers
                 var image = new Image
                 {
                     Image_Data = fileBytes,
-                    User_Id = userId, // Set the userId for the image
-                    // Upload_Date // ... other properties
+                    User_Id = userId
                 };
 
                 _context.Images.Add(image);
@@ -77,7 +76,6 @@ namespace sparker.Controllers
             }
             catch (Exception ex)
             {
-                // Log and handle the exception
                 return StatusCode(500, "Internal server error");
             }
         }

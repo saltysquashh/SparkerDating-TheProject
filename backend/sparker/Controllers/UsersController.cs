@@ -98,7 +98,6 @@ public class UsersController : ControllerBase
             var token = GenerateJwtToken(user.Id.ToString());
 
             // check if user id is also registered in admin table
-            
             var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the _context is included because the function is in another class
             var isMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id);
 
@@ -219,8 +218,8 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpGet("userbio/{id}")]
-    public async Task<IActionResult> GetUserDisplay(int id)
+    [HttpGet("usercustomization/{id}")]
+    public async Task<IActionResult> GetUserCustomization(int id)
     {
         var user = await _context.Users.FindAsync(id);
 
@@ -232,35 +231,16 @@ public class UsersController : ControllerBase
         var userCustomizationDTO = new UserCustomizationDTO
         {
             Bio = user.Bio,
-            Images = _context.Images
-                    .Where(i => i.User_Id == user.Id)
-                    .Select(i => Convert.ToBase64String(i.Image_Data)) // Convert image data to base64
-                    .ToList()
+            // do i want more properties in "Customization"?
         };
 
         return Ok(userCustomizationDTO);
     }
 
-    [HttpGet("useremailexists/{email}")]
-    public async Task<IActionResult> CheckUserEmailExists(string email)
-    {
-        bool exists = true;
 
-        var user = await _context.Users
-                         .FirstOrDefaultAsync(u => u.Email == email);
-
-        if (user == null)
-        {
-            exists = false;
-        }
-
-        return Ok(exists);
-    }
-
-
-    [HttpPut("userbio/{id}")]
+    [HttpPut("userbio/{id}/{newBio}")]
     // [Authorize]
-    public async Task<IActionResult> UpdateUserBio(int id, [FromBody] UserCustomizationDTO userCustomizationDTO)
+    public async Task<IActionResult> UpdateUserBio(int id, string newBio)
     {
         var user = await _context.Users.FindAsync(id);
         if (user == null)
@@ -268,13 +248,18 @@ public class UsersController : ControllerBase
             return NotFound($"User with ID {id} not found.");
         }
 
-        // Update user properties
-        user.Bio = userCustomizationDTO.Bio;
+        if (user.Bio == newBio)
+        {
+            // return user bio is the same as before
+            return Ok(false);
+        }
+ 
+        user.Bio = newBio;
 
         try
         {
             await _context.SaveChangesAsync();
-            return Ok(user); // or NoContent() to return nothing
+            return Ok(true); // or NoContent() to return nothing
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -291,7 +276,7 @@ public class UsersController : ControllerBase
 
 
 
-    // ryk op i toppen?
+    // move to AuthUtils?
     // private så Swagger ikke antager at det skal være et http kald og fejler
     private string GenerateJwtToken(string userId)
     {
@@ -313,6 +298,21 @@ public class UsersController : ControllerBase
         return tokenHandler.WriteToken(token);
     }
 
+    [HttpGet("useremailexists/{email}")]
+    public async Task<IActionResult> CheckUserEmailExists(string email)
+    {
+        bool exists = true;
+
+        var user = await _context.Users
+                         .FirstOrDefaultAsync(u => u.Email == email);
+
+        if (user == null)
+        {
+            exists = false;
+        }
+
+        return Ok(exists);
+    }
 
     private bool UserExists(int id)
     {

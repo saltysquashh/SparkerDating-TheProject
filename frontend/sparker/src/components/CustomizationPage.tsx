@@ -4,9 +4,9 @@ import ImageType from '../interfaces/ImageInterface';
 import { fetchUserImages, deleteImage, uploadImage } from '../services/imageService';
 import { AuthContext } from '../context/AuthContext';
 import { Button, Textarea } from '@chakra-ui/react'
-import { fetch_UserBio, update_UserBio } from '../services/userService';
+import { fetch_UserCustomization, update_UserBio } from '../services/userService';
 
-const ImagePage = () => {
+const CustomizationPage = () => {
     const [images, setImages] = useState<ImageType[]>([]);
     const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -14,13 +14,10 @@ const ImagePage = () => {
     const userId = user?.id;
     const [imageUrls, setImageUrls] = useState<{ [key: number]: string }>({});
     const [loading, setLoading] = useState(true);
-
-    const [user_Bio, setUserBio] = useState({
-        bio: '',
-    });
-
-
+    const [successMessage, setSuccessMessage] = useState<string | null>(null); // thestate to hold the success message
+    const [userBio, setUserBio] = useState('');
     useEffect(() => {
+        
         const getUserBio = async () => {
             if (!userId) {
                 console.error("User ID is not available.");
@@ -29,40 +26,35 @@ const ImagePage = () => {
             }
         
             try {
-                const response = await fetch_UserBio(userId); // Fetch user bio
-                console.log("Fetched Bio:", response); // Log the response to see its structure
+                const response = await fetch_UserCustomization(userId);
         
-                setUserBio({ 
-                    bio: response.bio || ''
-                });
+                setUserBio(response.bio || '');
             } catch (error) {
                 console.error('Error fetching user bio:', error);
             }
             setLoading(false);
         };
-        
-        getUserBio();
 
         const loadImages = async () => {
             try {
                 if (userId) {
                     const fetchedImages = await fetchUserImages(userId);
-                    console.log(fetchedImages); // Log to check the data
+
                     setImages(fetchedImages);
                 }
             } catch (error) {
                 console.error('Error fetching images:', error);
             }
         };
-    
+        
+        getUserBio();
         loadImages();
 
         return () => {
-            // Revoke all object URLs on cleanup
+            // revoke all object URLs whn cleaning up
             Object.values(imageUrls).forEach(url => URL.revokeObjectURL(url));
         };
-    }, [userId]); // Removed imageUrls dependency
-
+    }, [userId]);
 
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,10 +63,7 @@ const ImagePage = () => {
         }
     };
 
-
     const renderImageFromBlob = (image: ImageType) => {
-        // Check if the URL is already created
-        
 
         if (!imageUrls[image.id]) {
             // let blobData;
@@ -93,10 +82,10 @@ const ImagePage = () => {
         if (selectedFile && userId) {
             try {
                 const response = await uploadImage(selectedFile, userId);
-                setImages([...images, response]); // Assuming response is the new ImageType object
-                alert('Image uploaded successfully.');
-                // Optionally reset the selected file
+                setImages([...images, response]);
+                // alert('Image uploaded successfully.');
                 setSelectedFile(null);
+                setSuccessMessage('Saved image changes successfully');
             } catch (error) {
                 console.error('Error uploading the image:', error);
             }
@@ -105,16 +94,13 @@ const ImagePage = () => {
  
 
     const handleImageDelete = async (imageId: number) => {
-        if (imageUrls[imageId]) {
-            URL.revokeObjectURL(imageUrls[imageId]);
-            setImageUrls(prevUrls => {
-                const newUrls = { ...prevUrls };
-                delete newUrls[imageId];
-                return newUrls;
-            });
+        try {
+            await deleteImage(imageId);
+            setImages(images.filter(image => image.id !== imageId));
+            setSuccessMessage('Saved image changes successfully'); // Show success message
+        } catch (error) {
+            console.error('Error deleting image:', error);
         }
-        await deleteImage(imageId);
-        setImages(images.filter(image => image.id !== imageId));
     };
 
     const handleSaveBioClick = async () => {
@@ -122,15 +108,12 @@ const ImagePage = () => {
             console.error("User ID is not available.");
             return;
         }
-
         try {
-            const bioData = { bio: user_Bio.bio };
+            const bioData = userBio;
             const response = await update_UserBio(userId, bioData);
-            console.log(response); // Log the response or handle it as needed
-            alert('Bio updated successfully'); // Provide feedback to the user
+
         } catch (error) {
-            console.error('Error updating bio:', error);
-            alert('Error updating bio'); // Provide error feedback
+            alert('Error updating bio');
         }
     };
 
@@ -148,9 +131,9 @@ const ImagePage = () => {
             <div className="bio-section">
                 <h2>Your profile bio</h2>
                 <Textarea 
-                    placeholder='Here is a sample placeholder'
-                    value={user_Bio.bio}
-                    onChange={(e) => setUserBio({...user_Bio, bio: e.target.value})}
+                    placeholder='"Hi. My name is Sparker. I like diving."'
+                    value={userBio}
+                    onChange={(e) => setUserBio(e.target.value)}
                 />
                 <Button onClick={handleSaveBioClick} colorScheme='blue'>Save bio</Button>
             </div>
@@ -188,9 +171,10 @@ const ImagePage = () => {
             
             <input type="file" onChange={handleFileChange} />
             <Button onClick={handleImageUpload} colorScheme='green'>Upload Selected Picture</Button>
+            {successMessage && <p className="success-message">{successMessage}</p>}
         </div>
     </div>
 );
             }
 
-export default ImagePage;
+export default CustomizationPage;
