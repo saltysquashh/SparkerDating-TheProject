@@ -180,6 +180,9 @@ namespace sparker.Migrations
                     b.Property<string>("Password_Hash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Registration_At")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
