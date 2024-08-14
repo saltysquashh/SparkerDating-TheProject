@@ -57,15 +57,12 @@ if (!user) {
 
 
 const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent the default form submit action
+    e.preventDefault(); // prevent the default form submit action
 
     if (user && user.id) {
         try {
-            await update_UserPreferences(user.id, userPreferences); // Call the update function
-            // ageMin = userPreferences.ageMin;
-            // ageMax = userPreferences.ageMax;
-            alert('User preferences updated successfully!');
-            // Optionally, refresh the user info or navigate to another page
+            await update_UserPreferences(user.id, userPreferences);
+            alert('User preferences were updated succesfully.');
         } catch (error) {
             console.error('Error updating user preferences:', error);
             alert('Failed to update user preferences.');
