@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL;
 
 // the function to create a swipe
-export const sendSwipeAction = async (swiperUserId, swipedUserId, liked) => {
+export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
     try {
         const response = await axios.post(`${API_URL}/swipes/swipe`, {
@@ -20,12 +20,19 @@ export const sendSwipeAction = async (swiperUserId, swipedUserId, liked) => {
         // Handle the response (since Axios does not use `response.ok`)
         const { isMatch, message } = response.data;
 
-        return message;
+        if (isMatch)
+        {
+            alert(message);
+        }
+
+        return true;
 
     } catch (error) {
         // Handle errors
-        console.error('Error during swipe action:', error);
+
         alert('Error during swipe action:', error);
+
+        return false;
     }
 };
 

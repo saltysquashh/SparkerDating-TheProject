@@ -44,6 +44,21 @@ export const fetch_UserInfo = async (userId) => {
         throw error;
     }
 };
+
+export const fetch_ShowcaseUser = async (userId) => {
+    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage or your state management
+    try {
+        const response = await axios.get(`${API_URL}/users/showcaseuser/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+            }
+        });
+        return response.data; // Return the data part of the response
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        throw error;
+    }
+};
    
 export const update_UserInfo = async (userId, userData) => {
     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
@@ -62,10 +77,10 @@ export const update_UserInfo = async (userId, userData) => {
 };
 
 
-export const fetch_UserBio = async (userId) => {
+export const fetch_UserCustomization = async (userId) => {
     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage or your state management
     try {
-        const response = await axios.get(`${API_URL}/users/userbio/${userId}`, {
+        const response = await axios.get(`${API_URL}/users/usercustomization/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
             }

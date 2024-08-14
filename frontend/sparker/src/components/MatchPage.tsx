@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import '../styles/MatchPage.css';
-import { fetch_UserInfo } from '../services/userService';
+import { fetch_ShowcaseUser } from '../services/userService';
 import { fetchUserImages } from '../services/imageService';
 import { deleteMatch } from '../services/matchService';
 import UserType from '../interfaces/UserInterface';
@@ -16,7 +16,7 @@ const MatchPage = () => {
     const { matchId } = useParams();
     const { matchUserId } = useParams();
     const [matchUserInfo, setUserInfo] = useState<UserType | null>(null);
-    const [images, setImages] = useState<ImageType[]>([]);
+    const [images, setImages] = useState<string[]>([]); // Adjust to hold base64 image strings
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
@@ -29,10 +29,12 @@ const MatchPage = () => {
         const loadData = async () => {
             setIsLoading(true);
             try {
-                const matchUserInfo = await fetch_UserInfo(matchUserId); // kan disse calls ordnes i 1 request? (med en dto der samler modellerne)
-                const userImages = await fetchUserImages(matchUserId); // kan disse calls ordnes i 1 request? (med en dto der samler modellerne)
-                setUserInfo(matchUserInfo);
-                setImages(userImages);
+                const showcaseUser = await fetch_ShowcaseUser(matchUserId); // kan disse calls ordnes i 1 request? (med en dto der samler modellerne)
+                // const userImages = await fetchUserImages(matchUserId); // kan disse calls ordnes i 1 request? (med en dto der samler modellerne)
+                setUserInfo(showcaseUser);
+                setImages(showcaseUser.images || []);
+
+                // setImages(userImages);
             } catch (error) {
                 console.error('Error fetching match data:', error);
             }
@@ -95,7 +97,7 @@ const MatchPage = () => {
             <div className="match-images-container">
                 {images.map((image, index) => (
                     <div key={index} className="match-image-thumbnail">
-                        <img src={`data:image/png;base64,${image.image_Data}`} alt="Match" />
+                        <img src={`data:image/png;base64,${image}`} alt="Match" />
                     </div>
                 ))}
             </div>

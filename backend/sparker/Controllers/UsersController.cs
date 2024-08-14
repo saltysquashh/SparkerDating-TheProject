@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using sparker.Database;
 using sparker.DTOs;
+using sparker.DTOs.sparker.DTOs;
 using sparker.Migrations;
 using sparker.Models;
 using sparker.Utilities;
@@ -149,14 +150,40 @@ public class UsersController : ControllerBase
             Gender = user.Gender,
             Birthdate = user.Birthdate,
             Bio = user.Bio,
+
         };
 
         return Ok(userInfoDTO);
     }
 
+    [HttpGet("showcaseuser/{id}")]
+    public async Task<IActionResult> GetShowcaseUser(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+
+        if (user == null)
+        {
+            return NotFound($"User with ID {id} not found.");
+        }
+
+        var showcaseUserDTO = new ShowcaseUserDTO
+        {
+            Id = user.Id,
+            FirstName = user.First_Name,
+            LastName = user.Last_Name,
+            Gender = user.Gender,
+            Age = DateUtils.CalculateAge(user.Birthdate),
+            Bio = user.Bio,
+            Images = _context.Images
+                    .Where(i => i.User_Id == user.Id)
+                    .Select(i => Convert.ToBase64String(i.Image_Data)) // Convet image data to base 64
+                    .ToList()
+        };
+
+        return Ok(showcaseUserDTO);
+    }
 
 
-    
     [HttpPut("userinfo/{id}")]
     // [Authorize]
     public async Task<IActionResult> UpdateUserInfo(int id, [FromBody] UpdateUserInfoDTO updateUserInfoDTO)
@@ -177,7 +204,7 @@ public class UsersController : ControllerBase
         try
         {
             await _context.SaveChangesAsync();
-            return Ok(user); // or NoContent() to return nothing
+            return Ok(user); // NoContent() will return nothing
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -193,7 +220,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("userbio/{id}")]
-    public async Task<IActionResult> GetUserBio(int id)
+    public async Task<IActionResult> GetUserDisplay(int id)
     {
         var user = await _context.Users.FindAsync(id);
 
@@ -202,12 +229,16 @@ public class UsersController : ControllerBase
             return NotFound($"User with ID {id} not found.");
         }
 
-        var userBio = new UserBioDTO
+        var userCustomizationDTO = new UserCustomizationDTO
         {
             Bio = user.Bio,
+            Images = _context.Images
+                    .Where(i => i.User_Id == user.Id)
+                    .Select(i => Convert.ToBase64String(i.Image_Data)) // Convert image data to base64
+                    .ToList()
         };
 
-        return Ok(userBio);
+        return Ok(userCustomizationDTO);
     }
 
     [HttpGet("useremailexists/{email}")]
@@ -229,7 +260,7 @@ public class UsersController : ControllerBase
 
     [HttpPut("userbio/{id}")]
     // [Authorize]
-    public async Task<IActionResult> UpdateUserBio(int id, [FromBody] UserBioDTO userBioDTO)
+    public async Task<IActionResult> UpdateUserBio(int id, [FromBody] UserCustomizationDTO userCustomizationDTO)
     {
         var user = await _context.Users.FindAsync(id);
         if (user == null)
@@ -238,7 +269,7 @@ public class UsersController : ControllerBase
         }
 
         // Update user properties
-        user.Bio = userBioDTO.Bio;
+        user.Bio = userCustomizationDTO.Bio;
 
         try
         {
@@ -343,7 +374,11 @@ public class UsersController : ControllerBase
             Age = DateUtils.CalculateAge(u.Birthdate),
             Gender = u.Gender,
             Bio = u.Bio,
-            // Map other properties as needed
+            Images = _context.Images
+                    .Where(i => i.User_Id == u.Id)
+                    .Select(i => Convert.ToBase64String(i.Image_Data)) // Convert image data to base64
+                    .ToList() // Fetch the list of images for this user
+
         }).FirstOrDefault();
 
         return (nextUserDto);

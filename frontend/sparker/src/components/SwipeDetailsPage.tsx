@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import '../styles/SwipeDetailsPage.css';
-import { fetch_UserInfo } from '../services/userService';
+import { fetch_ShowcaseUser } from '../services/userService';
 import { fetchUserImages } from '../services/imageService';
 import { deleteSwipe } from '../services/swipeService';
 import UserType from '../interfaces/UserInterface';
@@ -16,7 +16,7 @@ const SwipeDetailsPage = () => {
     const { swipeId } = useParams();
     const { swipeUserId } = useParams();
     const [swipeUserInfo, setUserInfo] = useState<UserType | null>(null);
-    const [images, setImages] = useState<ImageType[]>([]);
+    const [images, setImages] = useState<string[]>([]); // Adjust to hold base64 image strings
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
@@ -29,10 +29,9 @@ const SwipeDetailsPage = () => {
         const loadData = async () => {
             setIsLoading(true);
             try {
-                const swipeUserInfo = await fetch_UserInfo(swipeUserId); // kan disse calls ordnes i 1 request? (med en dto der samler modellerne)
-                const userImages = await fetchUserImages(swipeUserId); // kan disse calls ordnes i 1 request? (med en dto der samler modellerne)
-                setUserInfo(swipeUserInfo);
-                setImages(userImages);
+                const response = await fetch_ShowcaseUser(swipeUserId);
+                setImages(response.images || []);
+
             } catch (error) {
                 console.error('Error fetching swipe data:', error);
             }
@@ -74,7 +73,7 @@ const SwipeDetailsPage = () => {
             <div className="swipe-images-container">
                 {images.map((image, index) => (
                     <div key={index} className="swipe-image-thumbnail">
-                        <img src={`data:image/png;base64,${image.image_Data}`} alt="Swipe" />
+                        <img src={`data:image/png;base64,${image}`} alt="Swipe" />
                     </div>
                 ))}
             </div>
