@@ -52,5 +52,17 @@
         <member name="M:sparker.Migrations.AddedRegistrationAtToUser.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:sparker.Migrations.AddedEntityConstraints">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedEntityConstraints.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedEntityConstraints.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedEntityConstraints.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>

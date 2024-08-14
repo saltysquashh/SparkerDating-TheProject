@@ -27,9 +27,20 @@ namespace sparker.Database
                 .HasOne(m => m.Match)
                 .WithMany()
                 .HasForeignKey(m => m.Match_Id);
+
+            modelBuilder.Entity<Match>()
+                .HasIndex(m => new { m.User1_Id, m.User2_Id })
+                .IsUnique();
+
+            modelBuilder.Entity<Admin>()
+                .HasIndex(a => a.User_Id)
+                .IsUnique();
+            modelBuilder.Entity<Swipe>()
+                .HasIndex(s => new { s.Swiper_UserId, s.Swiped_UserId })
+                .IsUnique();
+            modelBuilder.Entity<Preference>()
+                .HasIndex(p => p.User_Id)
+                .IsUnique();
         }
-
-
-
     }
 }
