@@ -117,17 +117,12 @@ public class UsersController : ControllerBase
         return BadRequest("An unknown error occurred.");
     }
 
-
-
-    // API endpoint to check if a user exists as an admin
     [HttpGet("isadmin/{userId}")]
     public async Task<IActionResult> IsAdmin(int userId)
     {
         var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, userId); // the _context is included because the function is in another class
         return Ok(isAdmin);
     }
-
-
 
 
     [HttpGet("userinfo/{id}")]

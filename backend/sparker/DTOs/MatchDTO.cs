@@ -3,10 +3,11 @@
     public class MatchDTO
     {
         public int MatchId { get; set; }
-        public DateTime MatchedAt { get; set; }
-        public int MatchedUserId { get; set; }
-        public string MatchedName { get; set; }
-        public string MatchedImageData { get; set; }
-        public string MatchedUserBio {  get; set; }
+        public int User1Id { get; set; }
+        public int User2Id { get; set; }
+        public DateTime? LastMessageUser1 { get; set; }
+        public DateTime? LastMessageUser2 { get; set; }
+        public DateTime? MatchedAt { get; set; }
+        public bool IsGhosted { get; set; }
     }
 }

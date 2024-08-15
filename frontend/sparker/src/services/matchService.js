@@ -3,9 +3,19 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+export const fetchMatch = async (matchId) => {
+    try {
+        const response = await axios.get(`${API_URL}/matches/matchbyid/${matchId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching match:', error);
+        throw error;
+    }
+};
+
 export const fetchUserMatches = async (userId) => {
     try {
-        const response = await axios.get(`${API_URL}/matches/get/${userId}`);
+        const response = await axios.get(`${API_URL}/matches/matchesbyuserid/${userId}`);
         return response.data; // Assuming the API returns an array of matches
     } catch (error) {
         console.error('Error fetching matches:', error);

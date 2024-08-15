@@ -21,7 +21,31 @@ namespace sparker.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet("get/{userId}")]
+        [HttpGet("matchbyid/{id}")]
+        public async Task<IActionResult> GetMatch(int id)
+        {
+            var match = await _context.Matches.FindAsync(id);
+
+            if (match == null)
+            {
+                return NotFound($"Match with ID {id} not found.");
+            }
+
+            var matchDTO = new MatchDTO
+            {
+                MatchId = match.Id,
+                User1Id = match.User1_Id,
+                User2Id = match.User2_Id,
+                MatchedAt = match.Matched_At,
+                IsGhosted = match.Is_Ghosted,
+                LastMessageUser1 = await DateUtils.LastUserMsg(_context, match.Id, match.User1_Id),
+                LastMessageUser2 = await DateUtils.LastUserMsg(_context, match.Id, match.User2_Id)
+        };
+
+            return Ok(matchDTO);
+        }
+
+        [HttpGet("matchesbyuserid/{userId}")]
         public async Task<IActionResult> GetMatches(int userId)
         {
             var matches = await _context.Matches
@@ -38,12 +62,12 @@ namespace sparker.Controllers
                 .Select(g => new { UserId = g.Key, ImageData = g.FirstOrDefault().Image_Data }) // Assuming there's an ImageData property
                 .ToDictionaryAsync(g => g.UserId, g => Convert.ToBase64String(g.ImageData));
 
-            var matchDtos = matches.Select(m =>
+            var matchUserDTOs = matches.Select(m =>
             {
                 var matchedUserId = m.User1_Id == userId ? m.User2_Id : m.User1_Id;
                 var matchedUser = users[matchedUserId];
 
-                return new MatchDTO
+                return new MatchUserDTO
                 {
                     MatchId = m.Id,
                     MatchedAt = m.Matched_At,
@@ -54,7 +78,7 @@ namespace sparker.Controllers
                 };
             });
 
-            return Ok(matchDtos);
+            return Ok(matchUserDTOs);
         }
 
 
@@ -93,8 +117,6 @@ namespace sparker.Controllers
             return Ok("Match and related data deleted successfully.");
         }
     }
-
-
 }
 
 
