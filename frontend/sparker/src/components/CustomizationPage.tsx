@@ -137,9 +137,6 @@ const CustomizationPage = () => {
                 />
                 <Button onClick={handleSaveBioClick} colorScheme='blue'>Save bio</Button>
             </div>
-        
-
-
         <h2>Your images</h2>
         <div className="image-gallery">
             {images.map((image, index) => (
@@ -174,6 +171,7 @@ const CustomizationPage = () => {
             {successMessage && <p className="success-message">{successMessage}</p>}
         </div>
     </div>
+   
 );
             }
 

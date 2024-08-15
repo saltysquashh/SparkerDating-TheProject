@@ -71,9 +71,7 @@ const MatchChatPage = () => {
     };
 
     return (
-        <div className="global-container">
-        
-        <div className="chatbox-container">
+        <div className="chat-container">
             <div className="message-list">
                 {messages.map((msg, index) => (
                     <div 
@@ -97,8 +95,7 @@ const MatchChatPage = () => {
                 />
                 <button onClick={handleSendMessage} className="send-button">Send</button>
             </div>
-        </div>
-        </div>
+        </div>  
     );
 };
 

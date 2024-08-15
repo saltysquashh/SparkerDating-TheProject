@@ -15,14 +15,13 @@ const HomePage = () => {
         };
 
   return (
-
-    <div className="homepage-background">
+    <div className="global-container">
+    <div className="homepage-container">
       <div className='homepage-title'>
         <h1>Welcome to Sparker</h1>
       </div>
     </div>
-
-
+    </div>
   );
 };
 

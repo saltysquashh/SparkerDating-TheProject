@@ -19,7 +19,6 @@ const MatchesPage = () => {
                 try {
                     const fetchedMatches = await fetchUserMatches(user.id);
                     setMatches(fetchedMatches);
-                    console.log("Fetched Matches:", fetchedMatches); // Log the fetched matches
                 } catch (error) {
                     console.error('Error fetching matches:', error);
                 }
@@ -31,41 +30,50 @@ const MatchesPage = () => {
     }, [user]);
 
     const handleMatchClick = (matchId: number, matchUserId: number) => {
-        console.log('Match clicked, their userId is: ', matchUserId);
         navigate(`/matches/match/${matchId}/${matchUserId}`);
     };
 
     if (isLoading) {
-        return <div>Loading matches...</div>;
+        return <div className="loading-message-container">Loading matches...</div>;
     }
 
     if (matches.length === 0) {
-        return <div>No matches found.</div>;
+        return <div className="no-matches-message-container">No matches found.</div>;
     }
 
     return (
         <div className="global-container">
-        <div className="matches-container">
-        <div className='page-title'>
-        <h1>Your Matches</h1>
-        </div>
-            <ul className="match-list">
-                {matches.map((match) => (
-                    <li key={match.matchedUserId} onClick={() => handleMatchClick(match.matchId, match.matchedUserId)} className="match-item">
-                            <div className="matchuser-images">
-                                {match.matchedImageData && (
-                                    <img
-                                        src={`data:image/png;base64,${match.matchedImageData}`}
-                                        alt={`${match.matchedImageData}`}
-                                        className="match-image"
-                                    />
-                                )}
+        <div className="matches-page-container">
+            <div className="matches-list-container">
+                <div className="matches-page-title">
+                    <h1>Your Matches</h1>
+                </div>
+                <ul className="matches-list">
+                    {matches.map((match) => (
+                        <li 
+                            key={match.matchedUserId} 
+                            onClick={() => handleMatchClick(match.matchId, match.matchedUserId)} 
+                            className="match-list-item">
+                            <div className="match-item-details">
+                                <div className="match-item-image-container">
+                                    {match.matchedImageData && (
+                                        <img
+                                            src={`data:image/png;base64,${match.matchedImageData}`}
+                                            alt={`${match.matchedName}`}
+                                            className="match-item-image"
+                                        />
+                                    )}
+                                </div>
+                                <div className="match-item-info">
+                                    <h2 className="match-item-name">{match.matchedName}</h2>
+                                    <p className="match-item-date">Matched on {new Date(match.matchedAt).toLocaleDateString()}</p>
+                                </div>
                             </div>
-                        {match.matchedName} - You matched with {match.matchedName} on {new Date(match.matchedAt).toLocaleDateString()}
-                    </li>
-                ))}
-            </ul>
-        </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            </div>
         </div>
     );
 };

@@ -16,7 +16,7 @@ const ProfilePage = () => {
 
     return (
         <div className="global-container">
-
+        <div className="profile-menu-container">
             <div className='page-title'>
              <h1>Profile Page - {user?.firstName}</h1>
              </div>
@@ -32,7 +32,7 @@ const ProfilePage = () => {
                 </div>
             </nav>
             <Outlet /> {/* Renders the nested routes */}
-
+            </div>
   </div>
         
 

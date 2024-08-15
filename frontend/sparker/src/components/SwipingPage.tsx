@@ -52,14 +52,15 @@ const SwipingPage = () => {
     };
 
     if (isLoading) {
-        return <div className="swiping-container">Loading...</div>;
+        return <div className="swiping-container">Loading...</div>; // TODO find alternative to these
     }
     
     if (!displayedUser) {
-        return <div className="swiping-container">No more users to swipe on.</div>;
+        return <div className="global-container">No more users to swipe on.</div>; // TODO find alternative to these
     }
 
     return (
+        <div className="global-container">
         <div className="swiping-container">
             <div className="profile-card">
                 <div className="swipe-images-container">
@@ -77,6 +78,7 @@ const SwipingPage = () => {
                     <button className="pass-button" onClick={() => handleSwipe(false)}>Pass</button>
                     <button className="like-button" onClick={() => handleSwipe(true)}>Like</button>
                 </div>
+            </div>
             </div>
         </div>
     );

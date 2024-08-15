@@ -1,58 +1,15 @@
-.home-container {
-    text-align: center;
-  }
-  
-  .header {
-    background-color: #ff4081;
-    color: white;
-    padding: 20px 0;
-  }
-  
-  .main-content {
-    margin-top: 50px;
-  }
-  
-  .buttons {
-    margin-top: 30px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    margin: 0 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .login-button {
-    background-color: #009688;
-    color: white;
-  }
-  
-  .signup-button {
-    background-color: #3f51b5;
-    color: white;
-  }
-
-  .homepage-background {
-    background-image: url('/public/images/womendrinklaugh.jpg'); /* Adjust the path as needed */
-    background-size: cover; /* Cover the entire page */
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; /* Prevent the image from repeating */
-    height: 100vh; /* Full height of the viewport */
-    width: 100vw; /* Full width of the viewport */
+.homepage-container {
+position: fixed;
 }
   
 .homepage-title {
-  position: fixed; /* Add this */
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Adjust for precise centering */
+  position: fixed;
+  top: 50%;
+  left: 50%; 
+  transform: translate(-50%, -50%);
   color: white;
-  padding: 20px; /* Add some padding */
-  border-radius: 10px; /* Optional styling */
+  padding: 20px; 
+  border-radius: 10px;
   font-family: Georgia, 'Times New Roman', Times, serif;
   font-size: xx-large;
-  /* Other styling as needed */
 }
