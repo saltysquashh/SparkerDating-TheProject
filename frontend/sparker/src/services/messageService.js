@@ -55,6 +55,3 @@ export const sendMessage_Service = (hubConnection) => async (matchId, senderId, 
         console.error("Cannot send message. Hub connection is not established.");
     }
 };
-
-
-

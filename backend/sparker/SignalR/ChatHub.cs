@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using sparker.Database;
@@ -21,6 +22,12 @@ public class ChatHub : Hub
 
     public async Task SendMessage(int matchId, int senderId, int receiverId, string message)
     {
+        var sender = await _context.Users.FindAsync(senderId);
+        if (sender == null)
+        {
+            // user was not found (error?)
+        }
+
         var chatMessage = new ChatMessage
         {
             Match_Id = matchId,
@@ -33,10 +40,11 @@ public class ChatHub : Hub
         _context.ChatMessages.Add(chatMessage);
         await _context.SaveChangesAsync();
 
-        await Clients.All.SendAsync("ReceiveMessage", senderId, message);
+        var senderName = $"{sender.First_Name} {sender.Last_Name}";
+
+        // Broadcast the message to "all" connected clients (max two in this case, unless admins can read the chat in the future) 
+        await Clients.All.SendAsync("ReceiveMessage", senderId, senderName, message);
 
         await Clients.Caller.SendAsync("MessageSentConfirmation", "Message sent successfully");
     }
-
-
 }
