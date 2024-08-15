@@ -2,9 +2,9 @@ interface SwipeUserType {
     id: number;
     name: string;
     age: number;
-    description: string;
-    picturePath: string;
+    gender: string;
     bio: string;
+    picturePath: string;
 }
 
 export default SwipeUserType

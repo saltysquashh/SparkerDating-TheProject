@@ -3,7 +3,7 @@ interface MatchType {
     matchedAt: Date;
     matchedUserId: number;
     matchedName: string;
-    imageData: Blob | string;
+    matchedImageData: string;
     matchedUserBio: string;
     isGhosted: boolean;
     lastMessageUser1: Date | null;
