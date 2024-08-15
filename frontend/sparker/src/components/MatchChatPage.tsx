@@ -5,12 +5,13 @@ import { useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { createHubConnection, fetchChatMessagesForMatch, sendMessage_Service } from '../services/messageService';
 
+
 const MatchChatPage = () => {
     const { user } = useContext(AuthContext);
     const userId = user?.id;
     const { matchUserId } = useParams();
     const { matchId } = useParams();
-    const [messageInput, setMessageInput] = useState('');
+    const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null);
 
@@ -40,36 +41,25 @@ const MatchChatPage = () => {
         };
     }, [setMessages]);
 
+
     const sendMessage = sendMessage_Service(hubConnection);
 
     const handleSendMessage = async () => {
         const thisMatchId = Number(matchId);
         const senderId = Number(userId);
         const receiverId = Number(matchUserId);
-
-        const newMessage = {
-            senderId: senderId,
-            senderName: `${user?.firstName} ${user?.lastName}`,
-            content: messageInput,
-            isLocal: true,
-        };
-
-        // Immediately update messages locally
-        setMessages(prevMessages => [...prevMessages, newMessage]);
-
-        // Send to server
-        await sendMessage(thisMatchId, senderId, receiverId, messageInput);
-
-        // Clear the input
-        setMessageInput('');
+    
+        await sendMessage(thisMatchId, senderId, receiverId, message);
+    
+        setMessage('');
     };
 
     return (
         <div>
             <input 
                 type="text" 
-                value={messageInput} 
-                onChange={(e) => setMessageInput(e.target.value)}
+                value={message} 
+                onChange={(e) => setMessage(e.target.value)}
             />
             <button onClick={handleSendMessage}>Send</button>
             {messages.map((msg, index) => (

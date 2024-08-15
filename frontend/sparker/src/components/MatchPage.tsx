@@ -3,7 +3,7 @@ import '../styles/MatchPage.css';
 import { fetch_ShowcaseUser } from '../services/userService';
 import { fetchMatch, deleteMatch } from '../services/matchService';
 import UserType from '../interfaces/UserInterface';
-import MatchType from '../interfaces/MatchInterface'; // Update the import path if needed
+import MatchType from '../interfaces/MatchInterface'; 
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure } from '@chakra-ui/react';
@@ -33,7 +33,7 @@ const MatchPage = () => {
                 setImages(showcaseUser.images || []);
 
                 const match = await fetchMatch(matchId);
-                calculateHoursLeft(match);
+                calculateHoursLeft(match, user?.id, matchUserInfo?.id);
 
             } catch (error) {
                 console.error('Error fetching match data:', error);
@@ -41,7 +41,7 @@ const MatchPage = () => {
             setIsLoading(false);
         };
 
-        const calculateHoursLeft = (match: MatchType) => {
+        const calculateHoursLeft = (match: MatchType, userId?: number, matchUserId?: number) => {
             const now = new Date();
 
             if (match.lastMessageUser1) {
@@ -74,7 +74,7 @@ const MatchPage = () => {
 
     const handleUnmatchClick = async () => {
         try {
-            const responseMsg = await deleteMatch(matchId, userId);
+            await deleteMatch(matchId, userId);
             navigate(`/matches/`);
         } catch (error) {
             console.error("Error handling unmatch action:", error);
@@ -83,8 +83,10 @@ const MatchPage = () => {
 
     return (
         <div className="match-page-container">
-            <h2>{matchUserInfo.firstName + ' ' + matchUserInfo.lastName}</h2>
-            <p className="match-bio">{matchUserInfo.bio}</p>
+            <div className="match-header">
+                <h2>{matchUserInfo.firstName} {matchUserInfo.lastName}</h2>
+                <p className="match-bio">{matchUserInfo.bio}</p>
+            </div>
             <div className="match-images-container">
                 {images.map((image, index) => (
                     <div key={index} className="match-image-thumbnail">
@@ -93,49 +95,45 @@ const MatchPage = () => {
                 ))}
             </div>
 
-            <Button onClick={handleChatClick} colorScheme='blue'>Chat</Button>
-            <Button onClick={onOpen} colorScheme='red'>Unmatch</Button>
+            <div className="match-actions">
+                <Button onClick={handleChatClick} colorScheme='blue' className="action-button">Chat</Button>
+                <Button onClick={onOpen} colorScheme='red' className="action-button">Unmatch</Button>
+            </div>
 
             {hoursLeftUser1 !== null && (
                 <div className="hours-left">
-                    <p>User 1: {hoursLeftUser1 > 0 ? `Hours left before ghosting: ${Math.floor(hoursLeftUser1)}` : 'This match is now ghosted for User 1.'}</p>
+                    <p>{userId === matchUserId ? matchUserInfo.firstName : user?.firstName}: {hoursLeftUser1 > 0 ? `Hours left before ghosting: ${Math.floor(hoursLeftUser1)}` : 'This match is now ghosted.'}</p>
                 </div>
             )}
             {hoursLeftUser2 !== null && (
                 <div className="hours-left">
-                    <p>User 2: {hoursLeftUser2 > 0 ? `Hours left before ghosting: ${Math.floor(hoursLeftUser2)}` : 'This match is now ghosted for User 2.'}</p>
+                    <p>{userId === matchUserId ? user?.firstName : matchUserInfo.firstName}: {hoursLeftUser2 > 0 ? `Hours left before ghosting: ${Math.floor(hoursLeftUser2)}` : 'This match is now ghosted.'}</p>
                 </div>
             )}
 
-            <div className="Alert-Dialog-Example">
-                <AlertDialog
-                    isOpen={isOpen}
-                    leastDestructiveRef={cancelRef}
-                    onClose={onClose}
-                >
-                    <AlertDialogOverlay>
-                        <AlertDialogContent>
-                            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                                Unmatch
-                            </AlertDialogHeader>
-                            <AlertDialogBody>
-                                Are you sure you want to delete this match? You can't undo this action afterwards.
-                            </AlertDialogBody>
-                            <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
-                                    Cancel
-                                </Button>
-                                <Button colorScheme='red' onClick={() => {
-                                    handleUnmatchClick();
-                                    onClose();
-                                }} ml={3}>
-                                    Delete
-                                </Button>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialogOverlay>
-                </AlertDialog>
-            </div> 
+            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                            Unmatch
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            Are you sure you want to delete this match? You can't undo this action afterwards.
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme='red' onClick={() => {
+                                handleUnmatchClick();
+                                onClose();
+                            }} ml={3}>
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
         </div>
     );
 };

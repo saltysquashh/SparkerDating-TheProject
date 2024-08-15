@@ -9,19 +9,15 @@ export const createHubConnection = (setMessages) => {
         .withUrl('http://localhost:5001/chatHub')
         .build();
 
-    hubConnection.on('ReceiveMessage', (senderId, messageContent) => {
+    hubConnection.on('ReceiveMessage', (senderId, senderName, messageContent) => {
         const newMessage = {
             senderId: senderId,
-            content: messageContent
+            content: messageContent,
+            senderName: senderName
         };
 
-        setMessages(previousMessages => {
-            const filteredMessages = previousMessages.filter(msg => 
-                !(msg.isLocal && msg.senderId === senderId && msg.content === messageContent)
-            );
 
-            return [...filteredMessages, newMessage];
-        });
+        setMessages(prevMessages => [...prevMessages, newMessage]);
     });
 
     return hubConnection;
@@ -43,10 +39,10 @@ export const fetchChatMessagesForMatch = async (matchId) => {
         }
 };
 
+
 export const sendMessage_Service = (hubConnection) => async (matchId, senderId, receiverId, message) => {
     if (hubConnection && hubConnection.state === signalR.HubConnectionState.Connected) {
         try {
-            console.log(`Sending message in match ${matchId} FROM ${senderId} TO ${receiverId}: ${message}`);
             await hubConnection.send('SendMessage', matchId, senderId, receiverId, message);
         } catch (error) {
             console.error("Error sending message:", error);
