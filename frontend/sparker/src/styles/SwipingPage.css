@@ -7,7 +7,7 @@
 
 .profile-card {
     background-color: white;
-    width: 300px;
+    width: 400px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     border-radius: 10px;
@@ -23,13 +23,23 @@
 .profile-name {
     margin-top: 10px;
     color: #333;
+    font-weight: 500;
+    font-size: larger;
 }
 
-.profile-description {
-    color: #666;
-    font-size: 14px;
+.profile-gender {
+    font-size: 16px;
     margin-top: 5px;
 }
+
+.profile-bio {
+    color: #666;
+    font-size: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 5px;
+    background-color: rgb(231, 228, 228);
+}
+
 
 .action-buttons {
     display: flex;
@@ -47,9 +57,9 @@
 }
 
 .pass-button {
-    background-color: #ff6b6b; /* Red color for pass */
+    background-color: #ff6b6b;
 }
 
 .like-button {
-    background-color: #4caf50; /* Green color for like */
+    background-color: #4caf50;
 }

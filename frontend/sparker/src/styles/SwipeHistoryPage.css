@@ -18,11 +18,11 @@
 }
 
 .swipe-liked {
-    background-color: #53b756; /* Green for liked swipes */
+    background-color: #53b756;
 }
 
 .swipe-passed {
-    background-color: #eb6565; /* Red for passed swipes */
+    background-color: #eb6565;
 }
 
 .swipe-item:hover {
@@ -30,15 +30,15 @@
 }
 
 .swipe-image {
-    width: 100px; /* Set the desired width */
-    height: 100px; /* Set the desired height */
-    margin-right: 10px;
-    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover; 
+    border-radius: 8px;
 }
 
 .swipeuser-images {
-    width: 100px; /* Set the desired width */
-    height: 100px; /* Set the desired height */
+    width: 100px;
+    height: 100px;
     margin-right: 10px;
     border-radius: 50%;
 }

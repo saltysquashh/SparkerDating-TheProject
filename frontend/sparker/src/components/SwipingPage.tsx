@@ -62,15 +62,17 @@ const SwipingPage = () => {
     return (
         <div className="swiping-container">
             <div className="profile-card">
-                <div className="match-images-container">
+                <div className="swipe-images-container">
                     {images.map((image, index) => (
-                        <div key={index} className="match-image-thumbnail">
+                        <div key={index} className="swipe-image-thumbnail">
                             <img src={`data:image/png;base64,${image}`} alt="Match" />
                         </div>
                     ))}
                 </div> 
                 <h3 className="profile-name">{displayedUser.name}, {displayedUser.age}</h3>
-                <p className="profile-description">{displayedUser.bio}</p>
+                <p className="profile-gender">{displayedUser.gender}</p>
+                
+                {displayedUser.bio && <p className="profile-bio">"{displayedUser.bio}"</p>}
                 <div className="action-buttons">
                     <button className="pass-button" onClick={() => handleSwipe(false)}>Pass</button>
                     <button className="like-button" onClick={() => handleSwipe(true)}>Like</button>

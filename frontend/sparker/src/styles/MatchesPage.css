@@ -21,8 +21,16 @@
 }
 
 .match-image {
-    width: 40px; /* Set the desired width */
-    height: 40px; /* Set the desired height */
+    width: 100px;
+    height: 100px; 
+    object-fit: cover; 
+    border-radius: 8px; 
+}
+
+.matchuser-images {
+    width: 100px;
+    height: 100px;
     margin-right: 10px;
     border-radius: 50%;
+    margin-bottom: 20px;
 }

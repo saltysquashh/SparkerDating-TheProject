@@ -40,6 +40,9 @@
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
+    height: 30px;
+    width: 60px;
+    font-size: small;
 }
 
 .full-image-viewer {
@@ -72,16 +75,20 @@
 }
 
 .bio-section {
-    margin-bottom: 50px; /* Half the total desired space */
+    margin-bottom: 50px; 
 }
 
 .image-upload-section {
-    margin-top: 25px; /* Other half of the total desired space */
+    margin-top: 25px;
 }
 
-/* Additional responsive adjustments if needed */
 @media (max-width: 600px) {
     .image-gallery {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
+}
+
+.success-message
+{
+    color: green;
 }
