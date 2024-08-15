@@ -78,18 +78,6 @@ const MatchPage = () => {
       navigate(`/matches/match/${matchId}/${matchUserId}/dateplanning`);
   };
 
-
-  function getUserGeoLocation()
-  {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        var latitude = position.coords.latitude;
-        var longitude = position.coords.longitude;
-      });
-    } else {
-      alert('Error: Geolocation not available.')
-    }
-  }
     return (
         <div className="match-page-container">
             <h2>{matchUserInfo.firstName + ' ' + matchUserInfo.lastName}</h2>
@@ -104,28 +92,7 @@ const MatchPage = () => {
             <Button onClick={() => handleChatClick()} colorScheme='blue'>Chat</Button>
             {/* <Button onClick={() => handleUnmatchClick()} colorScheme='red'>Unmatch</Button> */}
             <Button onClick={onOpen} colorScheme='red'>Unmatch</Button>
-            <p>Need date ideas? Try the Date Planner function!</p>
-            <Button onClick={() => handlePlanDateClick()} colorScheme='green'>Plan Date</Button>
-       
-<p>Where would you be open to go on a date with {matchUserInfo?.firstName}?</p>
-
-<Stack spacing={5} direction='column'>
-  <Checkbox colorScheme='green' defaultChecked>
-    Park
-  </Checkbox>
-  <Checkbox colorScheme='green' defaultChecked>
-    Coffee Shop
-  </Checkbox>
-  <Checkbox colorScheme='green' defaultChecked>
-    Bar
-  </Checkbox>
-  <Checkbox colorScheme='green' defaultChecked>
-    Wine Bar
-  </Checkbox>
-  <Checkbox colorScheme='green' defaultChecked>
-    Cafe
-  </Checkbox>
-</Stack>
+            
        <div className="Alert-Dialog-Example">
       <>
       <AlertDialog

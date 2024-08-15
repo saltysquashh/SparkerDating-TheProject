@@ -48,15 +48,14 @@ const SwipeDetailsPage = () => {
     if (!swipeUserInfo) {
         return <div className="swipe-page-error">Swipe not found.</div>;
     }
-    
-    const handleUnswipeClick = async () => { // async da der foretages http kald
+
+    const handleUnswipeClick = async () => {
         try {
             const responseMsg = await deleteSwipe(swipeId);
               alert(responseMsg);
             
         } catch (error) {
             console.error("Error handling unswipe action:", error);
-            // Handle the error appropriately
         }
         
         navigate(`/swipes/`);
