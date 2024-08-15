@@ -52,7 +52,15 @@ const MatchesPage = () => {
             <ul className="match-list">
                 {matches.map((match) => (
                     <li key={match.matchedUserId} onClick={() => handleMatchClick(match.matchId, match.matchedUserId)} className="match-item">
-                        {match.imageData && <img src={`data:image/png;base64,${match.imageData}`} alt={`${match.matchedName}`} className="match-image" />}
+                            <div className="matchuser-images">
+                                {match.matchedImageData && (
+                                    <img
+                                        src={`data:image/png;base64,${match.matchedImageData}`}
+                                        alt={`${match.matchedImageData}`}
+                                        className="match-image"
+                                    />
+                                )}
+                            </div>
                         {match.matchedName} - You matched with {match.matchedName} on {new Date(match.matchedAt).toLocaleDateString()}
                     </li>
                 ))}
