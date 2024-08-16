@@ -1,12 +1,13 @@
 .swipes-container {
     padding: 20px;
     width: 80%;
-    max-width: 1200px;
-    margin: 0 auto;
+    max-width: 1100px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     position: relative; 
     background-color: white; 
+    margin: 0 auto;
+    margin-top: 35px;
 }
 
 .swipe-list {
@@ -32,9 +33,14 @@
     background-color: #eb6565;
 }
 
-.swipe-item:hover {
-    background-color: #f0f0f0;
+.swipe-liked:hover {
+    background-color: #8cdd8f;
 }
+
+.swipe-passed:hover {
+    background-color: #ec8585;
+}
+
 
 .swipe-image {
     width: 100px;

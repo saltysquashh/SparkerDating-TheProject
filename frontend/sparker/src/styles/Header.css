@@ -70,3 +70,8 @@
   background-color: #007f6b; /* Adjust hover color as needed */
 }
 
+.logged-in-info {
+  margin-right: 20px; /* Space between the logged-in text and dropdown */
+  font-size: 12px; /* Adjust font size as needed */
+  color: #ffffff; /* Adjust text color as needed */
+}
