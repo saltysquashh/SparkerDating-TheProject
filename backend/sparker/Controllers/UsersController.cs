@@ -75,9 +75,12 @@ public class UsersController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(CredentialLoginDTO credentialLoginDTO)
     {
+        // Convert to lower
+        var normalizedEmail = credentialLoginDTO.Email.ToLower();
+
         // Find the user by email
         var user = await _context.Users
-                                 .FirstOrDefaultAsync(u => u.Email == credentialLoginDTO.Email);
+                                 .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
 
         if (user == null)
         {
