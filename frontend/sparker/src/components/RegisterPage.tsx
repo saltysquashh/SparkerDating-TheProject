@@ -107,7 +107,8 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="form-container"> {/* Wrapper for centering */}
+    <div className="global-container">
+    <div className="form-container">
       <div className="register-container">
         <div className="user-registration-title">User Registration</div>
         <form onSubmit={handleSubmit}>
@@ -145,6 +146,7 @@ const RegisterPage = () => {
         </form>
         {errorMessage && <div className="error-message">{errorMessage}</div>}
       </div>
+    </div>
     </div>
   );
 };

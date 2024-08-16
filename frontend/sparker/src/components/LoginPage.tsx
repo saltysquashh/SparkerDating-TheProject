@@ -59,11 +59,12 @@ const LoginPage = () => {
     };
 
 return (
+    <div className="global-container">
   <div className="form-container">
       <div className="login-container">
           <h1>Login Page</h1>
           {user ? (
-          <p>Welcome, {user.firstName}!</p> // TypeScript now knows about user.firstName
+          <p>Welcome, {user.firstName}!</p>
           ) : (
               <form onSubmit={handleLogin}>
                   <input
@@ -86,6 +87,7 @@ return (
               </form>
           )}
       </div>
+  </div>
   </div>
 );
 };
