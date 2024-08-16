@@ -45,7 +45,7 @@ public class UsersController : ControllerBase
         {
             First_Name = registerDto.FirstName,
             Last_Name = registerDto.LastName,
-            Email = registerDto.Email,
+            Email = registerDto.Email.ToLower(),
             Gender = registerDto.Gender,
             Birthdate = registerDto.Birthdate,
             Registration_At = DateTime.Now
