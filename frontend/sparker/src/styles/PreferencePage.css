@@ -1,9 +1,10 @@
 /* PreferencePage.css */
 .preference-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 20vh;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+    /* background-color: white; */
 }
 
 .form-section {

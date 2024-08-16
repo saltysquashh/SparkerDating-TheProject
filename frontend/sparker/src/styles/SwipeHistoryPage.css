@@ -6,7 +6,7 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     position: relative; 
-    background-color: rgb(0, 255, 251); 
+    background-color: white; 
 }
 
 .swipe-list {

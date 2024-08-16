@@ -131,7 +131,7 @@ const CustomizationPage = () => {
             <div className="bio-section">
                 <h2>Your profile bio</h2>
                 <Textarea 
-                    placeholder='"Hi. My name is Sparker. I like diving."'
+                    placeholder='Hi. My name is Sparker and i like diving.'
                     value={userBio}
                     onChange={(e) => setUserBio(e.target.value)}
                 />
