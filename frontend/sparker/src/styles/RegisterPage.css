@@ -1,10 +1,8 @@
 /* RegisterPage.css */
 
-/* Assuming the parent is the body */
-
 .form-container {
   padding: 20px;
-  width: 100%; /* Full width */
+  width: 100%;
 }
 
 .register-container {
@@ -62,18 +60,19 @@
   .next-step-button button,
   .previous-step-button button,
   .finish-registration-button button {
-    background-color: #4a4e69; /* Ensure the button has a background color */
-    color: white; /* Ensure the text is a contrasting color */
-    padding: 10px 15px;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
-    opacity: 1; /* Ensure the button is fully visible */
-    display: inline-block; /* Ensure the button is displayed */
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
   }
   .next-step-button button:hover,
   .previous-step-button button:hover,
   .finish-registration-button button:hover {
-    background-color: #6b6e90;
+    background-color: #0056b3;
   }

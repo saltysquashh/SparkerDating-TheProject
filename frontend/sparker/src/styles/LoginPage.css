@@ -2,7 +2,7 @@
 
 .login-form-container {
     padding: 20px;
-    width: 100%; /* Full width */
+    width: 100%;
   }
   
   .login-container {
@@ -33,15 +33,18 @@
   }
     
   .login-container button {
-    background-color: #4a4e69;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
     color: white;
-    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
   }
     
   .login-container button:hover {
-    background-color: #6b6e90;
+    background-color: #0056b3;
   }
