@@ -1,11 +1,12 @@
 // swipeActionService.js
 import axios from 'axios';
+import { getAuthToken, setAuthToken, removeAuthToken } from '../utilities/authToken';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 // the function to create a swipe
 export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
+    const token = getAuthToken();
     try {
         const response = await axios.post(`${API_URL}/swipes/swipe`, {
             SwiperUserId: swiperUserId,
@@ -13,7 +14,7 @@ export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
             Liked: liked
         }, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
 
@@ -28,7 +29,6 @@ export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
         return true;
 
     } catch (error) {
-        // Handle errors
 
         alert('Error during swipe action:', error);
 
@@ -37,11 +37,11 @@ export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
 };
 
 export const fetchSwipesByUser = async (userId) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
+    const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/swipes/getswipesbyuser/${userId}`, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data;
@@ -52,8 +52,13 @@ export const fetchSwipesByUser = async (userId) => {
 };
 
 export const deleteSwipe = async (swipeId) => {
+    const token = getAuthToken();
     try {
-        const response = await axios.delete(`${API_URL}/swipes/delete/${swipeId}`);
+        const response = await axios.delete(`${API_URL}/swipes/delete/${swipeId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // JWT token
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error deleting match:', error);
@@ -61,23 +66,7 @@ export const deleteSwipe = async (swipeId) => {
     }
 };
 
-// // Function to fetch the next swipe user
-// export const fetchNextSwipeUser = async (userId) => {
-//     const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
-//     try {
-//         const response = await axios.get(`${API_URL}/swipes/nextswipeuser/${userId}`, {
-//             headers: {
-//                 'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
-//             }
-//         });
-//         return response.data;
-//     } catch (error) {
-//         console.error('Error fetching next swipe user:', error);
-//         throw error;
-//     }
-// };
 
-// Handle Axios response and error globally (optional, based on your preference)
 axios.interceptors.response.use(
     response => response,
     error => {
@@ -87,5 +76,3 @@ axios.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
-// Export other functions as needed

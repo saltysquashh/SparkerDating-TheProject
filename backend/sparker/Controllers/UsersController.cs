@@ -15,9 +15,8 @@ using System.Text;
 
 
 
-
+[Authorize]
 [ApiController]
-
 [Route("[controller]")]
 
 public class UsersController : ControllerBase
@@ -36,6 +35,28 @@ public class UsersController : ControllerBase
         _configuration = configuration;
     }
 
+    // move to AuthUtils?
+    // private så det ikke antages at være et http kald
+    private string GenerateJwtToken(string userId)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var base64EncodedKey = _configuration["JwtConfig:Secret"];
+        var key = Convert.FromBase64String(base64EncodedKey);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new Claim[]
+            {
+            new Claim(ClaimTypes.NameIdentifier, userId)
+            }),
+            Expires = DateTime.UtcNow.AddHours(1), // Token validity
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
+    }
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
@@ -71,7 +92,7 @@ public class UsersController : ControllerBase
 
         return Ok(new { userId = user.Id });
     }
-
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(CredentialLoginDTO credentialLoginDTO)
     {
@@ -104,7 +125,7 @@ public class UsersController : ControllerBase
             var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the _context is included because the function is in another class
             var isMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id);
 
-            var userResponse = new LoginResponseDTO
+            var loginResponseDTO = new LoginResponseDTO
             {
                 Id = user.Id,
                 FirstName = user.First_Name,
@@ -114,7 +135,7 @@ public class UsersController : ControllerBase
                 Token = token // Include the token in the response
             };
 
-            return Ok(userResponse);
+            return Ok(loginResponseDTO);
         }
 
         return BadRequest("An unknown error occurred.");
@@ -182,7 +203,7 @@ public class UsersController : ControllerBase
 
 
     [HttpPut("userinfo/{id}")]
-    // [Authorize]
+    [Authorize]
     public async Task<IActionResult> UpdateUserInfo(int id, [FromBody] UpdateUserInfoDTO updateUserInfoDTO)
     {
         var user = await _context.Users.FindAsync(id);
@@ -270,30 +291,6 @@ public class UsersController : ControllerBase
                 throw;
             }
         }
-    }
-
-
-
-    // move to AuthUtils?
-    // private så Swagger ikke antager at det skal være et http kald og fejler
-    private string GenerateJwtToken(string userId)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var base64EncodedKey = _configuration["JwtConfig:Secret"];
-        var key = Convert.FromBase64String(base64EncodedKey);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-            new Claim(ClaimTypes.NameIdentifier, userId)
-            }),
-            Expires = DateTime.UtcNow.AddDays(7), // Token validity
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
     }
 
     [HttpGet("useremailexists/{email}")]

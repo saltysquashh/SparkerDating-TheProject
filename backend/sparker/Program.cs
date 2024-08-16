@@ -41,6 +41,7 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false
     };
 });
+builder.Services.AddAuthorization();
 
 builder.Services.AddSwaggerGen(options =>
 {

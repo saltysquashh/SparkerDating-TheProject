@@ -14,7 +14,7 @@
 
     namespace sparker.Controllers
     {
-
+        [Authorize]
         [Route("[controller]")]
 
         public class MessagesController : ControllerBase

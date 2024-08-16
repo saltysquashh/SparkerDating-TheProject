@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using sparker.Models;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace sparker.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
 
     public class ImagesController : ControllerBase

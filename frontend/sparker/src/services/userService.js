@@ -1,14 +1,11 @@
 //userService.js
 import axios from 'axios';
-import { removeAuthToken, setAuthToken } from '../utilities/authToken';
+import { getAuthToken, setAuthToken, removeAuthToken } from '../utilities/authToken';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-
 export const registerUser = async (userData) => {
-    // return await axios.post(`${API_URL}/users/register`, userData);
-
         try {
             const response = await axios.post(`${API_URL}/users/register`, userData);
             return response.data;
@@ -25,17 +22,12 @@ export const registerUser = async (userData) => {
     
 };
 
-export const loginUser = async (credentials) => {
-    const response = await axios.post(`${API_URL}/users/login`, credentials);
-    return response;
-};
-
 export const fetch_UserInfo = async (userId) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage or your state management
+    const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/users/userinfo/${userId}`, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data; // Return the data part of the response
@@ -46,11 +38,11 @@ export const fetch_UserInfo = async (userId) => {
 };
 
 export const fetch_ShowcaseUser = async (userId) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage or your state management
+    const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/users/showcaseuser/${userId}`, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data; // Return the data part of the response
@@ -61,12 +53,12 @@ export const fetch_ShowcaseUser = async (userId) => {
 };
    
 export const update_UserInfo = async (userId, userData) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
+    const token = getAuthToken();
     try {
         console.log(userData);
         const response = await axios.put(`${API_URL}/users/userinfo/${userId}`, userData, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data;
@@ -78,11 +70,11 @@ export const update_UserInfo = async (userId, userData) => {
 
 
 export const fetch_UserCustomization = async (userId) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage or your state management
+    const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/users/usercustomization/${userId}`, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data;
@@ -94,7 +86,7 @@ export const fetch_UserCustomization = async (userId) => {
 
 
 export const update_UserBio = async (userId, newBio) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
+    const token = getAuthToken();
     try {
         const response = await axios.put(`${API_URL}/users/userbio/${userId}/${newBio}`, {
             headers: {
@@ -117,11 +109,11 @@ export const update_UserBio = async (userId, newBio) => {
 };
 
 export const fetchNextUserToSwipe = async (userId) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
+    const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/users/nextswipeuser/${userId}`, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data;
@@ -131,20 +123,14 @@ export const fetchNextUserToSwipe = async (userId) => {
     }
 };
 
-axios.interceptors.response.use(
-    response => response,
-    error => {
-        if (error.response.status === 401) {
-            removeAuthToken(); // Clear the token if 401 response
-        }
-        return Promise.reject(error);
-    }
-);
-
 export const checkEmailExists = async (email) => {
+    const token = getAuthToken();
     try {
-        const response = await axios.get(`${API_URL}/users/useremailexists/${email}`)
-        console.log('Raw response in service: ' + response.data)
+        const response = await axios.get(`${API_URL}/users/useremailexists/${email}`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // JWT token
+            }
+        });
         return response.data; //
     } catch (error) {
         throw new Error('Failed to check email');
@@ -152,8 +138,13 @@ export const checkEmailExists = async (email) => {
 };
 
 export const fetchUsers = async () => {
+    const token = getAuthToken();
     try {
-        const response = await axios.get(`${API_URL}/users/all`);
+        const response = await axios.get(`${API_URL}/users/all`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // JWT token
+            }
+        });
         return response.data; // Assuming the API returns an array of users
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -162,8 +153,13 @@ export const fetchUsers = async () => {
 };
 
 export const deleteUser = async (delUserId, byUserId) => {
+    const token = getAuthToken();
     try {
-        const response = await axios.delete(`${API_URL}/users/delete/${delUserId}/${byUserId}`);
+        const response = await axios.delete(`${API_URL}/users/delete/${delUserId}/${byUserId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // JWT token
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error deleting user:', error.response.data);
@@ -172,8 +168,13 @@ export const deleteUser = async (delUserId, byUserId) => {
 };
 
 export const promoteUserToAdmin = async (userId, byUserId) => {
+    const token = getAuthToken();
     try {
-        const response = await axios.post(`${API_URL}/users/promote/${userId}/${byUserId}`);
+        const response = await axios.post(`${API_URL}/users/promote/${userId}/${byUserId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // JWT token
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error promoting user:', error.response.data);
@@ -182,8 +183,13 @@ export const promoteUserToAdmin = async (userId, byUserId) => {
 };
 
 export const demoteAdminToUser = async (adminUserId, byUserId) => {
+    const token = getAuthToken();
     try {
-        const response = await axios.post(`${API_URL}/users/demote/${adminUserId}/${byUserId}`);
+        const response = await axios.post(`${API_URL}/users/demote/${adminUserId}/${byUserId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // JWT token
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error demoting admin:', error.response.data);

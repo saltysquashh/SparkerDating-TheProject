@@ -12,7 +12,7 @@ using System.Text;
 
 namespace sparker.Controllers
 {
-
+    [Authorize]
     [Route("[controller]")]
 
     public class PreferencesController : ControllerBase

@@ -1,26 +1,17 @@
 //userService.js
 import axios from 'axios';
-import { removeAuthToken, setAuthToken } from '../utilities/authToken';
+import { getAuthToken, setAuthToken, removeAuthToken } from '../utilities/authToken';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-axios.interceptors.response.use(
-    response => response,
-    error => {
-        if (error.response.status === 401) {
-            removeAuthToken(); // Clear the token if 401 response
-        }
-        return Promise.reject(error);
-    }
-);
 
 
 export const fetch_UserPreferences = async (userId) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage or your state management
+    const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/preferences/${userId}`, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data; // Return the data part of the response
@@ -31,12 +22,12 @@ export const fetch_UserPreferences = async (userId) => {
 };
 
 export const update_UserPreferences = async (userId, preferenceData) => {
-    const token = localStorage.getItem('userToken'); // Retrieve the token from local storage
+    const token = getAuthToken();
     try {
         console.log(preferenceData);
         const response = await axios.put(`${API_URL}/preferences/${userId}`, preferenceData, {
             headers: {
-                'Authorization': `Bearer ${token}` // Assuming JWT token is used for authentication
+                'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data;

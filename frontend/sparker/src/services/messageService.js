@@ -1,6 +1,7 @@
 // messageService.js
 import axios from 'axios';
 import * as signalR from '@microsoft/signalr';
+import { getAuthToken, setAuthToken, removeAuthToken } from '../utilities/authToken';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -23,9 +24,26 @@ export const createHubConnection = (setMessages) => {
     return hubConnection;
 };
   
+export const sendMessage_Service = (hubConnection) => async (matchId, senderId, receiverId, message) => {
+    if (hubConnection && hubConnection.state === signalR.HubConnectionState.Connected) {
+        try {
+            await hubConnection.send('SendMessage', matchId, senderId, receiverId, message);
+        } catch (error) {
+            console.error("Error sending message:", error);
+        }
+    } else {
+        console.error("Cannot send message. Hub connection is not established.");
+    }
+};
+
 export const fetchChatMessagesForMatch = async (matchId) => {
+    const token = getAuthToken();
     try {
-        const response = await axios.get(`${API_URL}/Messages/getMatchMessages/${matchId}`);
+        const response = await axios.get(`${API_URL}/Messages/getMatchMessages/${matchId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}` // JWT token
+            }
+        });
         return response.data.map(msg => ({
             messageId: msg.messageId,
             senderId: msg.senderId,
@@ -37,17 +55,4 @@ export const fetchChatMessagesForMatch = async (matchId) => {
           console.error('Error fetching chat messages:', error);
           throw error;
         }
-};
-
-
-export const sendMessage_Service = (hubConnection) => async (matchId, senderId, receiverId, message) => {
-    if (hubConnection && hubConnection.state === signalR.HubConnectionState.Connected) {
-        try {
-            await hubConnection.send('SendMessage', matchId, senderId, receiverId, message);
-        } catch (error) {
-            console.error("Error sending message:", error);
-        }
-    } else {
-        console.error("Cannot send message. Hub connection is not established.");
-    }
 };

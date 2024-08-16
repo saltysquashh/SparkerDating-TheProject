@@ -19,7 +19,6 @@ import MatchesPage from './components/MatchesPage';
 import MatchPage from './components/MatchPage';
 import { ChakraProvider } from '@chakra-ui/react';
 import MatchChatPage from './components/MatchChatPage';
-import DatePlanningPage from './components/DatePlanningPage';
 import SwipeHistoryPage from './components/SwipeHistoryPage';
 import SwipeDetailsPage from './components/SwipeDetailsPage';
 import AdminPanelPage from './components/AdminPanelPage';
@@ -28,7 +27,7 @@ function App() {
 
   const token = getAuthToken();
   if (token) {
-    setAuthToken(token);
+    setAuthToken(token); //make sure that the the token is set in Axios headers
   }
 
   return (
@@ -45,11 +44,9 @@ function App() {
                     <Route path="Customization" element={<CustomizationPage />} />
                 </Route>
         <Route path="/swiping" element={<SwipingPage />} /> {/* Add this line */}
-
         <Route path="/matches" element={<MatchesPage />} /> {/* MatchesPage as a separate route */}
         <Route path="/matches/match/:matchId/:matchUserId" element={<MatchPage />} /> {/* MatchPage as a separate route */}
         <Route path="/matches/match/:matchId/chat/:matchUserId" element={<MatchChatPage />} /> {/* MatchPage as a separate route */}
-        <Route path="/matches/match/:matchId/:matchUserId/dateplanning" element={<DatePlanningPage />} /> {/* MatchPage as a separate route */}
         <Route path="/swipehistory" element={<SwipeHistoryPage />} /> {/* Add this line */}
         <Route path="/swipehistory/swipedetails/:swipeId/:swipeUserId" element={<SwipeDetailsPage />} /> {/* MatchPage as a separate route */}
         <Route path="/adminpanel" element={<AdminPanelPage />} /> {/* Add this line */}
