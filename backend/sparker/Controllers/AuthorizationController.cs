@@ -131,15 +131,15 @@ public class AuthorizationController : ControllerBase
         }
 
         // return the user information (excluding sensitive data like password hash)
-        var userResponse = new
+        var userInfoDTO = new UserInfoDTO
         {
-            user.Id,
-            user.First_Name,
-            user.Last_Name,
+            Id = user.Id,
+            FirstName = user.First_Name,
+            LastName = user.Last_Name,
             IsAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id),
             IsMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id)
         };
 
-        return Ok(userResponse);
+        return Ok(userInfoDTO);
     }
 }

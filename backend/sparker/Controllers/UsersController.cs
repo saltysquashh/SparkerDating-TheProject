@@ -99,7 +99,6 @@ public class UsersController : ControllerBase
             Gender = user.Gender,
             Birthdate = user.Birthdate,
             Bio = user.Bio,
-
         };
 
         return Ok(userInfoDTO);

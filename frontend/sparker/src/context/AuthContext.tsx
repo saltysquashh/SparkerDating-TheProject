@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         );
     
         const token = getAuthToken();
-        
+
         if (token) {
             axios.get(`${API_URL}/authorization/user`, {
                 headers: {

@@ -8,13 +8,8 @@ import logoImage from '../images/LogoV2.png';
 const Header = () => {
     const { user, logout } = useContext(AuthContext);
 
-    console.log("User logged in:", user);
     const navigate = useNavigate();
     
-  //   const navigateToProfile = () => {
-  //     navigate('/profile'); // For React Router v6
-  // };
-
   const loginOptions = [
     { label: 'Log in', action: () => navigate('/login') },
     { label: 'Register', action: () => navigate('/register') }
@@ -39,8 +34,14 @@ return (
           <img src="/images/LogoV2.png" alt="Logo" className="header-logo" />
       </Link>
       <div className="header-right">
-          <Dropdown options={user ? userOptions : loginOptions} />
-      </div>
+                       <Dropdown options={user ? userOptions : loginOptions} />
+                {user && (
+                    <div className="logged-in-info">
+                        Logged in as <strong>{user.firstName} {user.lastName}</strong>
+                    </div>
+                )}
+ 
+            </div>
   </header>
 );
 };
