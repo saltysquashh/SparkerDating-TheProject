@@ -32,7 +32,7 @@ public class GhostingCheckerService : BackgroundService
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
             var matches = await dbContext.Matches
-                .Where(m => !m.Is_Ghosted) // Only check them atches that are not already ghosted
+                .Where(m => !m.Is_Ghosted) // only check them atches that are not already ghosted
                 .ToListAsync();
 
             foreach (var match in matches)
@@ -42,7 +42,20 @@ public class GhostingCheckerService : BackgroundService
                     .OrderByDescending(c => c.Time_Stamp)
                     .FirstOrDefaultAsync();
 
-                if (lastMessage != null && (DateTime.Now - lastMessage.Time_Stamp).TotalHours >= 24)
+                //reference time for ghosting:
+                DateTime referenceTime;
+
+                if (lastMessage != null)
+                {
+                    referenceTime = lastMessage.Time_Stamp;
+                }
+                else
+                {
+                    referenceTime = match.Matched_At;
+                }
+
+                // check if 24 hours have passed since the reference time
+                if ((DateTime.Now - referenceTime).TotalHours >= 24)
                 {
                     match.Is_Ghosted = true;
                 }

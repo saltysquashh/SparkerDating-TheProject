@@ -19,7 +19,18 @@ public static class DateUtils
             .OrderByDescending(m => m.Time_Stamp)
             .FirstOrDefaultAsync();
 
-        // Return the timestamp. Its null if there are no messages
-        return lastMessage?.Time_Stamp;
+        // If a message is found, return its timestamp
+        if (lastMessage != null)
+        {
+            return lastMessage.Time_Stamp;
+        }
+
+        // If no message is found, return the stamp of when the match was screated instead, as the ref point
+        var matchedAt = await context.Matches
+            .Where(m => m.Id == matchId)
+            .Select(m => m.Matched_At)
+            .FirstOrDefaultAsync();
+
+        return matchedAt;
     }
 }
