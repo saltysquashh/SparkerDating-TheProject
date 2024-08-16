@@ -35,27 +35,6 @@ public class UsersController : ControllerBase
         _configuration = configuration;
     }
 
-    // move to AuthUtils?
-    // private så det ikke antages at være et http kald
-    private string GenerateJwtToken(string userId)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var base64EncodedKey = _configuration["JwtConfig:Secret"];
-        var key = Convert.FromBase64String(base64EncodedKey);
-
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-            new Claim(ClaimTypes.NameIdentifier, userId)
-            }),
-            Expires = DateTime.UtcNow.AddHours(1), // Token validity
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        };
-
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        return tokenHandler.WriteToken(token);
-    }
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
@@ -84,61 +63,13 @@ public class UsersController : ControllerBase
             User_Id = user.Id,
             Sex = "Both",
             Age_Min = 18,
-            Age_Max = 99 
+            Age_Max = 99
         };
 
         _context.Preferences.Add(defaultPreference);
         await _context.SaveChangesAsync();
 
         return Ok(new { userId = user.Id });
-    }
-    [AllowAnonymous]
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(CredentialLoginDTO credentialLoginDTO)
-    {
-        // Convert to lower
-        var normalizedEmail = credentialLoginDTO.Email.ToLower();
-
-        // Find the user by email
-        var user = await _context.Users
-                                 .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
-
-        if (user == null)
-        {
-            return Unauthorized("Invalid credentials");
-        }
-
-        // Verify the password
-        var result = _passwordHasher.VerifyHashedPassword(user, user.Password_Hash, credentialLoginDTO.Password);
-
-        if (result == PasswordVerificationResult.Failed)
-        {
-            return Unauthorized("Invalid credentials");
-        }
-
-        if (result == PasswordVerificationResult.Success)
-        {
-            // Generate JWT token
-            var token = GenerateJwtToken(user.Id.ToString());
-
-            // check if user id is also registered in admin table
-            var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the _context is included because the function is in another class
-            var isMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id);
-
-            var loginResponseDTO = new LoginResponseDTO
-            {
-                Id = user.Id,
-                FirstName = user.First_Name,
-                LastName = user.Last_Name,
-                IsAdmin = isAdmin, // IsAdmin is included in the login response so it can be added to the authcontext on login
-                IsMaster = isMaster,
-                Token = token // Include the token in the response
-            };
-
-            return Ok(loginResponseDTO);
-        }
-
-        return BadRequest("An unknown error occurred.");
     }
 
     [HttpGet("isadmin/{userId}")]

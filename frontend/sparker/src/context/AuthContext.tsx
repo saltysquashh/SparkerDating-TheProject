@@ -1,11 +1,10 @@
-// AuthContext.tsx
-import React, { createContext, useState, ReactNode } from 'react';
-import { removeAuthToken, setAuthToken } from '../utilities/authToken';
+import React, { createContext, useState, ReactNode, useEffect, useContext } from 'react';
+import { removeAuthToken, setAuthToken, getAuthToken } from '../utilities/authToken';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 
 type UserType = {
-    id: number; // was string? aug 12
+    id: number;
     firstName: string;
     lastName: string;
     isAdmin: boolean;
@@ -14,7 +13,7 @@ type UserType = {
 
 type AuthContextType = {
     user: UserType | null;
-    login: (userData: UserType) => void; // Include userId in the login function
+    login: (credentials: { email: string; password: string }) => Promise<void>;
     logout: () => void;
 };
 
@@ -24,21 +23,57 @@ type AuthProviderProps = {
     children: ReactNode;
 };
 
-
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<UserType | null>(null);
-    const navigate = useNavigate(); // Use the useNavigate hook
+    const navigate = useNavigate();
+    const API_URL = process.env.REACT_APP_API_URL;
 
-    const login = (userData: UserType) => {
-        setUser(userData);
-        navigate('/');
+    const login = async (credentials: { email: string; password: string }) => {
+        try {
+            const response = await axios.post(`${API_URL}/authorization/login`, credentials); 
+            const { token, ...userData } = response.data;
+            setUser(userData);
+            setAuthToken(token); // set token in localStorage and axios
+            navigate('/');
+        } catch (error) {
+            console.error('Login failed:', error);
+            throw error;
+        }
     };
 
     const logout = () => {
         setUser(null);
-        alert("You have been logged out.");
-        navigate('/'); // Navigate to the homepage
+        removeAuthToken();
+        navigate('/login');
     };
+
+    useEffect(() => {
+        axios.interceptors.response.use(
+            response => response,
+            error => {
+                if (!error.response || error.response.status === 401) {
+                    logout(); // call logout if token is invalid or missing
+                }
+                return Promise.reject(error);
+            }
+        );
+    
+        const token = getAuthToken();
+        
+        if (token) {
+            axios.get(`${API_URL}/authorization/user`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then(response => {
+                setUser(response.data);
+                setAuthToken(token); // Ensure token is set in headers
+            }).catch(() => {
+                removeAuthToken(); // if invalid, remove
+                logout();
+            });
+        }
+    }, []);
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>
@@ -46,6 +81,3 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         </AuthContext.Provider>
     );
 };
-
-
-
