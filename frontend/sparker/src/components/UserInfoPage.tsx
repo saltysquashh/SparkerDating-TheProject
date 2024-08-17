@@ -1,7 +1,7 @@
 // UserInfoPage.tsx
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import '../styles/UserInfoPage.css';
-import { fetch_UserInfo, update_UserInfo } from '../services/userService';
+import { deleteUser, fetch_UserInfo, update_UserInfo } from '../services/userService';
 import { AuthContext } from '../context/AuthContext';
 import { Button } from '@chakra-ui/react';
 
@@ -17,7 +17,7 @@ const UserInfoPage = () => {
     });
 
         const [loading, setLoading] = useState(true);
-        const { user } = useContext(AuthContext);
+        const { user, logout } = useContext(AuthContext);
 
 
         const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -25,12 +25,27 @@ const UserInfoPage = () => {
     
             if (user && user.id) {
                 try {
-                    await update_UserInfo(user.id, user_Info); // Call the update function
+                    await update_UserInfo(user.id, user_Info); 
                     alert('User information updated successfully!');
-                    // Optionally, refresh the user info or navigate to another page
                 } catch (error) {
                     console.error('Error updating user information:', error);
                     alert('Failed to update user information.');
+                }
+            }
+        };
+
+        const handleDeleteUser = async () => {
+            if (user && user.id) {
+                const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+                if (confirmed) {
+                    try {
+                        await deleteUser(user.id, user.id); // user deletes themself
+                        alert('Your account has been deleted.');
+                        logout(); 
+                    } catch (error) {
+                        console.error('Error deleting account:', error);
+                        alert('Failed to delete your account.');
+                    }
                 }
             }
         };
@@ -39,7 +54,7 @@ const UserInfoPage = () => {
             if (user && user.id) {
                 const getUserInfo = async () => {
                     try {
-                        const data = await fetch_UserInfo(user.id); // Fetch user data based on user id
+                        const data = await fetch_UserInfo(user.id);
                         
                         let formattedBirthdate = data.birthdate;
                         if (formattedBirthdate) {
@@ -54,7 +69,7 @@ const UserInfoPage = () => {
                             birthdate: formattedBirthdate || '',
                             gender: data.gender || '',
                             email: data.email || ''
-                        }); // Update form fields with fetched data
+                        });
                     } catch (error) {
                         console.error('Error fetching user data:', error);
                     }
@@ -98,6 +113,7 @@ const UserInfoPage = () => {
                     </select>
                     <input type="email" name="email" value={user_Info.email} onChange={handleUserInfoChange} placeholder="Email" />
                     <Button type="submit" colorScheme='blue'>Save</Button>
+                    <Button type="button" colorScheme='red' onClick={handleDeleteUser}>Delete</Button>
                 </form>
         </div>
         </div>
