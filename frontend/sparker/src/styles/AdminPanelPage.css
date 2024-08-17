@@ -1,7 +1,7 @@
 .admin-panel-container {
     padding: 20px;
     width: 80%;
-    max-width: 1200px;
+    max-width: 800px;
     margin: 0 auto;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -28,8 +28,8 @@
 }
 
 .user-image {
-    width: 40px; /* Set the desired width */
-    height: 40px; /* Set the desired height */
+    width: 40px;
+    height: 40px;
     margin-right: 10px;
     border-radius: 50%;
 }
@@ -46,6 +46,7 @@
 .admin-panel-buttons
 {
     font-family: 'Courier New', Courier, monospace;
+    max-width: 100%;
 }
 
 .unauthorized-container {
