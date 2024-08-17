@@ -8,7 +8,6 @@ import { fetchSwipesByUser } from '../services/swipeService.js';
 import '../styles/Global.css';
 import '../styles/SwipeHistoryPage.css';
 
-
 const SwipeHistoryPage = () => {
     const { user } = useContext(AuthContext);
     const [swipes, setSwipes] = useState<SwipeHistoryType[]>([]);
@@ -59,13 +58,13 @@ const SwipeHistoryPage = () => {
                             className={`swipe-item ${swipe.liked ? 'swipe-liked' : 'swipe-passed'}`}
                         >
                             <div className="swipeuser-images">
-                                {swipe.swipedImageData && (
-                                    <img
-                                        src={`data:image/png;base64,${swipe.swipedImageData}`}
-                                        alt={`${swipe.swipedImageData}`}
-                                        className="swipe-image"
-                                    />
-                                )}
+                                <img
+                                    src={swipe.swipedImageData ? 
+                                        `data:image/png;base64,${swipe.swipedImageData}` : 
+                                        '/images/default.png'}
+                                    alt={swipe.swipedName}
+                                    className="swipe-image"
+                                />
                             </div>
                             <div className="swipeuser-title">
                                 {swipe.swipedName} - Swiped on {new Date(swipe.swipedAt).toLocaleDateString()}
