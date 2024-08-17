@@ -22,13 +22,13 @@ const ProfilePage = () => {
              </div>
              <div className="profile-links">
             <nav>
-                <div>
+                <div className="link-to-userinfo">
                 <Link to="/profile/userinfo">User Information</Link>
                 </div>
-                <div>
+                <div className="link-to-customization">
                 <Link to="/profile/customization">Customization</Link>
                 </div>
-                <div>
+                <div className="link-to-preferences">
                 <Link to="/profile/preferences">Preferences</Link>
                 </div>
             </nav>

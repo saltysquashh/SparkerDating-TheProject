@@ -1,29 +1,63 @@
-.swipe-page-container {
-    max-width: 800px;
+/* SwipeDetailsPage.css */
+.swipe-card-container {
+    max-width: 900px;
     margin: auto;
     padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.swipe-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.swipe-header h2 {
+    font-size: 2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.swipe-bio {
+    font-size: 1.2em;
+    color: #666;
+}
+
+.swipe-images-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.swipe-image-thumbnail img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.swipe-image-thumbnail img:hover {
+    transform: scale(1.05);
+}
+
+.swipe-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.action-button {
+    font-size: 1em;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
 }
 
 .swipe-page-loading, .swipe-page-error {
     text-align: center;
     margin-top: 50px;
-}
-
-.swipe-bio {
-    margin-top: 10px;
-    font-style: italic;
-}
-
-.swipe-images-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.swipe-image-thumbnail img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover; 
-    border-radius: 8px;
 }

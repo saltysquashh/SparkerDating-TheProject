@@ -33,8 +33,12 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
     color: white;
+    background-color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
 }
 
 .swipe-liked {
@@ -46,11 +50,13 @@
 }
 
 .swipe-liked:hover {
-    background-color: #8cdd8f;
+    background-color: #55c259;
+    transform: translateY(-3px);
 }
 
 .swipe-passed:hover {
-    background-color: #ec8585;
+    background-color: #ed7171;
+    transform: translateY(-3px);
 }
 
 

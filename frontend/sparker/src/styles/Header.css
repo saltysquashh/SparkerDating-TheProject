@@ -3,8 +3,7 @@
   color: white;
   padding: 20px 0;
   text-align: center;
-  width: 100%; /* Ensure full width */
-  /* ... other header styles ... */
+  width: 100%; 
 }
 .sparker-title {
   font-family: 'Courier New', Courier, monospace;
@@ -12,66 +11,64 @@
   width: 200px;
 
 }
-/* Style for the logo link */
+
 .header .logo-link {
-  text-decoration: none; /* Removes underline */
-  color: white; /* Sets the text color to white */
-  text-decoration: none; /* Removes underline */
-  color: white; /* Sets the text color to white */
-  display: flex; /* Needed to apply flexbox styles */
-  justify-content: center; /* Center the content inside the link */
-  align-items: center; /* Center the content vertically */
+  text-decoration: none;
+  color: white;
+  text-decoration: none;
+  color: white; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
 }
 
-/* Style for the logo image */
 .header-logo {
-  width: 90px; /* Adjust the size as needed */
-  height: auto; /* Maintain aspect ratio */
+  width: 90px;
+  height: auto;
 }
 
 .header-buttons {
   display: flex;
-  /* Add any other styling for the button container */
 }
 
 .header-button {
   padding: 10px 20px;
   margin: 0 10px;
   text-decoration: none;
-  color: white; /* Adjust as needed */
-  background-color: #009688; /* Adjust as needed */
+  color: white;
+  background-color: #009688; 
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  display: inline-block; /* Or 'inline-flex' if you prefer */
-  /* Set a maximum width if needed */
-  max-width: 15px; /* Example value, adjust as needed */
+  display: inline-block; 
+  max-width: 15px; 
 
 }
 
 .header-button:hover {
-  background-color: #007f6b; /* Adjust hover color as needed */
+  background-color: #007f6b; 
 }
 .dropdown-button {
-  padding: 10px 15px; /* Adjust padding as needed */
-  margin: 5px 0; /* Adjust margin as needed */
+  padding: 10px 15px;
+  margin: 5px 0; 
   text-decoration: none;
-  color: white; /* Adjust text color as needed */
-  background-color: #009688; /* Adjust background color as needed */
-  border: none;
+  color: white; 
+  background-color: #009688;
   border-radius: 5px;
-  cursor: pointer;
-  width: auto; /* This ensures the button width is based on its content */
+  width: auto;
   font-size: large;
   font-family: Georgia, 'Times New Roman', Times, serif;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-button:hover {
-  background-color: #007f6b; /* Adjust hover color as needed */
+  background-color: #31a695;
+  transform: translateY(-1px);
 }
 
 .logged-in-info {
-  margin-right: 20px; /* Space between the logged-in text and dropdown */
-  font-size: 12px; /* Adjust font size as needed */
-  color: #ffffff; /* Adjust text color as needed */
+  margin-right: 20px;
+  font-size: 12px;
+  color: #ffffff;
 }

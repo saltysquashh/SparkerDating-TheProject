@@ -84,68 +84,75 @@ const MatchPage = () => {
     };
 
     return (
+        <div className="global-container">
         <div className="match-page-container">
-            <div className="match-header">
-                <h2>{matchUserInfo.firstName} {matchUserInfo.lastName}</h2>
-                <p className="match-bio">{matchUserInfo.bio}</p>
+            <div className="match-page-title">
+                <h2>Match</h2>
             </div>
-            <div className="match-images-container">
-                {images.length > 0 ? (
-                    images.map((image, index) => (
-                        <div key={index} className="match-image-thumbnail">
-                            <img src={`data:image/png;base64,${image}`} alt="Match" />
+            <div className="match-card-container">
+                <div className="match-header">
+                    <h2>{matchUserInfo.firstName} {matchUserInfo.lastName}</h2>
+                    <p className="match-bio">{matchUserInfo.bio}</p>
+                </div>
+                <div className="match-images-container">
+                    {images.length > 0 ? (
+                        images.map((image, index) => (
+                            <div key={index} className="match-image-thumbnail">
+                                <img src={`data:image/png;base64,${image}`} alt="Match" />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="match-image-thumbnail">
+                            <img src="/images/default-user-image.png" alt="Default" className="match-item-image" />
                         </div>
-                    ))
-                ) : (
-                    <div className="match-image-thumbnail">
-                        <img src="/images/default-user-image.png" alt="Default" className="match-item-image" />
+                    )}
+                </div>
+
+                <div className="match-actions">
+                    {!isGhosted ? (
+                        <Button onClick={handleChatClick} colorScheme='blue' className="action-button">Chat</Button>
+                    ) : (
+                        <Button colorScheme='gray' className="action-button" disabled>Locked</Button>
+                    )}
+                    <Button onClick={onOpen} colorScheme='red' className="action-button">Unmatch</Button>
+                </div>
+
+                {hoursLeftUser1 !== null && (
+                    <div className="hours-left">
+                        <p>{userId === matchUserId ? matchUserInfo.firstName : user?.firstName}: {hoursLeftUser1 > 0 ? `Hours left before ghosting: ${Math.floor(hoursLeftUser1)}` : 'This match is now ghosted.'}</p>
                     </div>
                 )}
-            </div>
-
-            <div className="match-actions">
-                {!isGhosted ? (
-                    <Button onClick={handleChatClick} colorScheme='blue' className="action-button">Chat</Button>
-                ) : (
-                    <Button colorScheme='gray' className="action-button" disabled>Locked</Button>
+                {hoursLeftUser2 !== null && (
+                    <div className="hours-left">
+                        <p>{userId === matchUserId ? user?.firstName : matchUserInfo.firstName}: {hoursLeftUser2 > 0 ? `Hours left before ghosting: ${Math.floor(hoursLeftUser2)}` : 'This match is now ghosted.'}</p>
+                    </div>
                 )}
-                <Button onClick={onOpen} colorScheme='red' className="action-button">Unmatch</Button>
+
+                <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                                Unmatch
+                            </AlertDialogHeader>
+                            <AlertDialogBody>
+                                Are you sure you want to delete this match? You can't undo this action afterwards.
+                            </AlertDialogBody>
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme='red' onClick={() => {
+                                    handleUnmatchClick();
+                                    onClose();
+                                }} ml={3}>
+                                    Delete
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
             </div>
-
-            {hoursLeftUser1 !== null && (
-                <div className="hours-left">
-                    <p>{userId === matchUserId ? matchUserInfo.firstName : user?.firstName}: {hoursLeftUser1 > 0 ? `Hours left before ghosting: ${Math.floor(hoursLeftUser1)}` : 'This match is now ghosted.'}</p>
-                </div>
-            )}
-            {hoursLeftUser2 !== null && (
-                <div className="hours-left">
-                    <p>{userId === matchUserId ? user?.firstName : matchUserInfo.firstName}: {hoursLeftUser2 > 0 ? `Hours left before ghosting: ${Math.floor(hoursLeftUser2)}` : 'This match is now ghosted.'}</p>
-                </div>
-            )}
-
-            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
-                <AlertDialogOverlay>
-                    <AlertDialogContent>
-                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                            Unmatch
-                        </AlertDialogHeader>
-                        <AlertDialogBody>
-                            Are you sure you want to delete this match? You can't undo this action afterwards.
-                        </AlertDialogBody>
-                        <AlertDialogFooter>
-                            <Button ref={cancelRef} onClick={onClose}>
-                                Cancel
-                            </Button>
-                            <Button colorScheme='red' onClick={() => {
-                                handleUnmatchClick();
-                                onClose();
-                            }} ml={3}>
-                                Delete
-                            </Button>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialogOverlay>
-            </AlertDialog>
+        </div>
         </div>
     );
 };

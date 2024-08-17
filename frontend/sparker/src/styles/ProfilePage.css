@@ -3,8 +3,9 @@
     width: 80%;
     max-width: 1200px;
     margin: 0 auto; 
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
     position: relative; 
     background-color: white;
 }
@@ -13,7 +14,6 @@
     margin-right: 10px;
     text-decoration: none;
 }
-
 
 .profile-page-title {
     flex: content;
@@ -27,4 +27,21 @@
 .profile-links {
     font-size: large;
     font-family: Arial, Helvetica, sans-serif;
+    max-width: 15%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    position: relative; 
+}
+
+.link-to-userinfo, .link-to-customization, .link-to-preferences {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+}
+
+.link-to-userinfo:hover, .link-to-customization:hover, .link-to-preferences:hover {
+    transform: translateY(-1px);
 }
