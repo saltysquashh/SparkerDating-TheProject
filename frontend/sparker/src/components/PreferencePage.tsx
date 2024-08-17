@@ -81,8 +81,10 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 
     return (
-        <div className="global-container">
         <div className="preference-container">
+               <div className="preference-page-title">
+                <h2>Preferences</h2>
+            </div>
         <div className="form-section">
                 <h2>Match preferences</h2>
                 <form onSubmit={handleFormSubmit}>
@@ -108,7 +110,7 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 </form>
         </div>
         </div>
-        </div>
+    
     );
 };
 

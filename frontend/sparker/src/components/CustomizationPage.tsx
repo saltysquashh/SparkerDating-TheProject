@@ -128,6 +128,9 @@ const CustomizationPage = () => {
     
     return (
         <div className="customization-page-container">
+            <div className="customization-page-title">
+                <h2>Customization</h2>
+            </div>
             <div className="bio-section">
                 <h2>Your profile bio</h2>
                 <Textarea 

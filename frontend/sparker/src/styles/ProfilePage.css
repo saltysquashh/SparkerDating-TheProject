@@ -15,10 +15,14 @@
 }
 
 
-.page-title {
+.profile-page-title {
     flex: content;
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: x-large;
     font-family:'Courier New', Courier, monospace;
+}
+
+.profile-links {
+    font-size: x-large;
 }

@@ -16,3 +16,10 @@
     border-radius: 8px;
     background-color: white;
 }
+
+.preference-page-title {
+    font-size: 24px;
+    font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 20px;
+    text-align: center;
+}

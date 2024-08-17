@@ -81,8 +81,11 @@ const UserInfoPage = () => {
     return (
 
         <div className="user-info-container">
+            <div className='userinfo-page-title'>
+            <h2>Main User information</h2>
+            </div>
             <div className="form-section">
-                <h2>User information</h2>
+                {/* <h2>User information</h2> */}
                 <form onSubmit={handleFormSubmit}>
             
                     <input type="text" name="firstName" value={user_Info.firstName} onChange={handleUserInfoChange} placeholder="First Name" />
@@ -98,8 +101,6 @@ const UserInfoPage = () => {
                 </form>
         </div>
         </div>
-
-
     );
 }
 
