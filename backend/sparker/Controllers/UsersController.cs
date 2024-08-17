@@ -166,6 +166,10 @@ public class UsersController : ControllerBase
             }
         }
     }
+    private bool UserExists(int id)
+    {
+        return _context.Users.Any(e => e.Id == id);
+    }
 
     [HttpGet("usercustomization/{id}")]
     public async Task<IActionResult> GetUserCustomization(int id)
@@ -223,6 +227,7 @@ public class UsersController : ControllerBase
         }
     }
 
+    [AllowAnonymous]
     [HttpGet("useremailexists/{email}")]
     public async Task<IActionResult> CheckUserEmailExists(string email)
     {
@@ -239,10 +244,6 @@ public class UsersController : ControllerBase
         return Ok(exists);
     }
 
-    private bool UserExists(int id)
-    {
-        return _context.Users.Any(e => e.Id == id);
-    }
 
     [HttpGet("nextswipeuser/{userId}")]
     public async Task<IActionResult> GetNextSwipeUser(int userId)
