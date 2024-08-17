@@ -20,7 +20,6 @@ const MatchesPage = () => {
                 try {
                     const fetchedMatches = await fetchUserMatches(user.id);
                     setMatches(fetchedMatches);
-                    console.log(fetchedMatches)
                 } catch (error) {
                     console.error('Error fetching matches:', error);
                 }
@@ -58,10 +57,16 @@ const MatchesPage = () => {
                                 className="match-list-item">
                                 <div className="match-item-details">
                                     <div className="match-item-image-container">
-                                        {matchUser.matchedImageData && (
+                                        {matchUser.matchedImageData ? (
                                             <img
                                                 src={`data:image/png;base64,${matchUser.matchedImageData}`}
                                                 alt={`${matchUser.matchedName}`}
+                                                className="match-item-image"
+                                            />
+                                        ) : (
+                                            <img
+                                                src="/images/default-user-image.png" // Path to your default image
+                                                alt="Default"
                                                 className="match-item-image"
                                             />
                                         )}
@@ -69,14 +74,13 @@ const MatchesPage = () => {
                                     <div className="match-item-info">
                                         <h2 className="match-item-name">
                                             {matchUser.matchedName}
-                                           
                                         </h2>
                                         <p className="match-item-date">Matched on {new Date(matchUser.matchedAt).toLocaleDateString()}</p>
                                     </div>
                                 </div>
                                 {matchUser.matchIsGhosted && (
-                                                <img src="/images/ghosted-icon.png" alt="Ghosted" className="ghost-icon" /> // Render ghost icon if ghosted
-                                            )}
+                                    <img src="/images/ghosted-icon.png" alt="Ghosted" className="ghost-icon" /> // Render ghost icon if ghosted
+                                )}
                             </li>
                         ))}
                     </ul>

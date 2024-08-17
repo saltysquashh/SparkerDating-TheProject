@@ -90,11 +90,17 @@ const MatchPage = () => {
                 <p className="match-bio">{matchUserInfo.bio}</p>
             </div>
             <div className="match-images-container">
-                {images.map((image, index) => (
-                    <div key={index} className="match-image-thumbnail">
-                        <img src={`data:image/png;base64,${image}`} alt="Match" />
+                {images.length > 0 ? (
+                    images.map((image, index) => (
+                        <div key={index} className="match-image-thumbnail">
+                            <img src={`data:image/png;base64,${image}`} alt="Match" />
+                        </div>
+                    ))
+                ) : (
+                    <div className="match-image-thumbnail">
+                        <img src="/images/default-user-image.png" alt="Default" className="match-item-image" />
                     </div>
-                ))}
+                )}
             </div>
 
             <div className="match-actions">
