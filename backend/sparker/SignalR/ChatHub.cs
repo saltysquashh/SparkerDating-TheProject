@@ -22,10 +22,26 @@ public class ChatHub : Hub
 
     public async Task SendMessage(int matchId, int senderId, int receiverId, string message)
     {
+        // Check if the match is ghosted
+        var match = await _context.Matches.FindAsync(matchId);
+        if (match == null)
+        {
+            await Clients.Caller.SendAsync("MessageSentConfirmation", "Match not found");
+            return;
+        }
+
+        if (match.Is_Ghosted)
+        {
+            // The match is ghosted, so the user can't send the message
+            await Clients.Caller.SendAsync("MessageSentConfirmation", "Cannot send message: Match is ghosted");
+            return;
+        }
+
         var sender = await _context.Users.FindAsync(senderId);
         if (sender == null)
         {
-            // user was not found (error?)
+            await Clients.Caller.SendAsync("MessageSentConfirmation", "Sender not found");
+            return;
         }
 
         var chatMessage = new ChatMessage

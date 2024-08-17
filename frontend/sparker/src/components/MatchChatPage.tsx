@@ -59,7 +59,7 @@ const MatchChatPage = () => {
             return;
         }
     
-        await sendMessage(thisMatchId, senderId, receiverId, message);
+            await sendMessage(thisMatchId, senderId, receiverId, message);
     
         setMessage('');
     };

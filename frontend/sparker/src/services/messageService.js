@@ -28,6 +28,11 @@ export const sendMessage_Service = (hubConnection) => async (matchId, senderId, 
     if (hubConnection && hubConnection.state === signalR.HubConnectionState.Connected) {
         try {
             await hubConnection.send('SendMessage', matchId, senderId, receiverId, message);
+            hubConnection.on('MessageSentConfirmation', (confirmationMessage) => {
+                if (!confirmationMessage === 'Message sent successfully') {
+                    alert(confirmationMessage);
+                }
+            });
         } catch (error) {
             console.error("Error sending message:", error);
         }
