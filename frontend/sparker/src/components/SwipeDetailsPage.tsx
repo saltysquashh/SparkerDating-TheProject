@@ -58,7 +58,7 @@ const SwipeDetailsPage = () => {
             console.error("Error handling unswipe action:", error);
         }
         
-        navigate(`/swipes/`);
+        navigate(`/swipehistory/`);
     };
 
     return (
