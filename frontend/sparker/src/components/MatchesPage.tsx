@@ -4,10 +4,11 @@ import { AuthContext } from '../context/AuthContext';
 import { fetchUserMatches } from '../services/matchService';
 import MatchType from '../interfaces/MatchInterface';
 import { useNavigate } from 'react-router-dom';
+import MatchUserType from '../interfaces/MatchUserInterface';
 
 const MatchesPage = () => {
     const { user } = useContext(AuthContext);
-    const [matches, setMatches] = useState<MatchType[]>([]);
+    const [matcheUsers, setMatches] = useState<MatchUserType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ const MatchesPage = () => {
                 try {
                     const fetchedMatches = await fetchUserMatches(user.id);
                     setMatches(fetchedMatches);
+                    console.log(fetchedMatches)
                 } catch (error) {
                     console.error('Error fetching matches:', error);
                 }
@@ -37,42 +39,48 @@ const MatchesPage = () => {
         return <div className="loading-message-container">Loading matches...</div>;
     }
 
-    if (matches.length === 0) {
+    if (matcheUsers.length === 0) {
         return <div className="no-matches-message-container">No matches found.</div>;
     }
 
     return (
         <div className="global-container">
-        <div className="matches-page-container">
-            <div className="matches-list-container">
-                <div className="matches-page-title">
-                    <h1>Your Matches</h1>
+            <div className="matches-page-container">
+                <div className="matches-list-container">
+                    <div className="matches-page-title">
+                        <h1>Your Matches</h1>
+                    </div>
+                    <ul className="matches-list">
+                        {matcheUsers.map((matchUser) => (
+                            <li 
+                                key={matchUser.matchedUserId} 
+                                onClick={() => handleMatchClick(matchUser.matchId, matchUser.matchedUserId)} 
+                                className="match-list-item">
+                                <div className="match-item-details">
+                                    <div className="match-item-image-container">
+                                        {matchUser.matchedImageData && (
+                                            <img
+                                                src={`data:image/png;base64,${matchUser.matchedImageData}`}
+                                                alt={`${matchUser.matchedName}`}
+                                                className="match-item-image"
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="match-item-info">
+                                        <h2 className="match-item-name">
+                                            {matchUser.matchedName}
+                                           
+                                        </h2>
+                                        <p className="match-item-date">Matched on {new Date(matchUser.matchedAt).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                                {matchUser.matchIsGhosted && (
+                                                <img src="/images/ghosted-icon.png" alt="Ghosted" className="ghost-icon" /> // Render ghost icon if ghosted
+                                            )}
+                            </li>
+                        ))}
+                    </ul>
                 </div>
-                <ul className="matches-list">
-                    {matches.map((match) => (
-                        <li 
-                            key={match.matchedUserId} 
-                            onClick={() => handleMatchClick(match.matchId, match.matchedUserId)} 
-                            className="match-list-item">
-                            <div className="match-item-details">
-                                <div className="match-item-image-container">
-                                    {match.matchedImageData && (
-                                        <img
-                                            src={`data:image/png;base64,${match.matchedImageData}`}
-                                            alt={`${match.matchedName}`}
-                                            className="match-item-image"
-                                        />
-                                    )}
-                                </div>
-                                <div className="match-item-info">
-                                    <h2 className="match-item-name">{match.matchedName}</h2>
-                                    <p className="match-item-date">Matched on {new Date(match.matchedAt).toLocaleDateString()}</p>
-                                </div>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
             </div>
         </div>
     );

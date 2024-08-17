@@ -47,6 +47,7 @@ namespace sparker.Controllers
             return Ok(matchDTO);
         }
 
+        // get all the matches the userid appears in
         [HttpGet("matchesbyuserid/{userId}")]
         public async Task<IActionResult> GetMatches(int userId)
         {
@@ -76,7 +77,8 @@ namespace sparker.Controllers
                     MatchedUserId = matchedUserId,
                     MatchedName = matchedUser.First_Name + " " + matchedUser.Last_Name,
                     MatchedUserBio = matchedUser.Bio,
-                    MatchedImageData = userImages.ContainsKey(matchedUserId) ? userImages[matchedUserId] : null // Set Base64 image data
+                    MatchedImageData = userImages.ContainsKey(matchedUserId) ? userImages[matchedUserId] : null, // Set Base64 image data
+                    MatchIsGhosted = m.Is_Ghosted
                 };
             });
 

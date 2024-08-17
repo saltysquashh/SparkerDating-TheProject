@@ -17,6 +17,7 @@ const MatchPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [hoursLeftUser1, setHoursLeftUser1] = useState<number | null>(null);
     const [hoursLeftUser2, setHoursLeftUser2] = useState<number | null>(null);
+    const [isGhosted, setIsGhosted] = useState(false);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
     const userId = user?.id;
@@ -34,6 +35,7 @@ const MatchPage = () => {
 
                 const match = await fetchMatch(matchId);
                 calculateHoursLeft(match, user?.id, matchUserInfo?.id);
+                setIsGhosted(match.isGhosted);
 
             } catch (error) {
                 console.error('Error fetching match data:', error);
@@ -96,7 +98,11 @@ const MatchPage = () => {
             </div>
 
             <div className="match-actions">
-                <Button onClick={handleChatClick} colorScheme='blue' className="action-button">Chat</Button>
+                {!isGhosted ? (
+                    <Button onClick={handleChatClick} colorScheme='blue' className="action-button">Chat</Button>
+                ) : (
+                    <Button colorScheme='gray' className="action-button" disabled>Locked</Button>
+                )}
                 <Button onClick={onOpen} colorScheme='red' className="action-button">Unmatch</Button>
             </div>
 

@@ -8,5 +8,6 @@
         public string MatchedName { get; set; }
         public string MatchedImageData { get; set; }
         public string MatchedUserBio { get; set; }
+        public bool MatchIsGhosted { get; set; }
     }
 }
