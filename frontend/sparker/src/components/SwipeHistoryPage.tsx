@@ -49,7 +49,9 @@ const SwipeHistoryPage = () => {
     return (
         <div className="global-container">
             <div className="swipes-container">
+                <div className="swipe-history-page-title">
                 <h2>Your Swipes</h2>
+                </div>
                 <ul className="swipe-list">
                     {swipes.map((swipe) => (
                         <li
@@ -61,7 +63,7 @@ const SwipeHistoryPage = () => {
                                 <img
                                     src={swipe.swipedImageData ? 
                                         `data:image/png;base64,${swipe.swipedImageData}` : 
-                                        '/images/default.png'}
+                                        '/images/default-user-image.png'}
                                     alt={swipe.swipedName}
                                     className="swipe-image"
                                 />
