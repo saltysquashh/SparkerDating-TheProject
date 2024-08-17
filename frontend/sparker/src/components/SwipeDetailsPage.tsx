@@ -1,16 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
 import '../styles/SwipeDetailsPage.css';
 import { fetch_ShowcaseUser } from '../services/userService';
-import { fetchUserImages } from '../services/imageService';
 import { deleteSwipe } from '../services/swipeService';
 import UserType from '../interfaces/UserInterface';
-import ImageType from '../interfaces/ImageInterface';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, ButtonGroup, Checkbox, Stack, useDisclosure } from '@chakra-ui/react'
-
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, useDisclosure } from '@chakra-ui/react';
 import { AuthContext } from '../context/AuthContext';
-
 
 const SwipeDetailsPage = () => {
     const { swipeId } = useParams();
@@ -20,9 +16,8 @@ const SwipeDetailsPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
-    const userId = user?.id;
 
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null);
     
     useEffect(() => {
@@ -52,12 +47,10 @@ const SwipeDetailsPage = () => {
     const handleUnswipeClick = async () => {
         try {
             const responseMsg = await deleteSwipe(swipeId);
-              alert(responseMsg);
-            
+            alert(responseMsg);
         } catch (error) {
             console.error("Error handling unswipe action:", error);
         }
-        
         navigate(`/swipehistory/`);
     };
 
@@ -66,48 +59,48 @@ const SwipeDetailsPage = () => {
             <h2>{swipeUserInfo.firstName + ' ' + swipeUserInfo.lastName}</h2>
             <p className="swipe-bio">{swipeUserInfo.bio}</p>
             <div className="swipe-images-container">
-                {images.map((image, index) => (
-                    <div key={index} className="swipe-image-thumbnail">
-                        <img src={`data:image/png;base64,${image}`} alt="Swipe" />
+                {images.length > 0 ? (
+                    images.map((image, index) => (
+                        <div key={index} className="swipe-image-thumbnail">
+                            <img src={`data:image/png;base64,${image}`} alt="Swipe" />
+                        </div>
+                    ))
+                ) : (
+                    <div className="swipe-image-thumbnail">
+                        <img src="/images/default-user-image.png" alt="Default" className="swipe-item-image" />
                     </div>
-                ))}
+                )}
             </div>
-            {/* <Button onClick={() => handleUnswipeClick()} colorScheme='red'>Unswipe</Button> */}
             <Button onClick={onOpen} colorScheme='red'>Undo swipe</Button>
       
-
-<div className="Alert-Dialog-Example">
-      <>
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              Unswipe
-            </AlertDialogHeader>
-            <AlertDialogBody>
-              Are you sure you want to delete this swipe? You can't undo this action afterwards.
-            </AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme='red' onClick={() => {
-                handleUnswipeClick();
-                onClose(); // This will close the dialog after the action
-            }} ml={3}>
-                Delete
-                </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-    </>
-            </div> 
-    </div>
+            <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+            >
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                            Unswipe
+                        </AlertDialogHeader>
+                        <AlertDialogBody>
+                            Are you sure you want to delete this swipe? You can't undo this action afterwards.
+                        </AlertDialogBody>
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Cancel
+                            </Button>
+                            <Button colorScheme='red' onClick={() => {
+                                handleUnswipeClick();
+                                onClose(); // This will close the dialog after the action
+                            }} ml={3}>
+                                Delete
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
+        </div>
     );
 };
 
