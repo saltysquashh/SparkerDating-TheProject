@@ -50,7 +50,7 @@ const SwipingPage = () => {
     };
 
     const handlePreferencesClick = () => {
-        navigate('/preferencepage');
+        navigate('/profile/preferences');
     };
 
     return (
