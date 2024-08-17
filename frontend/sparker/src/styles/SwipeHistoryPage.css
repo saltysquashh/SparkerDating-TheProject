@@ -13,9 +13,13 @@
 .swipe-history-page-title {
     text-align: center;
     margin-bottom: 20px;
-    font-size: 24px;
+    padding-bottom: 10px;
+    font-size: 28px;
     color: #333;
     margin: 0;
+    font-size: x-large;
+    font-family:'Courier New', Courier, monospace;
+    font-weight: bold;
 }
 
 .swipe-list {

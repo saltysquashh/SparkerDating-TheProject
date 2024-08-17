@@ -3,6 +3,9 @@
     margin: 0 auto;
     padding: 20px;
     text-align: center;
+    background-color: #ffffff;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
 }
 
 .image-gallery {
@@ -98,4 +101,5 @@
     font-family: 'Courier New', Courier, monospace;
     margin-bottom: 20px;
     text-align: center;
+    font-weight: bold;
 }
