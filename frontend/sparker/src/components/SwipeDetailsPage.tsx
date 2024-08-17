@@ -12,7 +12,7 @@ const SwipeDetailsPage = () => {
     const { swipeId } = useParams();
     const { swipeUserId } = useParams();
     const [swipeUserInfo, setUserInfo] = useState<UserType | null>(null);
-    const [images, setImages] = useState<string[]>([]); // Adjust to hold base64 image strings
+    const [images, setImages] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
@@ -55,9 +55,11 @@ const SwipeDetailsPage = () => {
     };
 
     return (
-        <div className="swipe-page-container">
-            <h2>{swipeUserInfo.firstName + ' ' + swipeUserInfo.lastName}</h2>
-            <p className="swipe-bio">{swipeUserInfo.bio}</p>
+        <div className="swipe-card-container">
+            <div className="swipe-header">
+                <h2>{swipeUserInfo.firstName} {swipeUserInfo.lastName}</h2>
+                <p className="swipe-bio">{swipeUserInfo.bio}</p>
+            </div>
             <div className="swipe-images-container">
                 {images.length > 0 ? (
                     images.map((image, index) => (
@@ -71,8 +73,10 @@ const SwipeDetailsPage = () => {
                     </div>
                 )}
             </div>
-            <Button onClick={onOpen} colorScheme='red'>Undo swipe</Button>
-      
+            <div className="swipe-actions">
+                <Button onClick={onOpen} colorScheme='red' className="action-button">Undo swipe</Button>
+            </div>
+
             <AlertDialog
                 isOpen={isOpen}
                 leastDestructiveRef={cancelRef}
