@@ -25,7 +25,7 @@ namespace sparker.Controllers
         }
 
         [HttpPost("swipe")]
-        public async Task<IActionResult> Swipe([FromBody] SwipeDTO swipeDto)
+        public async Task<IActionResult> CreateSwipe([FromBody] SwipeDTO swipeDto)
         {
             var swipe = new Swipe
             {
@@ -128,6 +128,60 @@ namespace sparker.Controllers
                 (m.User1_Id == userId1 && m.User2_Id == userId2) ||
                 (m.User1_Id == userId2 && m.User2_Id == userId1));
         }
+
+
+
+        [HttpGet("swipedetails/{swipedId}/{swiperId}")]
+        public async Task<IActionResult> GetSwipeDetails(int swipedId, int swiperId)
+        {
+            var user = await _context.Users.FindAsync(swipedId);
+            if (user == null)
+            {
+                return NotFound($"User with ID {swipedId} not found.");
+            }
+
+            // Find the swipe information between the two users
+            var swipe = await _context.Swipes
+                .FirstOrDefaultAsync(s => s.Swiper_UserId == swiperId && s.Swiped_UserId == swipedId);
+
+            if (swipe == null)
+            {
+                return NotFound("Swipe data not found.");
+            }
+
+            // Find if there is a match between the two users
+            var match = await _context.Matches
+                .FirstOrDefaultAsync(m =>
+                    (m.User1_Id == swiperId && m.User2_Id == swipedId) ||
+                    (m.User1_Id == swipedId && m.User2_Id == swiperId));
+
+            // Build child
+            var showcaseUserDTO = new ShowcaseUserDTO
+            {
+                Id = user.Id,
+                FirstName = user.First_Name,
+                LastName = user.Last_Name,
+                Gender = user.Gender,
+                Age = DateUtils.CalculateAge(user.Birthdate),
+                Bio = user.Bio,
+                RegistrationAt = user.Registration_At,
+                Images = _context.Images
+                        .Where(i => i.User_Id == user.Id)
+                        .Select(i => Convert.ToBase64String(i.Image_Data))
+                        .ToList(),
+            };
+
+            // Build the DTO
+            var swipeDetailsDTO = new SwipeDetailsDTO
+            {
+                ShowcaseUserDTO = showcaseUserDTO, // include child DTO built before, which includes the user data
+                Swipe = swipe,
+                Match = match // empty if it doesn't exist
+            };
+
+            return Ok(swipeDetailsDTO);
+        }
+
 
         [HttpDelete("delete/{swipeId}")]
         public async Task<IActionResult> DeleteMatch(int swipeId)
