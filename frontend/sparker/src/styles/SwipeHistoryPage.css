@@ -7,19 +7,19 @@
     position: relative; 
     background-color: white; 
     margin: 0 auto;
-    margin-top: 35px;
 }
 
 .swipe-history-page-title {
     text-align: center;
     margin-bottom: 20px;
-    padding-bottom: 10px;
     font-size: 28px;
     color: #333;
     margin: 0;
-    font-size: x-large;
-    font-family:'Courier New', Courier, monospace;
+    font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
 }
 
 .swipe-list {
@@ -28,17 +28,19 @@
 }
 
 .swipe-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between the text and image */
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #ccc;
     border-radius: 8px;
     cursor: pointer;
-    color: white;
     background-color: white;
-    cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
+    font-size: 0.9rem; /* Make text smaller */
 }
 
 .swipe-liked {
@@ -59,23 +61,31 @@
     transform: translateY(-3px);
 }
 
-
-.swipe-image {
-    width: 100px;
-    height: 100px;
-    object-fit: cover; 
-    border-radius: 8px;
-}
-
 .swipeuser-images {
-    width: 100px;
-    height: 100px;
-    margin-right: 10px;
+    order: 2; /* Move the image to the right */
+    width: 70px; /* Smaller image */
+    height: 70px; /* Smaller image */
+    margin-left: 10px; /* Space between text and image */
     border-radius: 50%;
 }
 
+.swipe-image {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
 .swipeuser-title {
-    font-size: x-large;
+    font-size: 1rem;
     font-family: 'Courier New', Courier, monospace;
     color: white;
+    flex: 1;
+    margin-right: 10px;
 }
+
+.swipe-item > div {
+    flex: 1; /* Equal width for text sections */
+    padding: 5px;
+}
+

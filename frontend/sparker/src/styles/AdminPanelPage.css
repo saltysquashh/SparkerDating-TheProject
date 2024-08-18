@@ -41,9 +41,10 @@
     flex: content;
     border: 1px solid #ccc;
     border-radius: 8px;
-    font-size: x-large;
+    font-size: 28px;
     font-family:'Courier New', Courier, monospace;
     font-weight: bold;
+    text-align: center;
 }
 
 

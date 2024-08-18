@@ -16,6 +16,9 @@
     font-size: x-large;
     font-family:'Courier New', Courier, monospace;
     font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
 }
 
 .match-card-container {

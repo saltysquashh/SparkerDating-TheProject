@@ -4,7 +4,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
 }
 
 .matches-list-container {
@@ -19,9 +18,12 @@
 .matches-page-title {
     text-align: center;
     margin-bottom: 20px;
-    font-size: x-large;
+    font-size: 28px;
     font-family:'Courier New', Courier, monospace;
     font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
 }
 
 .matches-page-title h1 {
@@ -42,7 +44,6 @@
     padding: 15px;
     margin-bottom: 10px;
     background-color: #f9f9f9;
-    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
