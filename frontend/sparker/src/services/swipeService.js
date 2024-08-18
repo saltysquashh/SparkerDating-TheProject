@@ -18,7 +18,6 @@ export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
             }
         });
 
-        // Handle the response (since Axios does not use `response.ok`)
         const { isMatch, message } = response.data;
 
         if (isMatch)
@@ -49,6 +48,17 @@ export const fetchSwipesByUser = async (userId) => {
         console.error('Error fetching swipes:', error);
         throw error;
     }
+};
+
+export const fetchSwipeDetails = async (swipedId, swiperId) => {
+    const token = getAuthToken();
+    const response = await axios.get(`${API_URL}/swipes/swipedetails/${swipedId}/${swiperId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}` // JWT token
+        }
+    });
+    // console.log(response.data.swipe);
+    return response.data; // includes swipe object, match object and info of swiped user
 };
 
 export const deleteSwipe = async (swipeId) => {
