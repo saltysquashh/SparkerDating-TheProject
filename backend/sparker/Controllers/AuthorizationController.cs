@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using sparker.Database;
 using sparker.DTOs;
-using sparker.DTOs.sparker.DTOs;
 using sparker.Migrations;
 using sparker.Models;
 using sparker.Utilities;

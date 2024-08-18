@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using sparker.Database;
 using sparker.DTOs;
-using sparker.DTOs.sparker.DTOs;
 using sparker.Migrations;
 using sparker.Models;
 using sparker.Utilities;
@@ -124,7 +123,7 @@ public class UsersController : ControllerBase
             Bio = user.Bio,
             Images = _context.Images
                     .Where(i => i.User_Id == user.Id)
-                    .Select(i => Convert.ToBase64String(i.Image_Data)) // Convet image data to base 64
+                    .Select(i => Convert.ToBase64String(i.Image_Data)) // Convert image data to base 64
                     .ToList()
         };
 
