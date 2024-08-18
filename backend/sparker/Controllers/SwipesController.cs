@@ -132,7 +132,7 @@ namespace sparker.Controllers
 
 
         [HttpGet("swipedetails/{swipedId}/{swiperId}")]
-        public async Task<IActionResult> GetSwipeDetails(int swipedId, int swiperId)
+        public async Task<IActionResult> GetSwipeDetailsByUsers(int swipedId, int swiperId)
         {
             var user = await _context.Users.FindAsync(swipedId);
             if (user == null)
