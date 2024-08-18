@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import '../styles/SwipeDetailsPage.css';
 import { fetch_ShowcaseUser } from '../services/userService';
-import { deleteSwipe, fetchSwipeDetails } from '../services/swipeService';
+import { deleteSwipe,  fetchSwipeDetails} from '../services/swipeService';
 import { fetchMatch } from '../services/matchService';
 import UserType from '../interfaces/UserInterface';
 import { useParams } from 'react-router-dom';
