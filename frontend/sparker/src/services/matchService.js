@@ -19,17 +19,6 @@ export const fetchMatch = async (matchId) => {
     }
 };
 
-export const fetchMatchByUsers = async (swiperId, swipedId) => {
-    const token = getAuthToken();
-    const response = await axios.get(`${API_URL}/matches/matchbyusers/${swiperId}/${swipedId}`, {
-        headers: {
-            'Authorization': `Bearer ${token}` // JWT token
-        }
-    });
-    console.log(response.data);
-    return response.data;
-};
-
 export const fetchUserMatches = async (userId) => {
     const token = getAuthToken();
     try {
