@@ -1,7 +1,5 @@
 ﻿namespace sparker.DTOs
 {
-    namespace sparker.DTOs
-    {
         public class ShowcaseUserDTO
         {
             public int Id { get; set; }
@@ -13,5 +11,4 @@
             public DateTime RegistrationAt { get; set; }
             public List<string> Images { get; set; }
         }
-    }
 }
