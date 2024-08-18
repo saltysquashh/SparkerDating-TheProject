@@ -6,7 +6,7 @@ interface SwipeHistoryType {
     swipedGender: string;
     swipedBio: string;
     swipedImageData: string;
-    swipedAt: Date;
+    swipedAt: string;
     liked: boolean;
     isMatch: boolean;
 }
