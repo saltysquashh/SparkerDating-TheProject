@@ -23,7 +23,7 @@ const ProfilePage = () => {
              <div className="profile-links">
             <nav>
                 <div className="link-to-userinfo">
-                <Link to="/profile/userinfo">User Information</Link>
+                <Link to="/profile/userinfo">User information</Link>
                 </div>
                 <div className="link-to-customization">
                 <Link to="/profile/customization">Customization</Link>
