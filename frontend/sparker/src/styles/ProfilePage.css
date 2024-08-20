@@ -10,10 +10,6 @@
     background-color: white;
 }
 
-.profile-buttons {
-    margin-right: 10px;
-    text-decoration: none;
-}
 
 .profile-page-title {
     flex: content;
@@ -44,4 +40,9 @@
 
 .link-to-userinfo:hover, .link-to-customization:hover, .link-to-preferences:hover {
     transform: translateY(-1px);
+}
+
+button:hover {
+    background-color: #ececec;
+    transform: translateY(-2px);
 }

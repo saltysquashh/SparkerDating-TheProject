@@ -100,7 +100,6 @@ const UserInfoPage = () => {
             <h2>User information</h2>
             </div>
             <div className="form-section">
-                {/* <h2>User information</h2> */}
                 <form onSubmit={handleFormSubmit}>
             
                     <input type="text" name="firstName" value={user_Info.firstName} onChange={handleUserInfoChange} placeholder="First Name" />

@@ -9,7 +9,7 @@
 }
 
 .userinfo-page-title {
-    font-size: 24px;
+    font-size: 26px;
     font-family: 'Courier New', Courier, monospace;
     margin-bottom: 20px; 
     text-align: center;
@@ -59,6 +59,3 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #6b6e90;
-}
