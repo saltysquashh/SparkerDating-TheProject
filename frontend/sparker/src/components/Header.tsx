@@ -16,7 +16,7 @@ const Header = () => {
 ];
 
 const userOptions = [
-    { label: 'Swipe', action: () => navigate('/swiping') },
+    { label: 'Swiping', action: () => navigate('/swiping') },
     { label: 'Matches', action: () => navigate('/matches') },
     { label: 'Swipe history', action: () => navigate('/swipehistory') },
     { label: 'Profile', action: () => navigate('/profile') },
