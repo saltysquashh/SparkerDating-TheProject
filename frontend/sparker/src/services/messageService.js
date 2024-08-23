@@ -7,7 +7,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const createHubConnection = (setMessages) => {
     const hubConnection = new signalR.HubConnectionBuilder()
-        .withUrl('http://localhost:5001/chatHub')
+        .withUrl('https://localhost:5001/chatHub')
         .build();
 
     hubConnection.on('ReceiveMessage', (senderId, senderName, messageContent) => {
