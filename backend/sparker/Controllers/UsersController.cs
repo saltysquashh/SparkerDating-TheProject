@@ -50,6 +50,7 @@ public class UsersController : ControllerBase
             Registration_At = DateTime.Now
         };
 
+        // generates a unique salt for the user, then hashes the salted password
         user.Password_Hash = _passwordHasher.HashPassword(user, registerDto.Password);
 
 
