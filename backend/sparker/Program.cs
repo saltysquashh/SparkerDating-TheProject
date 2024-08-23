@@ -1,29 +1,38 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using sparker.Database;
 using System.Net;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 
-
-// Other namespaces
-
 var builder = WebApplication.CreateBuilder(args);
+
+// Set connection string to defaultconnection from appsettings
+var connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+
+// Set variables to environment variable values:
+// Secret key used in the process of creating and validating JSON Web Tokens
+var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+
+// Certificate path and password
+var certificatePath = Environment.GetEnvironmentVariable("CERTIFICATE_PATH");
+var certificatePassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
+
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-
-var base64EncodedKey = builder.Configuration["JwtConfig:Secret"];
-var key = Convert.FromBase64String(base64EncodedKey); // Decode the base64 string
-
+// Decode JWT secret
+var key = Convert.FromBase64String(jwtSecret); // Decode the base64 string
 
 builder.Services.AddAuthentication(x =>
 {
@@ -37,7 +46,7 @@ builder.Services.AddAuthentication(x =>
     x.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key), // Use the decoded key here
+        IssuerSigningKey = new SymmetricSecurityKey(key),
         ValidateIssuer = false,
         ValidateAudience = false
     };
@@ -52,7 +61,6 @@ builder.Services.AddSwaggerGen(options =>
         Version = "v1"
     });
 
-    // Optional: Set the comments path for the Swagger JSON and UI.
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
@@ -61,7 +69,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddHostedService<GhostingCheckerService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
-builder.Services.AddHostedService<GhostingCheckerService>(); // registers GhostingCheckerService as a service
 
 builder.Services.AddCors(options =>
 {
@@ -74,64 +81,38 @@ builder.Services.AddCors(options =>
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    var config = builder.Configuration;
     options.Listen(IPAddress.Any, 5001, listenOptions =>
     {
-        listenOptions.UseHttps(config["Kestrel:Certificates:Default:Path"],
-                               config["Kestrel:Certificates:Default:Password"]);
+        listenOptions.UseHttps(certificatePath, certificatePassword);
     });
 });
 
-
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-
     app.UseExceptionHandler("/Error");
     app.UseHsts();
-
-
 }
 
-
-
-
 app.UseHttpsRedirection();
-
-
-
-
-app.MapControllers();
-
-//app.UseCors(builder =>
-//    builder.WithOrigins("http://localhost:3000") // Replace with your React app's URL
-//           .AllowAnyMethod().AllowAnyHeader());
-
-// Configure the HTTP request pipeline.
 app.UseCors("CorsPolicy");
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSwagger(); // swagger
+app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    options.RoutePrefix = string.Empty; // To serve Swagger UI at the app's root URL
+    options.RoutePrefix = string.Empty;
 });
-
-
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<ChatHub>("/chatHub"); // map the SignalR Hub
-    endpoints.MapControllers(); // map http controller endpoints
+    endpoints.MapHub<ChatHub>("/chatHub");
+    endpoints.MapControllers();
 });
 
 app.Run();
