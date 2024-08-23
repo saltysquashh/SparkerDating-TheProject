@@ -1,0 +1,153 @@
+.match-details-page-container {
+    padding: 20px;
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto; 
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    position: relative; 
+    background-color: white;
+}
+
+.match-page-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: x-large;
+    font-family:'Courier New', Courier, monospace;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
+}
+
+.match-card-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8
+    
+}
+    .match-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .match-name-section {
+        text-align: center;
+        font-size: x-large;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    
+    .match-bio-section {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin-bottom: 40px;
+    }
+    
+    .match-bio-title {
+        text-align: center;
+        font-size: x-large;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
+    }
+    
+    .match-bio-content {
+        font-family: cursive;
+    }
+    
+    .match-details-section {
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+    
+    .match-details-title {
+        text-align: center;
+        font-size: x-large;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+    
+    .match-images-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 20px 0;
+    }
+    
+    .match-image-thumbnail img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 10px;
+        transition: transform 0.3s;
+    }
+    
+    .match-image-thumbnail img:hover {
+        transform: scale(1.05);
+    }
+    
+    .match-actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    
+    .action-button {
+        font-size: 1em;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: background-color 0.3s;
+        max-width: 50%;
+    }
+    
+    .match-page-loading, .match-page-error {
+        text-align: center;
+        margin-top: 50px;
+    }
+    
+    .hours-left {
+        text-align: center;
+        font-size: 1.1em;
+        margin-top: 20px;
+        color: #ff6347;
+    }
+    .match-status-section {
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 10px;
+    }
+    
+    .match-status-title {
+        text-align: center;
+        font-size: x-large;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .match-status-text {
+        font-size: 1.1em;
+        color: #666;
+    }
