@@ -38,12 +38,15 @@ public class AuthorizationController : ControllerBase
         _configuration = configuration;
     }
 
-    // move to AuthUtils?
     // private så det ikke antages at være et http kald
     private string GenerateJwtToken(string userId)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var base64EncodedKey = _configuration["JwtConfig:Secret"];
+        
+        // Retrieve the jwt Secret
+        var base64EncodedKey = Environment.GetEnvironmentVariable("JWT_SECRET");
+
+        // decode the secret
         var key = Convert.FromBase64String(base64EncodedKey);
 
         var tokenDescriptor = new SecurityTokenDescriptor
