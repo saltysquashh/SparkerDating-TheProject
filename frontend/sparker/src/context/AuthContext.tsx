@@ -27,7 +27,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<UserType | null>(null);
     const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL;
-
+    
+    // login
     const login = async (credentials: { email: string; password: string }) => {
         try {
             const response = await axios.post(`${API_URL}/authorization/login`, credentials); 
