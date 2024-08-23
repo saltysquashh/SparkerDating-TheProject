@@ -16,7 +16,7 @@ import { setAuthToken, getAuthToken } from './utilities/authToken';
 import SwipingPage from './components/SwipingPage';
 import CustomizationPage from './components/CustomizationPage';
 import MatchesPage from './components/MatchesPage';
-import MatchPage from './components/MatchPage';
+import MatchDetailsPage from './components/MatchDetailsPage';
 import { ChakraProvider } from '@chakra-ui/react';
 import MatchChatPage from './components/MatchChatPage';
 import SwipeHistoryPage from './components/SwipeHistoryPage';
@@ -45,10 +45,10 @@ function App() {
                 </Route>
         <Route path="/swiping" element={<SwipingPage />} /> {/* Add this line */}
         <Route path="/matches" element={<MatchesPage />} /> {/* MatchesPage as a separate route */}
-        <Route path="/matches/match/:matchId/:matchUserId" element={<MatchPage />} /> {/* MatchPage as a separate route */}
-        <Route path="/matches/match/:matchId/chat/:matchUserId" element={<MatchChatPage />} /> {/* MatchPage as a separate route */}
+        <Route path="/matches/match/:matchId/:matchUserId" element={<MatchDetailsPage />} /> {/* MatchDetailsPage as a separate route */}
+        <Route path="/matches/match/:matchId/chat/:matchUserId" element={<MatchChatPage />} /> {/* MatchDetailsPage as a separate route */}
         <Route path="/swipehistory" element={<SwipeHistoryPage />} /> {/* Add this line */}
-        <Route path="/swipehistory/swipedetails/:swipeId/:swipeUserId" element={<SwipeDetailsPage />} /> {/* MatchPage as a separate route */}
+        <Route path="/swipehistory/swipedetails/:swipeId/:swipeUserId" element={<SwipeDetailsPage />} /> {/* MatchDetailsPage as a separate route */}
         <Route path="/adminpanel" element={<AdminPanelPage />} /> {/* Add this line */}
       </Routes>
     </AuthProvider>
