@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using sparker.Database;
+using System.Net;
 using System.Reflection;
 using System.Text;
 
@@ -60,6 +61,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddHostedService<GhostingCheckerService>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddHostedService<GhostingCheckerService>(); // registers GhostingCheckerService as a service
 
 builder.Services.AddCors(options =>
 {
@@ -70,7 +72,16 @@ builder.Services.AddCors(options =>
                .AllowCredentials());
 });
 
-builder.Services.AddHostedService<GhostingCheckerService>(); // registers GhostingCheckerService as a service
+builder.WebHost.ConfigureKestrel(options =>
+{
+    var config = builder.Configuration;
+    options.Listen(IPAddress.Any, 5001, listenOptions =>
+    {
+        listenOptions.UseHttps(config["Kestrel:Certificates:Default:Path"],
+                               config["Kestrel:Certificates:Default:Password"]);
+    });
+});
+
 
 var app = builder.Build();
 
@@ -86,7 +97,12 @@ if (!app.Environment.IsDevelopment())
 
 }
 
+
+
+
 app.UseHttpsRedirection();
+
+
 
 
 app.MapControllers();
