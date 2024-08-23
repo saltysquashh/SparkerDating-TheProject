@@ -2,8 +2,6 @@
   "name": "sparker",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -27,5 +25,27 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@microsoft/signalr": "^8.0.7",
+    "@mui/x-date-pickers": "^7.13.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/react-dom": "^18.3.0",
+    "axios": "^1.7.4",
+    "chakra": "^0.0.3",
+    "dayjs": "^1.11.13",
+    "react": "^18.3.1",
+    "react-router": "^6.26.1",
+    "react-router-dom": "^6.26.1",
+    "react-scripts": "^5.0.1",
+    "testing-library": "^0.0.2"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.8",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.5.0",
+    "@types/react": "^18.3.4",
+    "web-vitals": "^4.2.3"
   }
 }
