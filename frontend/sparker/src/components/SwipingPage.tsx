@@ -24,12 +24,10 @@ const SwipingPage = () => {
             const response = await fetchNextUserToSwipe(user?.id);
             setDisplayedUser(response);
             const userImages = response.images || [];
-            
             // use default image if no images are available
             if (userImages.length === 0) {
                 userImages.push('/images/default-user-image.png');
             }
-
             setImages(userImages);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 404) {

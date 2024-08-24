@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL;
     
-    // login
+    // login API call
     const login = async (credentials: { email: string; password: string }) => {
         try {
             const response = await axios.post(`${API_URL}/authorization/login`, credentials); 
@@ -42,6 +42,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     };
 
+    // log user out
     const logout = () => {
         setUser(null);
         removeAuthToken();
@@ -77,6 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }, []);
 
     return (
+        // provide access to context values and methods (of AuthContext), in child components
         <AuthContext.Provider value={{ user, login, logout }}>
             {children}
         </AuthContext.Provider>
