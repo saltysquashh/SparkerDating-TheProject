@@ -1,13 +1,10 @@
 interface MatchUserType {
-    matchId: number;
-    matchedAt: Date;
-    matchedUserId: number;
-    matchedName: string;
-    matchedImageData: string;
-    matchedUserBio: string;
-    matchIsGhosted: boolean;
-    lastMessageUser1: Date | null;
-    lastMessageUser2: Date | null;
+    id: number;
+    fullName: string;
+    gender: string;
+    age: number;
+    bio: string;
+    images: string[];
 }
 
 export default MatchUserType;

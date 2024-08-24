@@ -1,13 +1,14 @@
-interface MatchType {
-    matchId: number;
-    matchedAt: Date;
-    matchedUserId: number;
-    matchedName: string;
-    matchedImageData: string;
-    matchedUserBio: string;
-    isGhosted: boolean;
-    lastMessageUser1: Date | null;
-    lastMessageUser2: Date | null;
-}
 
+import MatchUserType from "./MatchUserInterface";
+
+interface MatchType {
+    id: number;
+    user1Id: number;
+    user2Id: number;
+    lastMessageUser1?: string;
+    lastMessageUser2?: string;
+    matchedAt: string;
+    isGhosted: boolean;
+    matchUser: MatchUserType;
+}
 export default MatchType;
