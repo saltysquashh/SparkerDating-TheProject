@@ -4,10 +4,10 @@ import { getAuthToken, setAuthToken, removeAuthToken } from '../utilities/authTo
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-export const fetchMatch = async (matchId) => {
+export const getMatchById = async (matchId, userId) => {
     const token = getAuthToken();
     try {
-        const response = await axios.get(`${API_URL}/matches/matchbyid/${matchId}`, {
+        const response = await axios.get(`${API_URL}/matches/matchbyid/${matchId}/byuserid/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}` // JWT token
             }
@@ -19,10 +19,10 @@ export const fetchMatch = async (matchId) => {
     }
 };
 
-export const fetchUserMatches = async (userId) => {
+export const getAllMatchesByUserId = async (userId) => {
     const token = getAuthToken();
     try {
-        const response = await axios.get(`${API_URL}/matches/matchesbyuserid/${userId}`, {
+        const response = await axios.get(`${API_URL}/matches/getallmatchesbyuserid/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}` // JWT token
             }
