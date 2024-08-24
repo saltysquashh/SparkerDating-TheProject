@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import '../styles/SwipeDetailsPage.css';
-import { fetch_ShowcaseUser } from '../services/userService';
 import { deleteSwipe,  fetchSwipeDetails} from '../services/swipeService';
-import { fetchMatch } from '../services/matchService';
 import UserType from '../interfaces/UserInterface';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +33,6 @@ const SwipeDetailsPage = () => {
                 setSwipe(swipeDetails.swipe);
 
                 // Check if a match exists between the user and swipeUser
-                
                 const matchExists = !!swipeDetails.match;
 
                 setIsMatched(matchExists); // Set if a match exists
