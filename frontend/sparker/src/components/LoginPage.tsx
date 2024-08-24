@@ -23,7 +23,6 @@ const LoginPage = () => {
                 email: formData.email,
                 password: formData.password,
             });
-            alert('Login successful');
             // maybe navigate the user to a different page or update the state here??
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -47,7 +46,9 @@ const LoginPage = () => {
         <div className="global-container">
             <div className="form-container">
                 <div className="login-container">
-                    <h1>Login Page</h1>
+                    <div className="login-page-title">
+                    <h1>Login</h1>
+                    </div>
                     <form onSubmit={handleLogin}>
                         <input
                             type="email"
