@@ -70,7 +70,7 @@ const RegisterPage = () => {
 
     setValidationErrors(errors);
 
-    console.log('valerrors: ' + errors.email); // Log the errors object directly
+    console.log('Errors: ' + errors.email); // Log the errors object directly
 
     if (!errors.gender && !errors.birthDate && !errors.email) {
       setStep(2);
@@ -110,7 +110,9 @@ const RegisterPage = () => {
     <div className="global-container">
     <div className="form-container">
       <div className="register-container">
-        <div className="user-registration-title">User Registration</div>
+      <div className="registration-page-title">
+        <h1>Registration</h1>
+        </div>
         <form onSubmit={handleSubmit}>
           {step === 1 && (
             <>

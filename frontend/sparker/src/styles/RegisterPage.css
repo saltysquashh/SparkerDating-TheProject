@@ -52,9 +52,15 @@
     font-weight: bold;
   }
   
-  .user-registration-title {
-    color: black;
-    font-size: x-large;
+  .registration-page-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-family:'Courier New', Courier, monospace;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
   }
 
   .next-step-button button,
