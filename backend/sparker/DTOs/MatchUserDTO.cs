@@ -1,13 +1,13 @@
 ﻿namespace sparker.DTOs
 {
+
     public class MatchUserDTO
     {
-        public int MatchId { get; set; }
-        public DateTime MatchedAt { get; set; }
-        public int MatchedUserId { get; set; }
-        public string MatchedName { get; set; }
-        public string MatchedImageData { get; set; }
-        public string MatchedUserBio { get; set; }
-        public bool MatchIsGhosted { get; set; }
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public string Gender { get; set; }
+        public int Age { get; set; }
+        public string Bio { get; set; }
+        public List<string> Images { get; set; }
     }
 }
