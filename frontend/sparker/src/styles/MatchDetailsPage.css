@@ -151,3 +151,20 @@
         font-size: 1.1em;
         color: #666;
     }
+    
+    .time-left-title {
+        text-align: center;
+        font-size: large;
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .matched-at-text {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 12px;
+        box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
