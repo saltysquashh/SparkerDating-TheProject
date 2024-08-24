@@ -128,13 +128,21 @@ const MatchDetailsPage = () => {
                             <h1>Ghosting Status</h1>
                         </div>
 
-                        <div className="time-left-title">Time left before ghosting:</div>
-                        <p>
-                            {userId === match.user1Id ? "You" : match.matchUser.fullName}: {timeLeftUser1}
-                        </p>
-                        <p>
-                            {userId === match.user2Id ? "You" : match.matchUser.fullName}: {timeLeftUser2}
-                        </p>
+                        {isGhosted ? (
+                            <div className="ghosted-message">
+                                The match has been ghosted and locked...
+                            </div>
+                        ) : (
+                            <>
+                                <div className="time-left-title">Time left before ghosting:</div>
+                                <p>
+                                    {userId === match.user1Id ? "You" : match.matchUser.fullName}: {timeLeftUser1}
+                                </p>
+                                <p>
+                                    {userId === match.user2Id ? "You" : match.matchUser.fullName}: {timeLeftUser2}
+                                </p>
+                            </>
+                        )}
                     </div>
                     <div className="match-actions">
                         {!isGhosted ? (
