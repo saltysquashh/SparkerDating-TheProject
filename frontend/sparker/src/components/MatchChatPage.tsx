@@ -43,7 +43,6 @@ const MatchChatPage = () => {
         };
     }, [setMessages]);
 
-    // scroll to bottom when messages change
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
     }, [messages]);
@@ -58,9 +57,10 @@ const MatchChatPage = () => {
         if (message === '') {
             return;
         }
-    
-            await sendMessage(thisMatchId, senderId, receiverId, message);
-    
+
+        // send message to the server
+        await sendMessage(thisMatchId, senderId, receiverId, message);
+
         setMessage('');
     };
 
@@ -70,32 +70,45 @@ const MatchChatPage = () => {
         }
     };
 
+    const formatTimestamp = (timestamp?: string) => {
+        if (!timestamp || isNaN(new Date(timestamp).getTime())) {
+            return "Sent just now.";
+        }
+
+        const date = new Date(timestamp);
+        return date.toLocaleString();
+    };
+
     return (
-        <div className="chat-container">
-            <div className="message-list">
-                {messages.map((msg, index) => (
-                    <div 
-                        key={index} 
-                        className={`message ${msg.senderId === userId ? 'sent' : 'received'}`}
-                    >
-                        {msg.content}
-                    </div>
-                ))}
-                {/* this is the reference div that scrolls into view */}
-                <div ref={messagesEndRef} />
-            </div>
-            <div className="message-input-container">
-                <input 
-                    type="text" 
-                    value={message} 
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    className="message-input"
-                    placeholder="Type a message..."
-                />
-                <button onClick={handleSendMessage} className="send-button">Send</button>
-            </div>
-        </div>  
+        <div className="chat-page-background">
+            <div className="chat-container">
+                <div className="message-list">
+                    {messages.map((msg, index) => (
+                        <div 
+                            key={index} 
+                            className={`message ${msg.senderId === userId ? 'sent' : 'received'}`}
+                        >
+                            {msg.content}
+                            <div className="timestamp">
+                                {formatTimestamp(msg.time_Stamp)}
+                            </div>
+                        </div>
+                    ))}
+                    <div ref={messagesEndRef} />
+                </div>
+                <div className="message-input-container">
+                    <input 
+                        type="text" 
+                        value={message} 
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyDown={handleKeyPress}
+                        className="message-input"
+                        placeholder="Type a message..."
+                    />
+                    <button onClick={handleSendMessage} className="send-button">Send</button>
+                </div>
+            </div>  
+        </div>
     );
 };
 
