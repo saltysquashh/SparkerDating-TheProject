@@ -189,6 +189,9 @@ namespace sparker.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("Last_Login_At")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Last_Name")
                         .HasColumnType("nvarchar(max)");
 
