@@ -12,7 +12,7 @@
 .swipe-history-page-title {
     text-align: center;
     margin-bottom: 20px;
-    font-size: 28px;
+    font-size: x-large;
     color: #333;
     margin: 0;
     font-family: 'Courier New', Courier, monospace;
@@ -30,7 +30,7 @@
 .swipe-item {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Space between the text and image */
+    justify-content: space-between;
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #ccc;
@@ -40,7 +40,7 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 50px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
-    font-size: 0.9rem; /* Make text smaller */
+    font-size: 0.9rem;
 }
 
 .swipe-liked {
@@ -62,10 +62,10 @@
 }
 
 .swipeuser-images {
-    order: 2; /* Move the image to the right */
-    width: 70px; /* Smaller image */
-    height: 70px; /* Smaller image */
-    margin-left: 10px; /* Space between text and image */
+    order: 2;
+    width: 70px;
+    height: 70px;
+    margin-left: 10px;
     border-radius: 50%;
 }
 
@@ -85,7 +85,7 @@
 }
 
 .swipe-item > div {
-    flex: 1; /* Equal width for text sections */
+    flex: 1;
     padding: 5px;
 }
 
