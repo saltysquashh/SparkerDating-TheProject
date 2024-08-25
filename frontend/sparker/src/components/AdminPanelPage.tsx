@@ -35,8 +35,7 @@ const AdminPanelPage = () => {
     }, [authUser, navigate]);
 
     const handleUserClick = (userId: number) => {
-        // console.log('Match clicked, their userId is: ', matchUserId);
-        // navigate(`/matches/match/${matchId}/${matchUserId}`);
+        navigate(`/adminpanel/restore/${userId}`);
     };
 
     const handleUserDelete = async (delUserId: number, byUserId: number) => {
@@ -92,29 +91,29 @@ const AdminPanelPage = () => {
                 <p>Welcome, {authUser.firstName}! You have administrative access.</p>
                 <h2>All Users</h2>
                 <ul className="user-list">
-                    {users.map((shownUser) => (
-                        <li key={shownUser.id} className="user-item">
-                            <div>Id: {shownUser.id}</div>
-                            <div>First name: {shownUser.firstName}</div>
-                            <div>Last name: {shownUser.lastName}</div>
-                            <div>Registration date: {shownUser.registrationAt}</div>
-                            <div>Type: {shownUser.isAdmin ? 'Admin' : 'User'} {shownUser.isMaster ? '(Master)' : ''}</div>
-                            {!shownUser.isMaster && (
-                                <div className="admin-panel-buttons">
-                                    {!shownUser.isAdmin && (
-                                        <Button onClick={() => handleUserPromote(shownUser.id, authUser.id)} colorScheme='green'>Promote to Admin</Button>
-                                    )}
-                                    {shownUser.isAdmin && (
-                                        <Button onClick={() => handleUserDemote(shownUser.id, authUser.id)} colorScheme='yellow'>Demote to User</Button>
-                                    )}
-                                    {!shownUser.isAdmin && (
-                                        <Button onClick={() => handleUserDelete(shownUser.id, authUser.id)} colorScheme='red'>Delete</Button>
-                                    )}
-                                </div>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                {users.map((shownUser) => (
+        <li key={shownUser.id} className="user-item" onClick={() => handleUserClick(shownUser.id)}>
+            <div>Id: {shownUser.id}</div>
+            <div>First name: {shownUser.firstName}</div>
+            <div>Last name: {shownUser.lastName}</div>
+            <div>Registration date: {shownUser.registrationAt}</div>
+            <div>Type: {shownUser.isAdmin ? 'Admin' : 'User'} {shownUser.isMaster ? '(Master)' : ''}</div>
+            {!shownUser.isMaster && (
+                <div className="admin-panel-buttons">
+                    {!shownUser.isAdmin && (
+                        <Button onClick={() => handleUserPromote(shownUser.id, authUser.id)} colorScheme='green'>Promote to Admin</Button>
+                    )}
+                    {shownUser.isAdmin && (
+                        <Button onClick={() => handleUserDemote(shownUser.id, authUser.id)} colorScheme='yellow'>Demote to User</Button>
+                    )}
+                    {!shownUser.isAdmin && (
+                        <Button onClick={() => handleUserDelete(shownUser.id, authUser.id)} colorScheme='red'>Delete</Button>
+                    )}
+                </div>
+            )}
+        </li>
+    ))}
+            </ul>
             </div>
         </div>
     );
