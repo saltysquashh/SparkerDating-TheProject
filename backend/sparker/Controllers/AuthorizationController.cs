@@ -67,7 +67,7 @@ public class AuthorizationController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(CredentialLoginDTO credentialLoginDTO)
     {
-        // Convert to lower
+        // Convert to lowercase
         var normalizedEmail = credentialLoginDTO.Email.ToLower();
 
         // Find the user by email
@@ -89,6 +89,11 @@ public class AuthorizationController : ControllerBase
 
         if (result == PasswordVerificationResult.Success)
         {
+            // Update the Last_Login_At field
+            user.Last_Login_At = DateTime.Now;
+            // Save changes to the db
+            await _context.SaveChangesAsync();
+
             // Generate JWT token
             var token = GenerateJwtToken(user.Id.ToString());
 
