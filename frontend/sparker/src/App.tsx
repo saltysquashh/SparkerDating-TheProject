@@ -22,6 +22,7 @@ import MatchChatPage from './components/MatchChatPage';
 import SwipeHistoryPage from './components/SwipeHistoryPage';
 import SwipeDetailsPage from './components/SwipeDetailsPage';
 import AdminPanelPage from './components/AdminPanelPage';
+import RestorePage from './components/RestorePage';
 
 function App() {
 
@@ -41,7 +42,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />}> 
                     <Route path="userinfo" element={<UserInfoPage />} />
                     <Route path="preferences" element={<PreferencePage />} />
-                    <Route path="Customization" element={<CustomizationPage />} />
+                    <Route path="customization" element={<CustomizationPage />} />
                 </Route>
         <Route path="/swiping" element={<SwipingPage />} /> {/* Add this line */}
         <Route path="/matches" element={<MatchesPage />} /> {/* MatchesPage as a separate route */}
@@ -50,6 +51,7 @@ function App() {
         <Route path="/swipehistory" element={<SwipeHistoryPage />} /> {/* Add this line */}
         <Route path="/swipehistory/swipedetails/:swipeId/:swipeUserId" element={<SwipeDetailsPage />} /> {/* MatchDetailsPage as a separate route */}
         <Route path="/adminpanel" element={<AdminPanelPage />} /> {/* Add this line */}
+        <Route path="/adminpanel/restore/:userId" element={<RestorePage />} />
       </Routes>
     </AuthProvider>
     </ChakraProvider>
