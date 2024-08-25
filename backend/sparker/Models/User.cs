@@ -15,6 +15,7 @@ namespace sparker.Models
         public DateTime Birthdate { get; set; }
         public string? Bio { get; set; }
         public DateTime Registration_At { get; set; }
+        public DateTime Last_Login_At { get; set; }
         public virtual Preference Preference { get; set; }
     }
 }

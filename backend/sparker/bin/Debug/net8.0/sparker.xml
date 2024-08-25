@@ -76,5 +76,17 @@
         <member name="M:sparker.Migrations.AddIsGhostedToMatch.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:sparker.Migrations.AddedLastLoginAtToUserModel">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedLastLoginAtToUserModel.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedLastLoginAtToUserModel.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedLastLoginAtToUserModel.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>
