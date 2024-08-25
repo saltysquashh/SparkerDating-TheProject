@@ -7,8 +7,8 @@ import { createHubConnection, fetchChatMessagesForMatch, sendMessage_Service } f
 import '../styles/MatchChatPage.css'; 
 
 const MatchChatPage = () => {
-    const { user } = useContext(AuthContext);
-    const userId = user?.id;
+    const { authUser } = useContext(AuthContext);
+    const authUserId = authUser?.id;
     const { matchUserId } = useParams();
     const { matchId } = useParams();
     const [message, setMessage] = useState('');
@@ -51,7 +51,7 @@ const MatchChatPage = () => {
 
     const handleSendMessage = async () => {
         const thisMatchId = Number(matchId);
-        const senderId = Number(userId);
+        const senderId = Number(authUserId);
         const receiverId = Number(matchUserId);
 
         if (message === '') {
@@ -86,7 +86,7 @@ const MatchChatPage = () => {
                     {messages.map((msg, index) => (
                         <div 
                             key={index} 
-                            className={`message ${msg.senderId === userId ? 'sent' : 'received'}`}
+                            className={`message ${msg.senderId === authUserId ? 'sent' : 'received'}`}
                         >
                             {msg.content}
                             <div className="timestamp">

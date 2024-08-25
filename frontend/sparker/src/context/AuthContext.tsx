@@ -3,7 +3,7 @@ import { removeAuthToken, setAuthToken, getAuthToken } from '../utilities/authTo
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-type UserType = {
+type AuthUserType = {
     id: number;
     firstName: string;
     lastName: string;
@@ -12,7 +12,7 @@ type UserType = {
 };
 
 type AuthContextType = {
-    user: UserType | null;
+    authUser: AuthUserType | null;
     login: (credentials: { email: string; password: string }) => Promise<void>;
     logout: () => void;
 };
@@ -24,7 +24,7 @@ type AuthProviderProps = {
 };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [user, setUser] = useState<UserType | null>(null);
+    const [authUser, setAuthUser] = useState<AuthUserType | null>(null);
     const navigate = useNavigate();
     const API_URL = process.env.REACT_APP_API_URL;
     
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         try {
             const response = await axios.post(`${API_URL}/authorization/login`, credentials); 
             const { token, ...userData } = response.data;
-            setUser(userData);
+            setAuthUser(userData);
             setAuthToken(token); // set token in localStorage and axios
             navigate('/');
         } catch (error) {
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // log user out
     const logout = () => {
-        setUser(null);
+        setAuthUser(null);
         removeAuthToken();
         navigate('/login');
     };
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     Authorization: `Bearer ${token}`
                 }
             }).then(response => {
-                setUser(response.data);
+                setAuthUser(response.data);
                 setAuthToken(token); // Ensure token is set in headers
             }).catch(() => {
                 removeAuthToken(); // if invalid, remove
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     return (
         // provide access to context values and methods (of AuthContext), in child components
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ authUser, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

@@ -9,7 +9,7 @@ import '../styles/Global.css';
 import '../styles/SwipeHistoryPage.css';
 
 const SwipeHistoryPage = () => {
-    const { user } = useContext(AuthContext);
+    const { authUser } = useContext(AuthContext);
     const [swipes, setSwipes] = useState<SwipeHistoryType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -17,10 +17,10 @@ const SwipeHistoryPage = () => {
     
     useEffect(() => {
         const loadSwipes = async () => {
-            if (user) {
+            if (authUser) {
                 setIsLoading(true);
                 try {
-                    const fetchedSwipes = await fetchSwipesByUser(user.id);
+                    const fetchedSwipes = await fetchSwipesByUser(authUser.id);
                     setSwipes(fetchedSwipes);
                     console.log("Fetched Swipes:", fetchedSwipes); // Log the fetched Swipes
                 } catch (error) {
@@ -31,7 +31,7 @@ const SwipeHistoryPage = () => {
         };
     
         loadSwipes();
-    }, [user]);
+    }, [authUser]);
 
     const handleSwipeClick = (SwipeId: number, SwipeUserId: number) => {
         console.log('Swipe clicked, their userId is: ', SwipeUserId);

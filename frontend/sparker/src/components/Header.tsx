@@ -6,7 +6,7 @@ import Dropdown from './Dropdown';
 import logoImage from '../images/LogoV2.png'; 
 
 const Header = () => {
-    const { user, logout } = useContext(AuthContext);
+    const { authUser, logout } = useContext(AuthContext);
 
     const navigate = useNavigate();
     
@@ -20,7 +20,7 @@ const userOptions = [
     { label: 'Matches', action: () => navigate('/matches') },
     { label: 'Swipe history', action: () => navigate('/swipehistory') },
     { label: 'Profile', action: () => navigate('/profile') },
-    ...(user?.isAdmin ? [{ label: 'Admin panel', action: () => navigate('/adminpanel') }] : []),
+    ...(authUser?.isAdmin ? [{ label: 'Admin panel', action: () => navigate('/adminpanel') }] : []),
     { label: 'Log out', action: logout }
 ];
 
@@ -34,10 +34,10 @@ return (
           <img src="/images/LogoV2.png" alt="Logo" className="header-logo" />
       </Link>
       <div className="header-right">
-                       <Dropdown options={user ? userOptions : loginOptions} />
-                {user && (
+                       <Dropdown options={authUser ? userOptions : loginOptions} />
+                {authUser && (
                     <div className="logged-in-info">
-                        Logged in as <strong>{user.firstName} {user.lastName}</strong>
+                        Logged in as <strong>{authUser.firstName} {authUser.lastName}</strong>
                     </div>
                 )}
  

@@ -17,15 +17,15 @@ const UserInfoPage = () => {
     });
 
         const [loading, setLoading] = useState(true);
-        const { user, logout } = useContext(AuthContext);
+        const { authUser, logout } = useContext(AuthContext);
 
 
         const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault(); // Prevent the default form submit action
     
-            if (user && user.id) {
+            if (authUser && authUser.id) {
                 try {
-                    await update_UserInfo(user.id, user_Info); 
+                    await update_UserInfo(authUser.id, user_Info); 
                     alert('User information updated successfully!');
                 } catch (error) {
                     console.error('Error updating user information:', error);
@@ -35,11 +35,11 @@ const UserInfoPage = () => {
         };
 
         const handleDeleteUser = async () => {
-            if (user && user.id) {
+            if (authUser && authUser.id) {
                 const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
                 if (confirmed) {
                     try {
-                        await deleteUser(user.id, user.id); // user deletes themself
+                        await deleteUser(authUser.id, authUser.id); // user deletes themself
                         alert('Your account has been deleted.');
                         logout(); 
                     } catch (error) {
@@ -51,10 +51,10 @@ const UserInfoPage = () => {
         };
 
         useEffect(() => {
-            if (user && user.id) {
+            if (authUser && authUser.id) {
                 const getUserInfo = async () => {
                     try {
-                        const data = await fetch_UserInfo(user.id);
+                        const data = await fetch_UserInfo(authUser.id);
                         
                         let formattedBirthdate = data.birthdate;
                         if (formattedBirthdate) {
@@ -78,7 +78,7 @@ const UserInfoPage = () => {
             
                 getUserInfo();
             }
-        }, [user]);
+        }, [authUser]);
 
         const handleUserInfoChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
             setUserInfo({ ...user_Info, [e.target.name]: e.target.value });
@@ -88,7 +88,7 @@ const UserInfoPage = () => {
         return <div>Loading...</div>;
     }
     
-    if (!user) {
+    if (!authUser) {
         return <div>No user data found.</div>;
     }
 

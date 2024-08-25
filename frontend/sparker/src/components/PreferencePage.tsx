@@ -11,7 +11,7 @@ const PreferencePage = () => {
 
 
     const [loading, setLoading] = useState(true);
-    const { user } = useContext(AuthContext);
+    const { authUser } = useContext(AuthContext);
     
     const [userPreferences, setUserPreferences] = useState({
         sex: '',
@@ -24,10 +24,10 @@ const PreferencePage = () => {
 
 
     useEffect(() => {
-        if (user && user.id) {
+        if (authUser && authUser.id) {
             const getUserPref = async () => {
                 try {
-                    const data = await fetch_UserPreferences(user.id); // Fetch user data based on user id
+                    const data = await fetch_UserPreferences(authUser.id); // Fetch user data based on user id
                     setUserPreferences({ 
                         sex: data.sex || '',
                         ageMin: data.ageMin || 18, 
@@ -44,14 +44,14 @@ const PreferencePage = () => {
         
             getUserPref();
         }
-    }, [user]);
+    }, [authUser]);
 
 
 if (loading) {
     return <div>Loading...</div>;
 }
 
-if (!user) {
+if (!authUser) {
     return <div>No user data found.</div>;
 }
 
@@ -59,9 +59,9 @@ if (!user) {
 const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); // prevent the default form submit action
 
-    if (user && user.id) {
+    if (authUser && authUser.id) {
         try {
-            await update_UserPreferences(user.id, userPreferences);
+            await update_UserPreferences(authUser.id, userPreferences);
             alert('User preferences were updated succesfully.');
         } catch (error) {
             console.error('Error updating user preferences:', error);
@@ -105,7 +105,6 @@ const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                     </div>
                     <p>Min Age: {userPreferences.ageMin}</p>
                     <p>Max Age: {userPreferences.ageMax}</p>
-                    {/* <button >Update Preferences</button> */}
                     <Button type="submit" colorScheme='blue'>Save</Button>
                 </form>
         </div>

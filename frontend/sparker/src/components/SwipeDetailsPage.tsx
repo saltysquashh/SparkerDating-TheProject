@@ -18,7 +18,7 @@ const SwipeDetailsPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isMatched, setIsMatched] = useState(false); // Track if a match exists
     const navigate = useNavigate();
-    const { user } = useContext(AuthContext);
+    const { authUser } = useContext(AuthContext);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -27,7 +27,7 @@ const SwipeDetailsPage = () => {
         const loadData = async () => {
             setIsLoading(true);
             try {
-                const swipeDetails = await fetchSwipeDetails (swipeUserId, user?.id);
+                const swipeDetails = await fetchSwipeDetails (swipeUserId, authUser?.id);
                 setUserInfo(swipeDetails.showcaseUserDTO);
                 setImages(swipeDetails.showcaseUserDTO.images || []);
                 setSwipe(swipeDetails.swipe);

@@ -11,14 +11,14 @@ const ProfilePage = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
     const cancelRef = React.useRef()
-    const { user } = useContext(AuthContext);
+    const { authUser } = useContext(AuthContext);
 
 
     return (
         <div className="global-container">
         <div className="profile-menu-container">
             <div className='profile-page-title'>
-             <h1>Profile Page - {user?.firstName}</h1>
+             <h1>Profile Page - {authUser?.firstName}</h1>
              </div>
              <div className="profile-links">
             <nav>

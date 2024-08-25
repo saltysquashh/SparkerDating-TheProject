@@ -6,17 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import MatchType from '../interfaces/MatchInterface';
 
 const MatchesPage = () => {
-    const { user } = useContext(AuthContext);
+    const { authUser } = useContext(AuthContext);
     const [matches, setMatches] = useState<MatchType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const loadMatches = async () => {
-            if (user) {
+            if (authUser) {
                 setIsLoading(true);
                 try {
-                    const matches = await getAllMatchesByUserId(user.id);
+                    const matches = await getAllMatchesByUserId(authUser.id);
                     setMatches(matches);
                 } catch (error) {
                     console.error('Error fetching matches:', error);
@@ -26,7 +26,7 @@ const MatchesPage = () => {
         };
 
         loadMatches();
-    }, [user]);
+    }, [authUser]);
 
     const handleListedMatchClick = (matchId: number, matchUserId: number) => {
         navigate(`/matches/match/${matchId}/${matchUserId}`);

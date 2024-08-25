@@ -8,20 +8,20 @@ import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, Al
 
 
 const AdminPanelPage = () => {
-    const { user } = useContext(AuthContext);
+    const { authUser } = useContext(AuthContext);
     const navigate = useNavigate();
     const [users, setUsers] = useState<UserType[]>([]);
 
     useEffect(() => {
 
-        if (!user) {
+        if (!authUser) {
             // Redirect to login page or any other page
             alert('You are not logged in.');
             navigate('/login');
         }
 
         const loadUsers = async () => {
-            if (user) {
+            if (authUser) {
                 try {
                     const fetchedUsers = await fetchUsers();
                     setUsers(fetchedUsers);
@@ -32,7 +32,7 @@ const AdminPanelPage = () => {
             }
         };
         loadUsers();
-    }, [user, navigate]);
+    }, [authUser, navigate]);
 
     const handleUserClick = (userId: number) => {
         // console.log('Match clicked, their userId is: ', matchUserId);
@@ -74,11 +74,11 @@ const AdminPanelPage = () => {
         }
     };
 
-    if (!user?.isAdmin) {
+    if (!authUser?.isAdmin) {
         return <div className="unauthorized-container">You are not authorized as an admin.</div>;
     }
 
-    if (!user) {
+    if (!authUser) {
         return <div>Loading...</div>; // Show loading or redirect until user is validated
     }
 
@@ -89,7 +89,7 @@ const AdminPanelPage = () => {
                 <div className='admin-panel-title'>
                     <h1>Admin Panel</h1>
                 </div>
-                <p>Welcome, {user.firstName}! You have administrative access.</p>
+                <p>Welcome, {authUser.firstName}! You have administrative access.</p>
                 <h2>All Users</h2>
                 <ul className="user-list">
                     {users.map((shownUser) => (
@@ -102,13 +102,13 @@ const AdminPanelPage = () => {
                             {!shownUser.isMaster && (
                                 <div className="admin-panel-buttons">
                                     {!shownUser.isAdmin && (
-                                        <Button onClick={() => handleUserPromote(shownUser.id, user.id)} colorScheme='green'>Promote to Admin</Button>
+                                        <Button onClick={() => handleUserPromote(shownUser.id, authUser.id)} colorScheme='green'>Promote to Admin</Button>
                                     )}
                                     {shownUser.isAdmin && (
-                                        <Button onClick={() => handleUserDemote(shownUser.id, user.id)} colorScheme='yellow'>Demote to User</Button>
+                                        <Button onClick={() => handleUserDemote(shownUser.id, authUser.id)} colorScheme='yellow'>Demote to User</Button>
                                     )}
                                     {!shownUser.isAdmin && (
-                                        <Button onClick={() => handleUserDelete(shownUser.id, user.id)} colorScheme='red'>Delete</Button>
+                                        <Button onClick={() => handleUserDelete(shownUser.id, authUser.id)} colorScheme='red'>Delete</Button>
                                     )}
                                 </div>
                             )}

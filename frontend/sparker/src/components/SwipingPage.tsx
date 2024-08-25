@@ -8,7 +8,7 @@ import { fetchNextUserToSwipe } from '../services/userService';
 import { useNavigate } from 'react-router-dom';
 
 const SwipingPage = () => {
-    const { user } = useContext(AuthContext);
+    const { authUser } = useContext(AuthContext);
     const [displayedUser, setDisplayedUser] = useState<SwipeUser | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [images, setImages] = useState<string[]>([]);
@@ -21,7 +21,7 @@ const SwipingPage = () => {
     const fetchNextUser = async () => {
         setIsLoading(true);
         try {
-            const response = await fetchNextUserToSwipe(user?.id);
+            const response = await fetchNextUserToSwipe(authUser?.id);
             setDisplayedUser(response);
             const userImages = response.images || [];
             // use default image if no images are available
@@ -41,9 +41,9 @@ const SwipingPage = () => {
     };
 
     const handleSwipe = async (liked: boolean) => {
-        if (!displayedUser || !user) return;
+        if (!displayedUser || !authUser) return;
         try {
-            const success = await createSwipe(Number(user.id), Number(displayedUser.id), liked);
+            const success = await createSwipe(Number(authUser.id), Number(displayedUser.id), liked);
             if (success) {
                 fetchNextUser().catch((error) => {
                     console.error("Error fetching next user:", error);

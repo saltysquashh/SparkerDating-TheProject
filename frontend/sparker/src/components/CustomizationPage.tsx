@@ -10,21 +10,21 @@ const CustomizationPage = () => {
     const [images, setImages] = useState<ImageType[]>([]);
     const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const { user } = useContext(AuthContext);
-    const userId = user?.id;
+    const { authUser } = useContext(AuthContext);
+    const authUserId = authUser?.id;
     const [imageUrls, setImageUrls] = useState<{ [key: number]: string }>({});
     const [loading, setLoading] = useState(true);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [userBio, setUserBio] = useState('');
     useEffect(() => {
         const getUserBio = async () => {
-            if (!userId) {
+            if (!authUserId) {
                 console.error("User ID is not available.");
                 setLoading(false);
                 return;
             }
             try {
-                const response = await fetch_UserCustomization(userId);
+                const response = await fetch_UserCustomization(authUserId);
                 setUserBio(response.bio || '');
             } catch (error) {
                 console.error('Error fetching user bio:', error);
@@ -34,8 +34,8 @@ const CustomizationPage = () => {
 
         const loadImages = async () => {
             try {
-                if (userId) {
-                    const fetchedImages = await fetchUserImages(userId);
+                if (authUserId) {
+                    const fetchedImages = await fetchUserImages(authUserId);
                     setImages(fetchedImages);
                 }
             } catch (error) {
@@ -49,7 +49,7 @@ const CustomizationPage = () => {
         return () => {
             Object.values(imageUrls).forEach(url => URL.revokeObjectURL(url));
         };
-    }, [userId]);
+    }, [authUserId]);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -67,9 +67,9 @@ const CustomizationPage = () => {
     };
 
     const handleImageUpload = async () => {
-        if (selectedFile && userId) {
+        if (selectedFile && authUserId) {
             try {
-                const response = await uploadImage(selectedFile, userId);
+                const response = await uploadImage(selectedFile, authUserId);
                 setImages([...images, response]);
                 setSelectedFile(null);
                 setSuccessMessage('Saved image changes successfully');
@@ -90,13 +90,13 @@ const CustomizationPage = () => {
     };
 
     const handleSaveBioClick = async () => {
-        if (!userId) {
+        if (!authUserId) {
             console.error("User ID is not available.");
             return;
         }
         try {
             const bioData = userBio;
-            await update_UserBio(userId, bioData);
+            await update_UserBio(authUserId, bioData);
         } catch (error) {
             alert('Error updating bio');
         }

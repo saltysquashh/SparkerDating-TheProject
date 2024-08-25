@@ -16,13 +16,13 @@ const MatchDetailsPage = () => {
     const [createdAt, setCreatedAt] = useState<string | null>(null);
     const [isGhosted, setIsGhosted] = useState(false);
     const navigate = useNavigate();
-    const { user } = useContext(AuthContext);
-    const userId = user?.id;
+    const { authUser } = useContext(AuthContext);
+    const authUserId = authUser?.id;
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null);
 
     const updateTimers = (matchData: MatchType) => {
-        const { timeLeftUser1, timeLeftUser2 } = calculateTimeLeft(matchData, userId, matchData.matchUser?.id);
+        const { timeLeftUser1, timeLeftUser2 } = calculateTimeLeft(matchData, authUserId, matchData.matchUser?.id);
         
         setTimeLeftUser1(formatTimeLeft(timeLeftUser1));
         setTimeLeftUser2(formatTimeLeft(timeLeftUser2));
@@ -40,7 +40,7 @@ const MatchDetailsPage = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const RetrievedMatchData = await getMatchById(matchId, userId);
+                const RetrievedMatchData = await getMatchById(matchId, authUserId);
                 setMatch(RetrievedMatchData);
                 setCreatedAt(formatDate(RetrievedMatchData.matchedAt));
                 updateTimers(RetrievedMatchData);
@@ -55,7 +55,7 @@ const MatchDetailsPage = () => {
         loadData();  // Initial load
 
         return () => clearInterval(intervalLoadData);
-    }, [matchId, userId]);
+    }, [matchId, authUserId]);
 
     useEffect(() => {
         const intervalTimeLeft = setInterval(() => {
@@ -77,7 +77,7 @@ const MatchDetailsPage = () => {
 
     const handleUnmatchClick = async () => {
         try {
-            await deleteMatch(matchId, userId);
+            await deleteMatch(matchId, authUserId);
             navigate(`/matches/`);
         } catch (error) {
             console.error("Error handling unmatch action:", error);
@@ -136,10 +136,10 @@ const MatchDetailsPage = () => {
                             <>
                                 <div className="time-left-title">Time left before ghosting:</div>
                                 <p>
-                                    {userId === match.user1Id ? "You" : match.matchUser.fullName}: {timeLeftUser1}
+                                    {authUserId === match.user1Id ? "You" : match.matchUser.fullName}: {timeLeftUser1}
                                 </p>
                                 <p>
-                                    {userId === match.user2Id ? "You" : match.matchUser.fullName}: {timeLeftUser2}
+                                    {authUserId === match.user2Id ? "You" : match.matchUser.fullName}: {timeLeftUser2}
                                 </p>
                             </>
                         )}
