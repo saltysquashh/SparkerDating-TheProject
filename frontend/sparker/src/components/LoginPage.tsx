@@ -49,6 +49,7 @@ const LoginPage = () => {
                     <div className="login-page-title">
                     <h1>Login</h1>
                     </div>
+                    <p>E-mail</p>
                     <form onSubmit={handleLogin}>
                         <input
                             type="email"
@@ -58,6 +59,7 @@ const LoginPage = () => {
                             value={formData.email}
                             required
                         />
+                        <p>Password</p>
                         <input
                             type="password"
                             name="password"
