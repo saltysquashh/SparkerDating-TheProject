@@ -131,7 +131,7 @@ const RegisterPage = () => {
               <p>Birthdate</p>
               <input type="date" name="birthDate" onChange={handleChange} value={formData.birthDate} required />
               {validationErrors.birthDate && <div className="error-message">{validationErrors.birthDate}</div>}
-              <p>Email</p>
+              <p>E-mail</p>
               <input type="email" name="email" placeholder="Email" onChange={handleChange} value={formData.email} required />
               {validationErrors.email && <div className="error-message">{validationErrors.email}</div>}
               <div className="next-step-button"><button type="button" onClick={handleGoNextStep}>Next</button></div>
