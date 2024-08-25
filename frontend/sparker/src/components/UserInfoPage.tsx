@@ -1,13 +1,10 @@
-// UserInfoPage.tsx
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import '../styles/UserInfoPage.css';
 import { deleteUser, fetch_UserInfo, update_UserInfo } from '../services/userService';
 import { AuthContext } from '../context/AuthContext';
 import { Button } from '@chakra-ui/react';
 
-
 const UserInfoPage = () => {
-    
     const [user_Info, setUserInfo] = useState({
         firstName: '',
         lastName: '',
@@ -16,73 +13,72 @@ const UserInfoPage = () => {
         email: ''
     });
 
-        const [loading, setLoading] = useState(true);
-        const { authUser, logout } = useContext(AuthContext);
+    const [loading, setLoading] = useState(true);
+    const { authUser, logout } = useContext(AuthContext);
 
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault(); // Prevent the default form submit action
 
-        const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault(); // Prevent the default form submit action
-    
-            if (authUser && authUser.id) {
+        if (authUser && authUser.id) {
+            try {
+                await update_UserInfo(authUser.id, user_Info); 
+                alert('User information updated successfully!');
+            } catch (error) {
+                console.error('Error updating user information:', error);
+                alert('Failed to update user information.');
+            }
+        }
+    };
+
+    const handleDeleteUser = async () => {
+        if (authUser && authUser.id) {
+            const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+            if (confirmed) {
                 try {
-                    await update_UserInfo(authUser.id, user_Info); 
-                    alert('User information updated successfully!');
+                    await deleteUser(authUser.id, authUser.id); // user deletes themself
+                    alert('Your account has been deleted.');
+                    logout(); 
                 } catch (error) {
-                    console.error('Error updating user information:', error);
-                    alert('Failed to update user information.');
+                    console.error('Error deleting account:', error);
+                    alert('Failed to delete your account.');
                 }
             }
-        };
+        }
+    };
 
-        const handleDeleteUser = async () => {
-            if (authUser && authUser.id) {
-                const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
-                if (confirmed) {
-                    try {
-                        await deleteUser(authUser.id, authUser.id); // user deletes themself
-                        alert('Your account has been deleted.');
-                        logout(); 
-                    } catch (error) {
-                        console.error('Error deleting account:', error);
-                        alert('Failed to delete your account.');
+    useEffect(() => {
+        if (authUser && authUser.id) {
+            const getUserInfo = async () => {
+                try {
+                    const data = await fetch_UserInfo(authUser.id);
+                    
+                    let formattedBirthdate = data.birthdate;
+                    if (formattedBirthdate) {
+                        const date = new Date(formattedBirthdate);
+                        const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+                        formattedBirthdate = new Date(date.getTime() - userTimezoneOffset).toISOString().split('T')[0];
                     }
+
+                    setUserInfo({ 
+                        firstName: data.firstName || '',
+                        lastName: data.lastName || '',
+                        birthdate: formattedBirthdate || '',
+                        gender: data.gender || '',
+                        email: data.email || ''
+                    });
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
                 }
-            }
-        };
+                setLoading(false);
+            };
+        
+            getUserInfo();
+        }
+    }, [authUser]);
 
-        useEffect(() => {
-            if (authUser && authUser.id) {
-                const getUserInfo = async () => {
-                    try {
-                        const data = await fetch_UserInfo(authUser.id);
-                        
-                        let formattedBirthdate = data.birthdate;
-                        if (formattedBirthdate) {
-                            const date = new Date(formattedBirthdate);
-                            const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-                            formattedBirthdate = new Date(date.getTime() - userTimezoneOffset).toISOString().split('T')[0];
-                        }
-
-                        setUserInfo({ 
-                            firstName: data.firstName || '',
-                            lastName: data.lastName || '',
-                            birthdate: formattedBirthdate || '',
-                            gender: data.gender || '',
-                            email: data.email || ''
-                        });
-                    } catch (error) {
-                        console.error('Error fetching user data:', error);
-                    }
-                    setLoading(false);
-                };
-            
-                getUserInfo();
-            }
-        }, [authUser]);
-
-        const handleUserInfoChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-            setUserInfo({ ...user_Info, [e.target.name]: e.target.value });
-        };
+    const handleUserInfoChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setUserInfo({ ...user_Info, [e.target.name]: e.target.value });
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -92,32 +88,55 @@ const UserInfoPage = () => {
         return <div>No user data found.</div>;
     }
 
-
     return (
-
         <div className="user-info-container">
             <div className='userinfo-page-title'>
-            <h2>User information</h2>
+                <h2>User information</h2>
             </div>
             <div className="form-section">
                 <form onSubmit={handleFormSubmit}>
-            
-                    <input type="text" name="firstName" value={user_Info.firstName} onChange={handleUserInfoChange} placeholder="First Name" />
-                    <input type="text" name="lastName" value={user_Info.lastName} onChange={handleUserInfoChange} placeholder="Last Name" />
-                    <input type="date" name="birthdate" value={user_Info.birthdate} onChange={handleUserInfoChange} />
-                    <select name="gender" value={user_Info.gender} onChange={handleUserInfoChange}>
+                    <input 
+                        type="text" 
+                        name="firstName" 
+                        value={user_Info.firstName} 
+                        onChange={handleUserInfoChange} 
+                        placeholder="First Name" 
+                    />
+                    <input 
+                        type="text" 
+                        name="lastName" 
+                        value={user_Info.lastName} 
+                        onChange={handleUserInfoChange} 
+                        placeholder="Last Name" 
+                    />
+                    <input 
+                        type="date" 
+                        name="birthdate" 
+                        value={user_Info.birthdate} 
+                        onChange={handleUserInfoChange} 
+                    />
+                    <select 
+                        name="gender" 
+                        value={user_Info.gender} 
+                        onChange={handleUserInfoChange}
+                    >
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Other">Other</option>
                     </select>
-                    <input type="email" name="email" value={user_Info.email} onChange={handleUserInfoChange} placeholder="Email" />
+                    <input 
+                        type="lockedemail" 
+                        name="email" 
+                        value={user_Info.email} 
+                        readOnly // Lock the email field
+                        placeholder="Email" 
+                    />
                     <Button type="submit" colorScheme='blue'>Save</Button>
                     <Button type="button" colorScheme='red' onClick={handleDeleteUser}>Delete</Button>
                 </form>
-        </div>
+            </div>
         </div>
     );
 }
-
 
 export default UserInfoPage;

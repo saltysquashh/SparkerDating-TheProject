@@ -38,7 +38,7 @@ label {
 }
 
 input[type="text"],
-input[type="email"],
+input[type="lockedemail"],
 input[type="date"],
 select {
     width: 100%;
@@ -46,6 +46,10 @@ select {
     margin: 5px 0;
     border-radius: 5px;
     border: 1px solid #ddd;
+}
+
+input[type="lockedemail"] {
+    color: rgb(173, 173, 173);
 }
 
 button {
