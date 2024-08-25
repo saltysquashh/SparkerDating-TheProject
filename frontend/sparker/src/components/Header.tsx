@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css'; 
 import { AuthContext } from '../context/AuthContext';
 import Dropdown from './Dropdown';
-import logoImage from '../images/LogoV2.png'; 
 
 const Header = () => {
     const { authUser, logout } = useContext(AuthContext);
@@ -31,7 +30,7 @@ return (
       <div className="sparker-title">
           <h1>Sparker </h1>
           </div>
-          <img src="/images/LogoV2.png" alt="Logo" className="header-logo" />
+          <img src="/images/sparker-logo-transparent.png" alt="Logo" className="header-logo" />
       </Link>
       <div className="header-right">
                        <Dropdown options={authUser ? userOptions : loginOptions} />
