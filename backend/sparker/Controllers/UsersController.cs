@@ -145,9 +145,11 @@ public class UsersController : ControllerBase
         // Update user properties
         user.First_Name = updateUserInfoDTO.FirstName;
         user.Last_Name = updateUserInfoDTO.LastName;
-        user.Email = updateUserInfoDTO.Email;
         user.Gender = updateUserInfoDTO.Gender;
         user.Birthdate = updateUserInfoDTO.Birthdate;
+
+        // Users are not allowed to update their e-mail
+        // user.Email = updateUserInfoDTO.Email;
 
         try
         {
