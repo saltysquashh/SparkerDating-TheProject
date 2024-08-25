@@ -28,10 +28,11 @@ const SwipeDetailsPage = () => {
             setIsLoading(true);
             try {
                 const swipeDetails = await fetchSwipeDetails (swipeUserId, authUser?.id);
+                console.log("Fetched Swipe:", swipeDetails); // Log the fetched Swipes
                 setUserInfo(swipeDetails.showcaseUserDTO);
                 setImages(swipeDetails.showcaseUserDTO.images || []);
                 setSwipe(swipeDetails.swipe);
-
+             
                 // Check if a match exists between the user and swipeUser
                 const matchExists = !!swipeDetails.match;
 
@@ -57,7 +58,7 @@ const SwipeDetailsPage = () => {
     const handleUnswipeClick = async () => {
         try {
             const responseMsg = await deleteSwipe(swipeId);
-            alert(responseMsg);
+            // alert(responseMsg);
         } catch (error) {
             console.error("Error handling unswipe action:", error);
         }

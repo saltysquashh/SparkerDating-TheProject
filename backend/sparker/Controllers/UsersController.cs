@@ -248,13 +248,14 @@ public class UsersController : ControllerBase
     [HttpGet("nextswipeuser/{userId}")]
     public async Task<IActionResult> GetNextSwipeUser(int userId)
     {
+        var nextUserDTO = new NextUserDTO();
 
-        var nextUser = await FetchNextUser(userId);
-        if (nextUser == null)
+        nextUserDTO = await FetchNextUser(userId);
+        if (nextUserDTO == null)
         {
             return NotFound("No suitable matches found.");
         }
-        return Ok(nextUser); // Return the DTO instead of the full User entity
+        return Ok(nextUserDTO); // Return the DTO instead of the full User entity
     }
 
     private async Task<NextUserDTO> FetchNextUser(int userId)
@@ -282,7 +283,8 @@ public class UsersController : ControllerBase
             (userPreferences.Age_Max == null || DateUtils.CalculateAge(u.Birthdate) <= userPreferences.Age_Max)
         ).ToList();
 
-        // Further filter based on whether the potential match's preferences fit the swiper's user-info
+
+        // Filter based on whether the potential match's preferences fit the swiper's user-info
         var swiperUserInfo = _context.Users.FirstOrDefault(x => x.Id == userId);
         var swiperAge = DateUtils.CalculateAge(swiperUserInfo.Birthdate);
         var finalMatches = potentialMatches.Where(u =>
@@ -309,6 +311,7 @@ public class UsersController : ControllerBase
 
         return (nextUserDto);
     }
+
     [HttpDelete("delete/{delUserId}/{byUserId}")]
     public async Task<IActionResult> DeleteUser(int delUserId, int byUserId) // Didnt have enough time to look into deletion Cascades
     {

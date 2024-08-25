@@ -1,10 +1,10 @@
 interface SwipeUserType {
     id: number;
     name: string;
-    age: number;
     gender: string;
+    age: number;
     bio: string;
-    picturePath: string;
+    images: string[];
 }
 
 export default SwipeUserType

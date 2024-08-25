@@ -60,7 +60,20 @@
     margin-top: 20px;
 }
 
-.pass-button, .like-button {
+
+.pass-button {
+    background-color: #ff6b6b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+
+.like-button {
+    background-color: #4caf50;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -69,13 +82,19 @@
     cursor: pointer;
 }
 
-.pass-button {
-    background-color: #ff6b6b;
+.pass-button:hover {
+    background-color: #e24c4c;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.like-button {
-    background-color: #4caf50;
+
+.like-button:hover {
+    background-color: #33a236;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 .status-box {
     background-color: white;

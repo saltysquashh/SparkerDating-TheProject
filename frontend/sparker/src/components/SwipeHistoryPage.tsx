@@ -22,7 +22,7 @@ const SwipeHistoryPage = () => {
                 try {
                     const fetchedSwipes = await fetchSwipesByUser(authUser.id);
                     setSwipes(fetchedSwipes);
-                    console.log("Fetched Swipes:", fetchedSwipes); // Log the fetched Swipes
+                    // console.log("Fetched Swipes:", fetchedSwipes); // Log the fetched Swipes
                 } catch (error) {
                     console.error('Error fetching Swipes:', error);
                 }

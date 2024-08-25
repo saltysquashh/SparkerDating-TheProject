@@ -22,13 +22,20 @@ const SwipingPage = () => {
         setIsLoading(true);
         try {
             const response = await fetchNextUserToSwipe(authUser?.id);
+            console.log(response);
             setDisplayedUser(response);
             const userImages = response.images || [];
-            // use default image if no images are available
-            if (userImages.length === 0) {
-                userImages.push('/images/default-user-image.png');
+
+            if (userImages.length > 0) {
+                // snsure base64 strings are correctly prefixed
+                const formattedImages = userImages.map((img: string) =>
+                    img.startsWith('data:image/') ? img : `data:image/png;base64,${img}`
+                );
+                setImages(formattedImages);
+            } else {
+                // use a default user image if the user has no images
+                setImages(['/images/default-user-image.png']);
             }
-            setImages(userImages);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 404) {
                 setDisplayedUser(null);
@@ -77,7 +84,7 @@ const SwipingPage = () => {
                         <div className="swipe-images-container">
                             {images.map((image, index) => (
                                 <div key={index} className="swipe-image-thumbnail">
-                                    <img src={image.startsWith('data:image/') ? image : `${image}`} alt="Match" />
+                                    <img src={image} alt="Swipe User" />
                                 </div>
                             ))}
                         </div>
