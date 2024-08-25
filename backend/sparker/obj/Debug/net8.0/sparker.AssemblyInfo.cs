@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("e57a6620-0f9b-4f57-ae2e-111c994b00f7")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("sparker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aee75769c58eec76f42c41ba19b0f3a468271f0b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41a716bd8b76b69ba00af96e8dbf6c6cc86a0103")]
 [assembly: System.Reflection.AssemblyProductAttribute("sparker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("sparker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
