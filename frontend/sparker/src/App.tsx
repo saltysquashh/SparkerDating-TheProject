@@ -23,6 +23,7 @@ import SwipeHistoryPage from './components/SwipeHistoryPage';
 import SwipeDetailsPage from './components/SwipeDetailsPage';
 import AdminPanelPage from './components/AdminPanelPage';
 import RestorePage from './components/RestorePage';
+import WelcomePage from './components/ActivitySummaryPage';
 
 function App() {
 
@@ -52,6 +53,7 @@ function App() {
         <Route path="/swipehistory/swipedetails/:swipeId/:swipeUserId" element={<SwipeDetailsPage />} /> {/* MatchDetailsPage as a separate route */}
         <Route path="/adminpanel" element={<AdminPanelPage />} /> {/* Add this line */}
         <Route path="/adminpanel/restore/:userId" element={<RestorePage />} />
+        <Route path="/welcome" element={<WelcomePage />} />
       </Routes>
     </AuthProvider>
     </ChakraProvider>

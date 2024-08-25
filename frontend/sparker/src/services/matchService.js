@@ -50,7 +50,6 @@ export const deleteMatch = async (matchId, userId) => {
     }
 };
 
-
 export const restoreMatch = async (matchId, adminUserId) => {
     const token = getAuthToken();
     try {
@@ -65,4 +64,22 @@ export const restoreMatch = async (matchId, adminUserId) => {
         console.error('Error restoring match:', error);
         throw error;
     }
+};
+
+
+// for useractivitysummary page
+export const fetchUserActivitySummary = async (userId) => {
+    const token = getAuthToken();
+    try {
+    const response = await axios.get(`${API_URL}/matches/summary/${userId}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    console.log(response.data)
+    return response.data;
+} catch (error) {
+    console.error('Error restoring match:', error);
+    throw error;
+}
 };
