@@ -51,14 +51,15 @@ export const deleteMatch = async (matchId, userId) => {
 };
 
 
-export const restoreMatch = async (matchId) => {
+export const restoreMatch = async (matchId, adminUserId) => {
     const token = getAuthToken();
     try {
-        const response = await axios.post(`${API_URL}/matches/restore/${matchId}`, {}, {
+        const response = await axios.post(`${API_URL}/matches/restore/${matchId}/${adminUserId}`, {
             headers: {
                 'Authorization': `Bearer ${token}` // JWT token
             }
         });
+        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error('Error restoring match:', error);

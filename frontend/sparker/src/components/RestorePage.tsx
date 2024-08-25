@@ -20,6 +20,7 @@ const RestorePage = () => {
                 try {
                     const matches = await getAllMatchesByUserId(Number(userId));
                     setMatches(matches);
+
                 } catch (error) {
                     console.error('Error fetching matches:', error);
                 }
@@ -35,9 +36,9 @@ const RestorePage = () => {
        alert('The match is still active.')
     };
 
-    const handleRestoreMatch = async (matchId: number) => {
+    const handleRestoreMatch = async (matchId: number, adminUserId: number) => {
         try {
-            await restoreMatch(matchId);
+            await restoreMatch(matchId, adminUserId);
             alert("Match restored successfully.");
             setMatches(prevMatches => 
                 prevMatches.map(m => m.id === matchId ? { ...m, isGhosted: false } : m)
@@ -107,8 +108,15 @@ const RestorePage = () => {
                                     ) : (
                                         <div>
                                         <div>
-                                            <Button 
-                                                onClick={() => handleRestoreMatch(match.id)} 
+                                           <Button 
+                                                onClick={() => {
+                                                    if (authUser?.id) {
+                                                        handleRestoreMatch(match.id, authUser.id);
+                                                        console.log('Userid of caller: ' + authUser.id)
+                                                    } else {
+                                                    console.error('User ID is undefined');
+                                                 }
+                                                }} 
                                                 colorScheme='blue' 
                                                 disabled={!match.isGhosted}>
                                                 Restore Match

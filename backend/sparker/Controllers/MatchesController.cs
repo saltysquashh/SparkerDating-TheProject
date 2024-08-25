@@ -163,6 +163,37 @@ namespace sparker.Controllers
 
             return Ok("Match and related data deleted successfully.");
         }
+
+        [HttpPost("restore/{matchId}/{adminUserId}")]
+        public async Task<IActionResult> RestoreMatch(int matchId, int adminUserId)
+        {
+            // Check if the user is an admin
+            var isAdmin = await _context.Admins.AnyAsync(a => a.User_Id == adminUserId);
+            if (!isAdmin)
+            {
+                return Unauthorized("You are not authorized to perform this action.");
+            }
+
+            var match = await _context.Matches.FindAsync(matchId);
+
+            if (match == null)
+            {
+                return NotFound($"Match with ID {matchId} not found.");
+            }
+
+            if (!match.Is_Ghosted)
+            {
+                return BadRequest("This match is not ghosted.");
+            }
+
+            // restore the match by setting Is_Ghosted to false
+            match.Is_Ghosted = false;
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Match restored successfully.");
+        }
+
     }
 }
 
