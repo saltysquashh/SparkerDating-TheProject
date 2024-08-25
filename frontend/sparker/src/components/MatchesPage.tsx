@@ -77,7 +77,7 @@ const MatchesPage = () => {
                 </div>
             </div>
             {match.isGhosted && (
-                <img src="/images/ghosted-icon.png" alt="Ghosted" className="ghost-icon" />
+                <img src="/images/ghosted-icon-transparent.png" alt="Ghosted" className="ghost-icon" />
             )}
         </li>
     ))}
