@@ -5,21 +5,24 @@ import { getAuthToken, setAuthToken, removeAuthToken } from '../utilities/authTo
 const API_URL = process.env.REACT_APP_API_URL;
 
 
-export const registerUser = async (userData) => {
-        try {
-            const response = await axios.post(`${API_URL}/users/register`, userData);
-            return response.data;
-        } catch (error) {
-            // Check for network or server errors
-            if (!error.response) {
-                // Network error
-                throw new Error('Unable to reach the server.');
-            } else {
-                // Other errors
-                throw error;
-            }
+export const post_registerUser = async (userData) => {
+    try {
+        const response = await axios.post(`${API_URL}/users/register`, userData);
+        return response.data;
+    } catch (error) {
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            console.log('Scenario 2');
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            console.log('Scenario 3');
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
         }
-    
+    }
 };
 
 export const fetch_userInfo = async (userId) => {
@@ -30,7 +33,7 @@ export const fetch_userInfo = async (userId) => {
                 'Authorization': `Bearer ${token}` // JWT token
             }
         });
-        return response.data; // Return the data part of the response
+        return response.data;
     } catch (error) {
         console.error('Error fetching user data:', error);
         throw error;
@@ -45,7 +48,7 @@ export const fetch_swipeUserById = async (userId) => {
                 'Authorization': `Bearer ${token}` // JWT token
             }
         });
-        return response.data; // Return the data part of the response
+        return response.data;
     } catch (error) {
         console.error('Error fetching user data:', error);
         throw error;
