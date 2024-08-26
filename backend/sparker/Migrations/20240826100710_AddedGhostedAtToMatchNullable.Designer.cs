@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using sparker.Database;
 
@@ -11,9 +12,11 @@ using sparker.Database;
 namespace sparker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240826100710_AddedGhostedAtToMatchNullable")]
+    partial class AddedGhostedAtToMatchNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,22 +72,6 @@ namespace sparker.Migrations
                     b.ToTable("ChatMessages");
                 });
 
-            modelBuilder.Entity("sparker.Models.Ghost", b =>
-                {
-                    b.Property<int>("Match_Id")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Ghosted_At")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Ghosted_By")
-                        .HasColumnType("int");
-
-                    b.HasKey("Match_Id");
-
-                    b.ToTable("Ghosts");
-                });
-
             modelBuilder.Entity("sparker.Models.Image", b =>
                 {
                     b.Property<int>("Id")
@@ -111,6 +98,9 @@ namespace sparker.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("Ghosted_At")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Is_Ghosted")
                         .HasColumnType("bit");
@@ -244,17 +234,6 @@ namespace sparker.Migrations
                     b.Navigation("Match");
                 });
 
-            modelBuilder.Entity("sparker.Models.Ghost", b =>
-                {
-                    b.HasOne("sparker.Models.Match", "Match")
-                        .WithOne("Ghost")
-                        .HasForeignKey("sparker.Models.Ghost", "Match_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Match");
-                });
-
             modelBuilder.Entity("sparker.Models.Preference", b =>
                 {
                     b.HasOne("sparker.Models.User", "User")
@@ -264,12 +243,6 @@ namespace sparker.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("sparker.Models.Match", b =>
-                {
-                    b.Navigation("Ghost")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("sparker.Models.User", b =>

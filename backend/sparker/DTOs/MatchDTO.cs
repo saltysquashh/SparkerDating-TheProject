@@ -8,7 +8,8 @@
         public DateTime? LastMessageUser1 { get; set; }
         public DateTime? LastMessageUser2 { get; set; }
         public DateTime? MatchedAt { get; set; }
-        public bool IsGhosted { get; set; }
+        public bool IsGhosted {  get; set; }
         public MatchUserDTO? MatchUser { get; set; }
+        public GhostDTO? Ghost { get; set; }
     }
 }

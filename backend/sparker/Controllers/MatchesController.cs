@@ -49,6 +49,11 @@ namespace sparker.Controllers
                                 .Select(i => Convert.ToBase64String(i.Image_Data))
                                 .ToListAsync();
 
+            // check if the match has a ghost existing (is ghosted)
+            var ghost = await _context.Ghosts
+                    .Where(g => g.Match_Id == match.Id)
+                    .FirstOrDefaultAsync(); // Execute the query and get the first result or null
+
             var matchDTO = new MatchDTO
             {
                 Id = match.Id,
@@ -58,6 +63,7 @@ namespace sparker.Controllers
                 LastMessageUser2 = await DateUtils.LastUserMsg(_context, match.Id, match.User2_Id),
                 MatchedAt = match.Matched_At,
                 IsGhosted = match.Is_Ghosted,
+                //GhostedAt = match.Ghosted_At,
 
                 MatchUser = new MatchUserDTO
                 {
@@ -67,7 +73,13 @@ namespace sparker.Controllers
                     Age = DateUtils.CalculateAge(matchUser.Birthdate),
                     Bio = matchUser.Bio,
                     Images = userImages
-                }
+                },
+                Ghost = ghost != null ? new GhostDTO
+                {
+                    MatchId = ghost.Match_Id,
+                    GhostedAt = ghost.Ghosted_At,
+                    GhostedBy = ghost.Ghosted_By
+                } : null // If ghost is null, set Ghost to null
             };
 
             return Ok(matchDTO);
@@ -98,6 +110,12 @@ namespace sparker.Controllers
                 var matchUserId = match.User1_Id == userId ? match.User2_Id : match.User1_Id;
                 var matchUser = users[matchUserId];
 
+                // check if the match has a ghost existing (is ghosted)
+                var ghost = await _context.Ghosts
+                        .Where(g => g.Match_Id == match.Id)
+                        .FirstOrDefaultAsync(); // Execute the query and get the first result or null
+
+
                 var matchDTO = new MatchDTO
                 {
                     Id = match.Id,
@@ -107,6 +125,7 @@ namespace sparker.Controllers
                     LastMessageUser2 = await DateUtils.LastUserMsg(_context, match.Id, match.User2_Id),
                     MatchedAt = match.Matched_At,
                     IsGhosted = match.Is_Ghosted,
+
                     MatchUser = new MatchUserDTO
                     {
                         Id = matchUserId,
@@ -118,7 +137,13 @@ namespace sparker.Controllers
                                     .Where(image => image.User_Id == matchUserId)
                                     .Select(image => Convert.ToBase64String(image.Image_Data))
                                     .ToListAsync()
-                    }
+                    },
+                    Ghost = ghost != null ? new GhostDTO
+                    {
+                        MatchId = ghost.Match_Id,
+                        GhostedAt = ghost.Ghosted_At,
+                        GhostedBy = ghost.Ghosted_By
+                    } : null // if the ghost is null, set Ghost to null
                 };
 
                 matchDTOs.Add(matchDTO);
@@ -159,6 +184,15 @@ namespace sparker.Controllers
             // Delete the match
             _context.Matches.Remove(match);
 
+            var ghost = await _context.Ghosts
+                     .Where(g => g.Match_Id == match.Id)
+                     .FirstOrDefaultAsync();
+            // Delete the ghost
+            if (ghost != null)
+            {
+                _context.Ghosts.Remove(ghost);
+            }
+
             await _context.SaveChangesAsync();
 
             return Ok("Match and related data deleted successfully.");
@@ -189,6 +223,16 @@ namespace sparker.Controllers
             // restore the match by setting Is_Ghosted to false
             match.Is_Ghosted = false;
 
+            // Check if a ghost exists for the match and delete it if it does
+            var ghost = await _context.Ghosts
+                     .Where(g => g.Match_Id == match.Id)
+                     .FirstOrDefaultAsync();
+
+            if (ghost != null)
+            {
+                _context.Ghosts.Remove(ghost);
+            }
+
             await _context.SaveChangesAsync();
 
             return Ok("Match restored successfully.");
@@ -216,7 +260,7 @@ namespace sparker.Controllers
 
             // find expired/ghosted matches
             var expiredMatches = await _context.Matches
-                .Where(m => (m.User1_Id == userId || m.User2_Id == userId) && m.Is_Ghosted)
+                .Where(m => (m.User1_Id == userId || m.User2_Id == userId) && (m.Is_Ghosted)) // && m.Ghosted_At > lastLoginTime )
                 .ToListAsync();
 
             var userActivitySummaryDTO = new UserActivitySummaryDTO
@@ -227,7 +271,7 @@ namespace sparker.Controllers
                     User1Id = m.User1_Id,
                     User2Id = m.User2_Id,
                     MatchedAt = m.Matched_At,
-                    IsGhosted = m.Is_Ghosted
+                    //IsGhosted = m.Is_Ghosted
                 }).ToList(),
 
                 ExpiredMatches = expiredMatches.Select(m => new MatchDTO
@@ -236,7 +280,7 @@ namespace sparker.Controllers
                     User1Id = m.User1_Id,
                     User2Id = m.User2_Id,
                     MatchedAt = m.Matched_At,
-                    IsGhosted = m.Is_Ghosted
+                    //IsGhosted = m.Is_Ghosted
                 }).ToList()
             };
 

@@ -18,6 +18,7 @@ namespace sparker.Database
         public DbSet<Match> Matches { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<Admin> Admins { get; set; }
+        public DbSet<Ghost> Ghosts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

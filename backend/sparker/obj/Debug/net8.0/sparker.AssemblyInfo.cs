@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("sparker")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41a716bd8b76b69ba00af96e8dbf6c6cc86a0103")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+292f471a3f661c08f3ac72c4acf332ea032d5069")]
 [assembly: System.Reflection.AssemblyProductAttribute("sparker")]
 [assembly: System.Reflection.AssemblyTitleAttribute("sparker")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

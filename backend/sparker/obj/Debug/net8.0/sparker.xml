@@ -88,5 +88,41 @@
         <member name="M:sparker.Migrations.AddedLastLoginAtToUserModel.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
             <inheritdoc />
         </member>
+        <member name="T:sparker.Migrations.AddedGhostedAtToMatch">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedGhostedAtToMatch.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedGhostedAtToMatch.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedGhostedAtToMatch.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:sparker.Migrations.AddedGhostedAtToMatchNullable">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedGhostedAtToMatchNullable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedGhostedAtToMatchNullable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.AddedGhostedAtToMatchNullable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:sparker.Migrations.ForeignKeyAndNavigationProperty">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.ForeignKeyAndNavigationProperty.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.ForeignKeyAndNavigationProperty.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:sparker.Migrations.ForeignKeyAndNavigationProperty.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
     </members>
 </doc>
