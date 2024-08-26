@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import { getAllMatchesByUserId, restoreMatch } from '../services/matchService';
+import { fetch_allMatchesByUserId, restoreMatch } from '../services/matchService';
 import MatchType from '../interfaces/MatchInterface';
 import { Button } from '@chakra-ui/react';
 import '../styles/MatchesPage.css';
@@ -18,7 +18,7 @@ const RestorePage = () => {
             if (authUser) {
                 setIsLoading(true);
                 try {
-                    const matches = await getAllMatchesByUserId(Number(userId));
+                    const matches = await fetch_allMatchesByUserId(Number(userId));
                     setMatches(matches);
 
                 } catch (error) {
