@@ -19,7 +19,7 @@ export const getMatchById = async (matchId, userId) => {
     }
 };
 
-export const getAllMatchesByUserId = async (userId) => {
+export const fetch_allMatchesByUserId = async (userId) => {
     const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/matches/getallmatchesbyuserid/${userId}`, {
