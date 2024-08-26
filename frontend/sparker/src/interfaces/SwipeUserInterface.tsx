@@ -1,6 +1,6 @@
 interface SwipeUserType {
     id: number;
-    name: string;
+    fullName: string;
     gender: string;
     age: number;
     bio: string;

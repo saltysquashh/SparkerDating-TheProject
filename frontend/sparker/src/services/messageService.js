@@ -54,7 +54,7 @@ export const fetchChatMessagesForMatch = async (matchId) => {
             senderId: msg.senderId,
             senderName: msg.senderName,
             content: msg.content,
-            time_Stamp: msg.time_Stamp,
+            timeStamp: msg.timeStamp,
           }));
         } catch (error) {
           console.error('Error fetching chat messages:', error);

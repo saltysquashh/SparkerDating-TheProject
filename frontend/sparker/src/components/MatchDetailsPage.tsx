@@ -7,19 +7,21 @@ import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, Al
 import { AuthContext } from '../context/AuthContext';
 import { calculateTimeLeft, formatDate } from '../utilities/dateUtils';
 import MatchType from '../interfaces/MatchInterface';
+import ConfirmDialog from './globalComponents/alertDialog';
 
 const MatchDetailsPage = () => {
+    const navigate = useNavigate();
     const { matchId, matchUserId } = useParams();
     const [match, setMatch] = useState<MatchType | null>(null);
     const [timeLeftUser1, setTimeLeftUser1] = useState<string | null>(null);
     const [timeLeftUser2, setTimeLeftUser2] = useState<string | null>(null);
     const [createdAt, setCreatedAt] = useState<string | null>(null);
     const [isGhosted, setIsGhosted] = useState(false);
-    const navigate = useNavigate();
     const { authUser } = useContext(AuthContext);
     const authUserId = authUser?.id;
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef = React.useRef<HTMLButtonElement>(null);
+    const [ghostedByName, setGhostedByName] = useState<string | null>(null);
 
     const updateTimers = (matchData: MatchType) => {
         const { timeLeftUser1, timeLeftUser2 } = calculateTimeLeft(matchData, authUserId, matchData.matchUser?.id);
@@ -42,9 +44,11 @@ const MatchDetailsPage = () => {
             try {
                 const RetrievedMatchData = await getMatchById(matchId, authUserId);
                 setMatch(RetrievedMatchData);
+                console.log(RetrievedMatchData);
                 setCreatedAt(formatDate(RetrievedMatchData.matchedAt));
                 updateTimers(RetrievedMatchData);
                 setIsGhosted(RetrievedMatchData.isGhosted);
+                setGhostedByName(RetrievedMatchData.matchUser.firstName + ' ' + RetrievedMatchData.matchUser.lastName)
             } catch (error) {
                 console.error('Error fetching match data:', error);
             }
@@ -131,6 +135,7 @@ const MatchDetailsPage = () => {
                         {isGhosted ? (
                             <div className="ghosted-message">
                                 The match has been ghosted and locked...
+                                It was ghosted by {ghostedByName} at {match.ghost.ghostedAt}
                             </div>
                         ) : (
                             <>
@@ -153,29 +158,14 @@ const MatchDetailsPage = () => {
                         <Button onClick={onOpen} colorScheme='red' className="action-button">Unmatch</Button>
                     </div>
 
-                    <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
-                        <AlertDialogOverlay>
-                            <AlertDialogContent>
-                                <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                                    Unmatch
-                                </AlertDialogHeader>
-                                <AlertDialogBody>
-                                    Are you sure you want to delete this match? You can't undo this action afterwards.
-                                </AlertDialogBody>
-                                <AlertDialogFooter>
-                                    <Button ref={cancelRef} onClick={onClose}>
-                                        Cancel
-                                    </Button>
-                                    <Button colorScheme='red' onClick={() => {
-                                        handleUnmatchClick();
-                                        onClose();
-                                    }} ml={3}>
-                                        Delete
-                                    </Button>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialogOverlay>
-                    </AlertDialog>
+                    <ConfirmDialog
+                        isOpen={isOpen}
+                        onClose={onClose}
+                        onConfirm={handleUnmatchClick}
+                        cancelRef={cancelRef}
+                        title="Unmatch"
+                        body="Are you sure you want to delete this match? You can't undo this action."
+                    />
                     <div className="matched-at-text">You matched with {match.matchUser.fullName} on {createdAt}</div>
                 </div>
             </div>

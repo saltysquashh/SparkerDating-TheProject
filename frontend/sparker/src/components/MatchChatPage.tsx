@@ -90,7 +90,7 @@ const MatchChatPage = () => {
                         >
                             {msg.content}
                             <div className="timestamp">
-                                {formatTimestamp(msg.time_Stamp)}
+                                {formatTimestamp(msg.timeStamp)}
                             </div>
                         </div>
                     ))}

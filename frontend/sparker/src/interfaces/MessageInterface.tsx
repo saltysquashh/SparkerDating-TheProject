@@ -2,7 +2,7 @@ interface Message {
   messageId?: number;
   senderId: number;
   content: string;
-  time_Stamp: string;
+  timeStamp: string;
   senderName: string;
 }
 
