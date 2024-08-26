@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { fetchUserActivitySummary } from '../services/matchService';
-import '../styles/WelcomePage.css';
+import '../styles/ActivitySummaryPage.css';
 import UserActivitySummaryDTO from '../interfaces/UserActivitySummary';
 
 const ActivitySummaryPage = () => {
@@ -49,7 +49,7 @@ const ActivitySummaryPage = () => {
                 )}
             </div>
             <div className="welcome-section">
-                <h2>Expired Matches</h2>
+                <h2>Ghosted Matches</h2>
                 {expiredMatches.length > 0 ? (
                     <p>While you were gone, {expiredMatches.length} of your matches were ghosted.</p>
                 ) : (
