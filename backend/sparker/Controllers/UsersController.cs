@@ -36,23 +36,29 @@ public class UsersController : ControllerBase
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto registerDto)
+    public async Task<IActionResult> Register(RegisterDTO registerDTO)
     {
         // validate the input and check if the user already exists ?
 
+        var (isValid, errorMessage) = await RegistrationUtils.ValidateRegistrationDTO(registerDTO, _context);
+
+        if (!isValid)
+        {
+            return BadRequest(errorMessage);
+        }
+
         var user = new User
         {
-            First_Name = registerDto.FirstName,
-            Last_Name = registerDto.LastName,
-            Email = registerDto.Email.ToLower(),
-            Gender = registerDto.Gender,
-            Birthdate = registerDto.Birthdate,
+            First_Name = registerDTO.FirstName,
+            Last_Name = registerDTO.LastName,
+            Email = registerDTO.Email.ToLower(),
+            Gender = registerDTO.Gender,
+            Birthdate = registerDTO.Birthdate,
             Registration_At = DateTime.Now
         };
 
         // generates a unique salt for the user, then hashes the salted password
-        user.Password_Hash = _passwordHasher.HashPassword(user, registerDto.Password);
-
+        user.Password_Hash = _passwordHasher.HashPassword(user, registerDTO.Password);
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
@@ -70,6 +76,15 @@ public class UsersController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(new { userId = user.Id });
+    }
+
+    // e-mail pre-check in frontend registration form
+    [AllowAnonymous]
+    [HttpGet("useremailexists/{email}")]
+    public async Task<IActionResult> CheckUserEmailExistsEndpoint(string email)
+    {
+        bool exists = await RegistrationUtils.UserEmailExists(email, _context);
+        return Ok(exists);
     }
 
     [HttpGet("isadmin/{userId}")]
@@ -228,24 +243,6 @@ public class UsersController : ControllerBase
             }
         }
     }
-
-    [AllowAnonymous]
-    [HttpGet("useremailexists/{email}")]
-    public async Task<IActionResult> CheckUserEmailExists(string email)
-    {
-        bool exists = true;
-
-        var user = await _context.Users
-                         .FirstOrDefaultAsync(u => u.Email == email);
-
-        if (user == null)
-        {
-            exists = false;
-        }
-
-        return Ok(exists);
-    }
-
 
     [HttpGet("getnextswipeuser/{userId}")]
     public async Task<IActionResult> GetNextSwipeUser(int userId)
