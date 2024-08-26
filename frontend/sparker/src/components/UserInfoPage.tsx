@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import '../styles/UserInfoPage.css';
-import { deleteUser, fetch_UserInfo, update_UserInfo } from '../services/userService';
+import { delete_user, fetch_userInfo, update_userInfo } from '../services/userService';
 import { AuthContext } from '../context/AuthContext';
 import { Button } from '@chakra-ui/react';
 
@@ -21,7 +21,7 @@ const UserInfoPage = () => {
 
         if (authUser && authUser.id) {
             try {
-                await update_UserInfo(authUser.id, user_Info); 
+                await update_userInfo(authUser.id, user_Info); 
                 alert('User information updated successfully!');
             } catch (error) {
                 console.error('Error updating user information:', error);
@@ -35,7 +35,7 @@ const UserInfoPage = () => {
             const confirmed = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
             if (confirmed) {
                 try {
-                    await deleteUser(authUser.id, authUser.id); // user deletes themself
+                    await delete_user(authUser.id, authUser.id); // user deletes themself
                     alert('Your account has been deleted.');
                     logout(); 
                 } catch (error) {
@@ -50,7 +50,7 @@ const UserInfoPage = () => {
         if (authUser && authUser.id) {
             const getUserInfo = async () => {
                 try {
-                    const data = await fetch_UserInfo(authUser.id);
+                    const data = await fetch_userInfo(authUser.id);
                     
                     let formattedBirthdate = data.birthdate;
                     if (formattedBirthdate) {

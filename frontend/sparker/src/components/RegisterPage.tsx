@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import '../styles/RegisterPage.css';
-import { checkEmailExists, registerUser } from '../services/userService';
+import { fetch_checkEmailExists, registerUser } from '../services/userService';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -34,7 +34,7 @@ const RegisterPage = () => {
   const isValidEmail = async (email: string): Promise<{ valid: boolean, message: string }> => {
     if (email.includes('@') && email.includes('.') && email.indexOf('@') < email.lastIndexOf('.') && email.lastIndexOf('.') < email.length - 1) {
       try {
-        const emailExists = await checkEmailExists(email);
+        const emailExists = await fetch_checkEmailExists(email);
         if (emailExists) {
           return { valid: false, message: 'Email already exists.' };
         }

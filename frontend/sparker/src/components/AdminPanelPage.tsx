@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/AdminPanelPage.css';
 import UserType from '../interfaces/UserInterface';
-import { deleteUser, demoteAdminToUser, fetchUsers, promoteUserToAdmin } from '../services/userService';
+import { delete_user, post_demoteAdminToUser, fetch_allUsers, post_promoteUserToAdmin } from '../services/userService';
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button, ButtonGroup, Checkbox, Stack, useDisclosure } from '@chakra-ui/react'
 
 
@@ -23,7 +23,7 @@ const AdminPanelPage = () => {
         const loadUsers = async () => {
             if (authUser) {
                 try {
-                    const fetchedUsers = await fetchUsers();
+                    const fetchedUsers = await fetch_allUsers();
                     setUsers(fetchedUsers);
                     console.log("Fetched Matches:", fetchedUsers); // Log the fetched matches
                 } catch (error) {
@@ -40,7 +40,7 @@ const AdminPanelPage = () => {
 
     const handleUserDelete = async (delUserId: number, byUserId: number) => {
         try {
-            const response = await deleteUser(delUserId, byUserId);
+            const response = await delete_user(delUserId, byUserId);
             // navigate(`/adminpanel`); // ikke her, men først når knappet er lavet inde på user details
             alert(response)
             setUsers((prevUsers) => prevUsers.filter((u) => u.id !== delUserId)); // prevUsers is the previous state of the 'users' array
@@ -51,7 +51,7 @@ const AdminPanelPage = () => {
 
     const handleUserPromote = async (userId: number, byUserId: number) => {
         try {
-            const response = await promoteUserToAdmin(userId, byUserId);
+            const response = await post_promoteUserToAdmin(userId, byUserId);
             alert(response);
             setUsers((prevUsers) => prevUsers.map((u) => 
                 u.id === userId ? { ...u, isAdmin: true } : u
@@ -63,7 +63,7 @@ const AdminPanelPage = () => {
 
     const handleUserDemote = async (adminUserId: number, byUserId: number) => {
         try {
-            const response = await demoteAdminToUser(adminUserId, byUserId);
+            const response = await post_demoteAdminToUser(adminUserId, byUserId);
             alert(response);
             setUsers((prevUsers) => prevUsers.map((u) => 
                 u.id === adminUserId ? { ...u, isAdmin: false, isMaster: false } : u
@@ -92,26 +92,26 @@ const AdminPanelPage = () => {
                 <h2>All Users</h2>
                 <ul className="user-list">
                 {users.map((shownUser) => (
-        <li key={shownUser.id} className="user-item" onClick={() => handleUserClick(shownUser.id)}>
-            <div>Id: {shownUser.id}</div>
-            <div>First name: {shownUser.firstName}</div>
-            <div>Last name: {shownUser.lastName}</div>
-            <div>Registration date: {shownUser.registrationAt}</div>
-            <div>Type: {shownUser.isAdmin ? 'Admin' : 'User'} {shownUser.isMaster ? '(Master)' : ''}</div>
-            {!shownUser.isMaster && (
-                <div className="admin-panel-buttons">
-                    {!shownUser.isAdmin && (
-                        <Button onClick={() => handleUserPromote(shownUser.id, authUser.id)} colorScheme='green'>Promote to Admin</Button>
+                    <li key={shownUser.id} className="user-item" onClick={() => handleUserClick(shownUser.id)}>
+                    <div>Id: {shownUser.id}</div>
+                    <div>First name: {shownUser.firstName}</div>
+                    <div>Last name: {shownUser.lastName}</div>
+                    <div>Registration date: {shownUser.registrationAt}</div>
+                    <div>Type: {shownUser.isAdmin ? 'Admin' : 'User'} {shownUser.isMaster ? '(Master)' : ''}</div>
+                    {!shownUser.isMaster && (
+                        <div className="admin-panel-buttons">
+                            {!shownUser.isAdmin && (
+                                <Button onClick={(event) => { event.stopPropagation(); handleUserPromote(shownUser.id, authUser.id); }} colorScheme='green'>Promote to Admin</Button>
+                            )}
+                            {shownUser.isAdmin && (
+                                <Button onClick={(event) => { event.stopPropagation(); handleUserDemote(shownUser.id, authUser.id); }} colorScheme='yellow'>Demote to User</Button>
+                            )}
+                            {!shownUser.isAdmin && (
+                                <Button onClick={(event) => { event.stopPropagation(); handleUserDelete(shownUser.id, authUser.id); }} colorScheme='red'>Delete</Button>
+                            )}
+                        </div>
                     )}
-                    {shownUser.isAdmin && (
-                        <Button onClick={() => handleUserDemote(shownUser.id, authUser.id)} colorScheme='yellow'>Demote to User</Button>
-                    )}
-                    {!shownUser.isAdmin && (
-                        <Button onClick={() => handleUserDelete(shownUser.id, authUser.id)} colorScheme='red'>Delete</Button>
-                    )}
-                </div>
-            )}
-        </li>
+                </li>
     ))}
             </ul>
             </div>

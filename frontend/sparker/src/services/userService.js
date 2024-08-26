@@ -22,7 +22,7 @@ export const registerUser = async (userData) => {
     
 };
 
-export const fetch_UserInfo = async (userId) => {
+export const fetch_userInfo = async (userId) => {
     const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/users/userinfo/${userId}`, {
@@ -37,10 +37,10 @@ export const fetch_UserInfo = async (userId) => {
     }
 };
 
-export const fetch_ShowcaseUser = async (userId) => {
+export const fetch_swipeUserById = async (userId) => {
     const token = getAuthToken();
     try {
-        const response = await axios.get(`${API_URL}/users/showcaseuser/${userId}`, {
+        const response = await axios.get(`${API_URL}/users/swipeuserbyid/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}` // JWT token
             }
@@ -52,7 +52,7 @@ export const fetch_ShowcaseUser = async (userId) => {
     }
 };
    
-export const update_UserInfo = async (userId, userData) => {
+export const update_userInfo = async (userId, userData) => {
     const token = getAuthToken();
     try {
         console.log(userData);
@@ -69,7 +69,7 @@ export const update_UserInfo = async (userId, userData) => {
 };
 
 
-export const fetch_UserCustomization = async (userId) => {
+export const fetch_userCustomization = async (userId) => {
     const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/users/usercustomization/${userId}`, {
@@ -85,7 +85,7 @@ export const fetch_UserCustomization = async (userId) => {
 };
 
 
-export const update_UserBio = async (userId, newBio) => {
+export const update_userBio = async (userId, newBio) => {
     const token = getAuthToken();
     try {
         const response = await axios.put(`${API_URL}/users/userbio/${userId}/${newBio}`, {
@@ -108,22 +108,23 @@ export const update_UserBio = async (userId, newBio) => {
     }
 };
 
-export const fetchNextUserToSwipe = async (userId) => {
+// get the next user, that a user should swipe on
+export const fetch_nextUserToSwipe = async (userId) => {
     const token = getAuthToken();
     try {
-        const response = await axios.get(`${API_URL}/users/nextswipeuser/${userId}`, {
+        const response = await axios.get(`${API_URL}/users/getnextswipeuser/${userId}`, {
             headers: {
                 'Authorization': `Bearer ${token}` // JWT token
             }
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching next swipe user:', error);
+        console.error('Error fetching next user to swipe on:', error);
         throw error;
     }
 };
 
-export const checkEmailExists = async (email) => {
+export const fetch_checkEmailExists = async (email) => {
     const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/users/useremailexists/${email}`, {
@@ -137,7 +138,7 @@ export const checkEmailExists = async (email) => {
     }
 };
 
-export const fetchUsers = async () => {
+export const fetch_allUsers = async () => {
     const token = getAuthToken();
     try {
         const response = await axios.get(`${API_URL}/users/all`, {
@@ -152,7 +153,7 @@ export const fetchUsers = async () => {
     }
 };
 
-export const deleteUser = async (delUserId, byUserId) => {
+export const delete_user = async (delUserId, byUserId) => {
     const token = getAuthToken();
     try {
         const response = await axios.delete(`${API_URL}/users/delete/${delUserId}/${byUserId}`, {
@@ -167,7 +168,7 @@ export const deleteUser = async (delUserId, byUserId) => {
     }
 };
 
-export const promoteUserToAdmin = async (userId, byUserId) => {
+export const post_promoteUserToAdmin = async (userId, byUserId) => {
     const token = getAuthToken();
     try {
         const response = await axios.post(`${API_URL}/users/promote/${userId}/${byUserId}`, {
@@ -182,7 +183,7 @@ export const promoteUserToAdmin = async (userId, byUserId) => {
     }
 };
 
-export const demoteAdminToUser = async (adminUserId, byUserId) => {
+export const post_demoteAdminToUser = async (adminUserId, byUserId) => {
     const token = getAuthToken();
     try {
         const response = await axios.post(`${API_URL}/users/demote/${adminUserId}/${byUserId}`, {

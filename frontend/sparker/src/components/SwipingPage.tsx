@@ -4,12 +4,12 @@ import { AuthContext } from '../context/AuthContext';
 import SwipeUser from '../interfaces/SwipeUserInterface';
 import { createSwipe } from '../services/swipeService';
 import axios from 'axios';
-import { fetchNextUserToSwipe } from '../services/userService';
+import { fetch_nextUserToSwipe } from '../services/userService';
 import { useNavigate } from 'react-router-dom';
 
 const SwipingPage = () => {
     const { authUser } = useContext(AuthContext);
-    const [displayedUser, setDisplayedUser] = useState<SwipeUser | null>(null);
+    const [swipeUser, setSwipeUser] = useState<SwipeUser | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [images, setImages] = useState<string[]>([]);
     const navigate = useNavigate();
@@ -21,9 +21,9 @@ const SwipingPage = () => {
     const fetchNextUser = async () => {
         setIsLoading(true);
         try {
-            const response = await fetchNextUserToSwipe(authUser?.id);
+            const response = await fetch_nextUserToSwipe(authUser?.id);
             console.log(response);
-            setDisplayedUser(response);
+            setSwipeUser(response);
             const userImages = response.images || [];
 
             if (userImages.length > 0) {
@@ -38,7 +38,7 @@ const SwipingPage = () => {
             }
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status === 404) {
-                setDisplayedUser(null);
+                setSwipeUser(null);
             } else {
                 console.error("Error fetching next user:", error);
             }
@@ -48,9 +48,9 @@ const SwipingPage = () => {
     };
 
     const handleSwipe = async (liked: boolean) => {
-        if (!displayedUser || !authUser) return;
+        if (!swipeUser || !authUser) return;
         try {
-            const success = await createSwipe(Number(authUser.id), Number(displayedUser.id), liked);
+            const success = await createSwipe(Number(authUser.id), Number(swipeUser.id), liked);
             if (success) {
                 fetchNextUser().catch((error) => {
                     console.error("Error fetching next user:", error);
@@ -72,7 +72,7 @@ const SwipingPage = () => {
                     <div className="status-box">
                         <p>Loading...</p>
                     </div>
-                ) : !displayedUser ? (
+                ) : !swipeUser ? (
                     <div className="status-box">
                         <p>No more users to swipe on.</p>
                         <button className="preferences-button" onClick={handlePreferencesClick}>
@@ -88,9 +88,9 @@ const SwipingPage = () => {
                                 </div>
                             ))}
                         </div>
-                        <h3 className="profile-name">{displayedUser.name}, {displayedUser.age}</h3>
-                        <p className="profile-gender">{displayedUser.gender}</p>
-                        {displayedUser.bio && <p className="profile-bio">"{displayedUser.bio}"</p>}
+                        <h3 className="profile-name">{swipeUser.fullName}, {swipeUser.age}</h3>
+                        <p className="profile-gender">{swipeUser.gender}</p>
+                        {swipeUser.bio && <p className="profile-bio">"{swipeUser.bio}"</p>}
                         <div className="action-buttons">
                             <button className="pass-button" onClick={() => handleSwipe(false)}>Pass</button>
                             <button className="like-button" onClick={() => handleSwipe(true)}>Like</button>

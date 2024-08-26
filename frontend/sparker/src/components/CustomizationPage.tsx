@@ -4,7 +4,7 @@ import ImageType from '../interfaces/ImageInterface';
 import { fetchUserImages, deleteImage, uploadImage } from '../services/imageService';
 import { AuthContext } from '../context/AuthContext';
 import { Button, Textarea } from '@chakra-ui/react';
-import { fetch_UserCustomization, update_UserBio } from '../services/userService';
+import { fetch_userCustomization, update_userBio } from '../services/userService';
 
 const CustomizationPage = () => {
     const [images, setImages] = useState<ImageType[]>([]);
@@ -24,7 +24,7 @@ const CustomizationPage = () => {
                 return;
             }
             try {
-                const response = await fetch_UserCustomization(authUserId);
+                const response = await fetch_userCustomization(authUserId);
                 setUserBio(response.bio || '');
             } catch (error) {
                 console.error('Error fetching user bio:', error);
@@ -96,7 +96,7 @@ const CustomizationPage = () => {
         }
         try {
             const bioData = userBio;
-            await update_UserBio(authUserId, bioData);
+            await update_userBio(authUserId, bioData);
         } catch (error) {
             alert('Error updating bio');
         }
