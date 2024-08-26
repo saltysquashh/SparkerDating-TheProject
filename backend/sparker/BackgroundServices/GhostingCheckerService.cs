@@ -6,6 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using sparker.Database;
 using Microsoft.EntityFrameworkCore;
+using sparker.Models;
+using Newtonsoft.Json.Linq;
+using NuGet.Packaging.Signing;
 
 public class GhostingCheckerService : BackgroundService
 {
@@ -29,42 +32,84 @@ public class GhostingCheckerService : BackgroundService
     {
         using (var scope = _serviceProvider.CreateScope())
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var _context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            // filter by all matches that isn't ghosted
-            var matches = await dbContext.Matches
-                .Where(m => !m.Is_Ghosted) // only check them atches that are not already ghosted
+            // filter by all matches that aren't ghosted
+            var matches = await _context.Matches
+                .Where(m => !m.Is_Ghosted)
                 .ToListAsync();
 
             // loop through the found matches
             foreach (var match in matches)
             {
-                var lastMessage = await dbContext.ChatMessages
-                    .Where(c => c.Match_Id == match.Id)
-                    .OrderByDescending(c => c.Time_Stamp)
-                    .FirstOrDefaultAsync();
+                var lastMessageUser1 = await _context.ChatMessages.Where(chatmsg =>
+                            (chatmsg.Match_Id == match.Id) &&
+                            (chatmsg.Sender_Id == match.User1_Id))
+                            .OrderByDescending(c => c.Time_Stamp)
+                            .FirstOrDefaultAsync();
 
-                //reference time for ghosting:
-                DateTime referenceTime;
+                var lastMessageUser2 = await _context.ChatMessages.Where(chatmsg =>
+                           (chatmsg.Match_Id == match.Id) &&
+                           (chatmsg.Sender_Id == match.User2_Id))
+                           .OrderByDescending(c => c.Time_Stamp)
+                           .FirstOrDefaultAsync();
 
-                if (lastMessage != null)
+                // (determine if the user ever sent a message or the match date should be used)
+                // If lastMessageUser1?.Time_Stamp is null then match.Matched_At is used as the value
+                DateTime? referenceTimeUser1 = lastMessageUser1?.Time_Stamp ?? match.Matched_At;
+                DateTime? referenceTimeUser2 = lastMessageUser2?.Time_Stamp ?? match.Matched_At;
+
+                int? ghostedByUserId = null;
+
+                bool user1Ghosted = (DateTime.Now - referenceTimeUser1.Value).TotalHours >= 24;
+                bool user2Ghosted = (DateTime.Now - referenceTimeUser2.Value).TotalHours >= 24;
+
+                if (user1Ghosted && user2Ghosted)
                 {
-                    referenceTime = lastMessage.Time_Stamp;
+                    // both users haven't sent a message in the last 24 hours
+                    ghostedByUserId = referenceTimeUser1 <= referenceTimeUser2 ? match.User1_Id : match.User2_Id;
                 }
-                else
+                else if (user1Ghosted)
                 {
-                    referenceTime = match.Matched_At;
+                    // User 1 ghosted
+                    ghostedByUserId = match.User1_Id;
+                }
+                else if (user2Ghosted)
+                {
+                    // User 2 ghosted
+                    ghostedByUserId = match.User2_Id;
                 }
 
-                // check if 24 hours have passed since the reference time
-                if ((DateTime.Now - referenceTime).TotalHours >= 24)
+                if (ghostedByUserId.HasValue)
                 {
+                    // set match to ghosted
                     match.Is_Ghosted = true;
-                    match.Ghosted_At = DateTime.Now;
+
+                    // create new Ghost entity
+                    var newGhost = new Ghost
+                    {
+                        Match_Id = match.Id,
+                        Ghosted_At = DateTime.Now, // time of ghosting
+                        Ghosted_By = ghostedByUserId.Value // the user who ghosted
+                    };
+
+                    var ghost = await _context.Ghosts
+                            .Where(g => g.Match_Id == match.Id)
+                            .FirstOrDefaultAsync();
+
+                    if (ghost == null)
+                    {
+                        _context.Ghosts.Add(newGhost);
+                    }
+                    else 
+                    {
+                        ghost = newGhost;
+                        _context.Ghosts.Update(newGhost);
+                    }
                 }
             }
 
-            await dbContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
 }
