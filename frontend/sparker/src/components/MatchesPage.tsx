@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import '../styles/MatchesPage.css';
 import { AuthContext } from '../context/AuthContext';
-import { getAllMatchesByUserId } from '../services/matchService';
+import { fetch_allMatchesByUserId } from '../services/matchService';
 import { useNavigate } from 'react-router-dom';
 import MatchType from '../interfaces/MatchInterface';
 
@@ -16,7 +16,7 @@ const MatchesPage = () => {
             if (authUser) {
                 setIsLoading(true);
                 try {
-                    const matches = await getAllMatchesByUserId(authUser.id);
+                    const matches = await fetch_allMatchesByUserId(authUser.id);
                     setMatches(matches);
                 } catch (error) {
                     console.error('Error fetching matches:', error);

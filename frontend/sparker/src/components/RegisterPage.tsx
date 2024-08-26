@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import '../styles/RegisterPage.css';
-import { fetch_checkEmailExists, registerUser } from '../services/userService';
+import { fetch_checkEmailExists, post_registerUser } from '../services/userService';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -32,7 +32,10 @@ const RegisterPage = () => {
   };
 
   const isValidEmail = async (email: string): Promise<{ valid: boolean, message: string }> => {
-    if (email.includes('@') && email.includes('.') && email.indexOf('@') < email.lastIndexOf('.') && email.lastIndexOf('.') < email.length - 1) {
+    if (email.includes('@') 
+    && email.includes('.') 
+    && email.indexOf('@') < email.lastIndexOf('.') 
+    && email.lastIndexOf('.') < email.length - 1) {
       try {
         const emailExists = await fetch_checkEmailExists(email);
         if (emailExists) {
@@ -43,7 +46,7 @@ const RegisterPage = () => {
         return { valid: false, message: 'Failed to check email.' };
       }
     }
-    return { valid: false, message: 'Please enter a valid email address.' };
+  return { valid: false, message: 'Please enter a valid email address.' };
   };
 
   const isValidBirthdate = (birthdate: string): boolean => {
@@ -81,30 +84,63 @@ const RegisterPage = () => {
     setStep(1);
   };
 
+  const isValidPassword = (passwordInput: string) => {
+    const hasLowerCase = /[a-z]/;
+    const hasUpperCase = /[A-Z]/;
+    const hasSpecialChar = /[!@#$%^&*().?:{}|<>]/;
+  
+    if (!hasLowerCase.test(passwordInput)) {
+      return { valid: false, message: 'Password must contain at least one lowercase letter.' };
+    }
+    if (!hasUpperCase.test(passwordInput)) {
+      return { valid: false, message: 'Password must contain at least one uppercase letter.' };
+    }
+    if (!hasSpecialChar.test(passwordInput)) {
+      return { valid: false, message: 'Password must contain at least one special character.' };
+    }
+    return { valid: true, message: '' };
+  };
+
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (formData.password === formData.confirmPassword) {
-      const submitData = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        password: formData.password,
-        gender: formData.gender,
-        birthDate: formData.birthDate,
-        email: formData.email
-      };
 
-      try {
-        const response = await registerUser(submitData);
-        alert('Registration successful. Please log in to your new account on the next page.');
-        navigate('/login');
-
-      } catch (error) {
-        setErrorMessage('Registration failed: ' + error);
-      }
-    } else {
-      setErrorMessage('The passwords do not match.');
+    // Validate password
+    const passwordValidation = isValidPassword(formData.password);
+    if (!passwordValidation.valid) {
+        setErrorMessage(passwordValidation.message);
+        return; // Stop if password is invalid
     }
-  };
+
+    if (formData.password === formData.confirmPassword) {
+        const submitData = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            password: formData.password,
+            gender: formData.gender,
+            birthDate: formData.birthDate,
+            email: formData.email
+        };
+        console.log(submitData)
+
+        try {
+            await post_registerUser(submitData);
+            alert('Registration successful. Please log in to your new account on the next page.');
+            navigate('/login');
+        } catch (error: any) {
+            // check if the error has a message property and set it to errorMessage
+            if (error && error.message) {
+                setErrorMessage(`Registration failed: ${error.message}`);
+            } else {
+                setErrorMessage('Registration failed: An unexpected error occurred.');
+            }
+        }
+    } else {
+        setErrorMessage('The passwords do not match.');
+    }
+};
+
+
 
   return (
     <div className="global-container">
@@ -139,7 +175,9 @@ const RegisterPage = () => {
           )}
           {step === 2 && (
             <>
+              <p>Password</p>
               <input type="password" name="password" placeholder="Password" onChange={handleChange} value={formData.password} required />
+              <p>Confirm password</p>
               <input type="password" name="confirmPassword" placeholder="Confirm password" onChange={handleChange} value={formData.confirmPassword} required />
               <div className="previous-step-button"><button type="button" onClick={handleGoPreviousStep}>Previous</button></div>
               <div className="finish-registration-button"><button type="submit">Finish registration</button></div>
