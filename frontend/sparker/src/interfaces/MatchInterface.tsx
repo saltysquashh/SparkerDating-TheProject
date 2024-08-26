@@ -1,5 +1,6 @@
 
 import MatchUserType from "./MatchUserInterface";
+import GhostType from "./GhostInterface";
 
 interface MatchType {
     id: number;
@@ -10,5 +11,6 @@ interface MatchType {
     matchedAt: string;
     isGhosted: boolean;
     matchUser: MatchUserType;
+    ghost: GhostType;
 }
 export default MatchType;
