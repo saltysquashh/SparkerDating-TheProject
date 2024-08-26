@@ -104,8 +104,8 @@ public class UsersController : ControllerBase
         return Ok(userInfoDTO);
     }
 
-    [HttpGet("showcaseuser/{id}")]
-    public async Task<IActionResult> GetShowcaseUser(int id)
+    [HttpGet("swipeuserbyid/{id}")]
+    public async Task<IActionResult> GetSwipeUserById(int id)
     {
         var user = await _context.Users.FindAsync(id);
 
@@ -114,7 +114,7 @@ public class UsersController : ControllerBase
             return NotFound($"User with ID {id} not found.");
         }
 
-        var showcaseUserDTO = new ShowcaseUserDTO
+        var swipeUserDTO = new SwipeUserDTO
         {
             Id = user.Id,
             FirstName = user.First_Name,
@@ -128,7 +128,7 @@ public class UsersController : ControllerBase
                     .ToList()
         };
 
-        return Ok(showcaseUserDTO);
+        return Ok(swipeUserDTO);
     }
 
 
@@ -247,12 +247,12 @@ public class UsersController : ControllerBase
     }
 
 
-    [HttpGet("nextswipeuser/{userId}")]
+    [HttpGet("getnextswipeuser/{userId}")]
     public async Task<IActionResult> GetNextSwipeUser(int userId)
     {
         var nextUserDTO = new NextUserDTO();
 
-        nextUserDTO = await FetchNextUser(userId);
+        nextUserDTO = await FindNextUser(userId);
         if (nextUserDTO == null)
         {
             return NotFound("No suitable matches found.");
@@ -260,7 +260,7 @@ public class UsersController : ControllerBase
         return Ok(nextUserDTO); // Return the DTO instead of the full User entity
     }
 
-    private async Task<NextUserDTO> FetchNextUser(int userId)
+    private async Task<NextUserDTO> FindNextUser(int userId)
     {
         var userPreferences = await _context.Preferences
                                             .FirstOrDefaultAsync(p => p.User_Id == userId);
@@ -300,7 +300,7 @@ public class UsersController : ControllerBase
         var nextUserDto = finalMatches.Select(u => new NextUserDTO
         {
             Id = u.Id,
-            Name = u.First_Name + " " + u.Last_Name,
+            FullName = u.First_Name + " " + u.Last_Name,
             Age = DateUtils.CalculateAge(u.Birthdate),
             Gender = u.Gender,
             Bio = u.Bio,

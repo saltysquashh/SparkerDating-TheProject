@@ -42,7 +42,7 @@
                                             MessageId = m.Id,
                                             SenderId = m.Sender_Id,
                                             Content = m.Content,
-                                            Time_Stamp = m.Time_Stamp,
+                                            TimeStamp = m.Time_Stamp,
                                             SenderName = _context.Users
                                                 .Where(u => u.Id == m.Sender_Id)
                                                 .Select(u => $"{u.First_Name} {u.Last_Name}") // subquery to get senders first name, last name

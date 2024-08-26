@@ -25,22 +25,22 @@ namespace sparker.Controllers
         }
 
         [HttpPost("swipe")]
-        public async Task<IActionResult> CreateSwipe([FromBody] SwipeDTO swipeDto)
+        public async Task<IActionResult> CreateSwipe([FromBody] PerformSwipeDTO performSwipeDTO)
         {
             var swipe = new Swipe
             {
-                Swiper_UserId = swipeDto.SwiperUserId,
-                Swiped_UserId = swipeDto.SwipedUserId,
-                Liked = swipeDto.Liked,
+                Swiper_UserId = performSwipeDTO.SwiperUserId,
+                Swiped_UserId = performSwipeDTO.SwipedUserId,
+                Liked = performSwipeDTO.Liked,
                 Swiped_At = DateTime.Now
             };
 
             _context.Swipes.Add(swipe);
             await _context.SaveChangesAsync();
 
-            if (!swipeDto.Liked)
+            if (!performSwipeDTO.Liked)
             {
-                return Ok(new SwipeResponseDTO
+                return Ok(new SwipeActionResponseDTO
                 {
                     IsMatch = false,
                     Message = "You passed on this user."
@@ -70,7 +70,7 @@ namespace sparker.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return Ok(new SwipeResponseDTO
+            return Ok(new SwipeActionResponseDTO
             {
                 IsMatch = isMatch,
                 Message = "You have a new match!"
@@ -155,8 +155,8 @@ namespace sparker.Controllers
                     (m.User1_Id == swiperId && m.User2_Id == swipedId) ||
                     (m.User1_Id == swipedId && m.User2_Id == swiperId));
 
-            // Build child
-            var showcaseUserDTO = new ShowcaseUserDTO
+            // Build SwipeUser child
+            var swipeUserDTO = new SwipeUserDTO
             {
                 Id = user.Id,
                 FirstName = user.First_Name,
@@ -164,7 +164,6 @@ namespace sparker.Controllers
                 Gender = user.Gender,
                 Age = DateUtils.CalculateAge(user.Birthdate),
                 Bio = user.Bio,
-                RegistrationAt = user.Registration_At,
                 Images = _context.Images
                         .Where(i => i.User_Id == user.Id)
                         .Select(i => Convert.ToBase64String(i.Image_Data))
@@ -174,7 +173,7 @@ namespace sparker.Controllers
             // Build the DTO
             var swipeDetailsDTO = new SwipeDetailsDTO
             {
-                ShowcaseUserDTO = showcaseUserDTO, // include child DTO built before, which includes the user data
+                SwipeUser = swipeUserDTO, // include child DTO built before, which includes the user data
                 Swipe = swipe,
                 Match = match // empty if it doesn't exist
             };

@@ -30,20 +30,18 @@ namespace sparker.Controllers
 
 
         [HttpPost("createpreference")]
-        public async Task<IActionResult> CreatePreference(CreatePreferenceDTO createPreferenceDTO)
+        public async Task<IActionResult> CreatePreference(PreferenceDTO preferenceDTO)
         {
             // Validate the input data
             // Check if the user already exists
 
-
             var preference = new Preference
             {
-                User_Id = createPreferenceDTO.UserId,
-                Sex = createPreferenceDTO.Sex,
-                Age_Min = createPreferenceDTO.AgeMin,
-                Age_Max = createPreferenceDTO.AgeMax,
+                User_Id = preferenceDTO.UserId,
+                Sex = preferenceDTO.Sex,
+                Age_Min = preferenceDTO.AgeMin,
+                Age_Max = preferenceDTO.AgeMax,
             };
-
 
             _context.Preferences.Add(preference);
             await _context.SaveChangesAsync();
@@ -74,32 +72,34 @@ namespace sparker.Controllers
         }
 
 
-
         [HttpPut("{id}")]
         // [Authorize]
-        public async Task<IActionResult> UpdatePreferences(int id, [FromBody] UpdatePreferenceDTO updatePreferenceDTO)
+        public async Task<IActionResult> UpdatePreferences(int id, [FromBody] PreferenceDTO preferenceDTO)
         {
             var preference = await _context.Preferences.FirstOrDefaultAsync(p => p.User_Id == id);
-            if (preference == null)
+            if (preference != null)
             {
-                // Create a new preference if not found
-                return await CreatePreference(new CreatePreferenceDTO
-                {
-                    UserId = id,
-                    Sex = updatePreferenceDTO.Sex,
-                    AgeMin = updatePreferenceDTO.AgeMin,
-                    AgeMax = updatePreferenceDTO.AgeMax
-                });
+                preference.Sex = preferenceDTO.Sex;
+                preference.Age_Min = preferenceDTO.AgeMin;
+                preference.Age_Max = preferenceDTO.AgeMax;
             }
+            else
+            {
+                // Create a new preference if one for the user did not exist
+                var newPreference = new Preference
+                {
+                    User_Id = preferenceDTO.UserId,
+                    Sex = preferenceDTO.Sex,
+                    Age_Min = preferenceDTO.AgeMin,
+                    Age_Max = preferenceDTO.AgeMax,
+                };
 
-            preference.Sex = updatePreferenceDTO.Sex;
-            preference.Age_Min = updatePreferenceDTO.AgeMin;
-            preference.Age_Max = updatePreferenceDTO.AgeMax;
-
+                _context.Preferences.Add(newPreference);
+            }
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok(preference); // or NoContent() to return nothing
+                return Ok(preference);
             }
             catch (DbUpdateConcurrencyException)
             {

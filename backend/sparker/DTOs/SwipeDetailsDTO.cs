@@ -6,7 +6,7 @@ namespace sparker.DTOs
     {
         // the details of the user that was swiped
 
-        public ShowcaseUserDTO ShowcaseUserDTO { get; set; }
+        public SwipeUserDTO SwipeUser { get; set; }
         public Swipe Swipe { get; set; } // the details of the swipe
         public Match Match { get; set; } // the match (if it exists)
     }

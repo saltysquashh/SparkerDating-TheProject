@@ -1,6 +1,6 @@
 ﻿namespace sparker.DTOs
 {
-    public class SwipeDTO
+    public class PerformSwipeDTO
     {
         public int SwiperUserId { get; set; }
         public int SwipedUserId { get; set; }
