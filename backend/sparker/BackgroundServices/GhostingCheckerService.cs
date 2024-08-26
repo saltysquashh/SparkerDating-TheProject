@@ -21,7 +21,7 @@ public class GhostingCheckerService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await CheckForGhostedMatches();
-            await Task.Delay(TimeSpan.FromHours(1), stoppingToken); // runs every hour
+            await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken); // runs every hour
         }
     }
 
@@ -31,10 +31,12 @@ public class GhostingCheckerService : BackgroundService
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+            // filter by all matches that isn't ghosted
             var matches = await dbContext.Matches
                 .Where(m => !m.Is_Ghosted) // only check them atches that are not already ghosted
                 .ToListAsync();
 
+            // loop through the found matches
             foreach (var match in matches)
             {
                 var lastMessage = await dbContext.ChatMessages
@@ -58,6 +60,7 @@ public class GhostingCheckerService : BackgroundService
                 if ((DateTime.Now - referenceTime).TotalHours >= 24)
                 {
                     match.Is_Ghosted = true;
+                    match.Ghosted_At = DateTime.Now;
                 }
             }
 
