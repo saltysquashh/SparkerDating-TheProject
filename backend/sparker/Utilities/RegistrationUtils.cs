@@ -12,22 +12,27 @@ namespace sparker.Utilities
         {
             if (!IsValidName(registerDTO.FirstName))
             {
-                return (false, "First name is invalid.");
+                return (false, "First name is invalid. Names should only consists of letters.");
             }
 
             if (!IsValidName(registerDTO.LastName))
             {
-                return (false, "Last name is invalid.");
+                return (false, "Last name is invalid. Names should only consists of letters.");
             }
 
             if (!IsValidGender(registerDTO.Gender))
             {
-                return (false, "Gender is invalid.");
+                return (false, "Gender is invalid. Valid genders are Male, Female or Other.");
+            }
+
+            if (!IsValidBirthdate(registerDTO.Birthdate))
+            {
+                return (false, "Birthdate is invalid. You must be at least 18 years old.");
             }
 
             if (!IsValidEmail(registerDTO.Email))
             {
-                return (false, "E-mail is invalid.");
+                return (false, "E-mail is invalid. The format is not of a standard e-mail format.");
             }
 
             if (await UserEmailExists(registerDTO.Email, _context))
@@ -102,6 +107,17 @@ namespace sparker.Utilities
                 }
             }
             return true;
+        }
+
+        public static bool IsValidBirthdate(DateTime birthdate)
+        {
+            var today = DateTime.Today;
+            int age = today.Year - birthdate.Year;
+
+            // if the user's birthday has not occurred this year yet,subtract one year from age
+            if (birthdate.Date > today.AddYears(-age)) age--;
+
+            return age >= 18;
         }
     }
 }
