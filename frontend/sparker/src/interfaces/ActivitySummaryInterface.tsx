@@ -1,9 +1,9 @@
 import MatchType from "./MatchInterface";
 
 
-interface UserActivitySummaryDTO {
+interface ActivitySummaryDTO {
     newMatches: MatchType[];
     expiredMatches: MatchType[];
 }
 
-export default UserActivitySummaryDTO
+export default ActivitySummaryDTO

@@ -2,12 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { fetchUserActivitySummary } from "../services/matchService";
 import "../styles/ActivitySummaryPage.css";
-import UserActivitySummaryDTO from "../interfaces/UserActivitySummary";
+import ActivitySummaryDTO from "../interfaces/ActivitySummaryInterface";
 
 const ActivitySummaryPage = () => {
 	const { authUser } = useContext(AuthContext);
 	const [activitySummary, setActivitySummary] =
-		useState<UserActivitySummaryDTO | null>(null);
+		useState<ActivitySummaryDTO | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
