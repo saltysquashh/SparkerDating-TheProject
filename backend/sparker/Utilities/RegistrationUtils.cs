@@ -8,6 +8,33 @@ namespace sparker.Utilities
 {
     public static class RegistrationUtils
     {
+
+        public static async Task<(bool isValid, string message)> ValidateUpdateUserInfoDTO(UpdateUserInfoDTO updateUserInfoDTO, ApplicationDbContext _context)
+        {
+            if (!IsValidName(updateUserInfoDTO.FirstName))
+            {
+                return (false, "First name is invalid. Names should only consists of letters.");
+            }
+
+            if (!IsValidName(updateUserInfoDTO.LastName))
+            {
+                return (false, "Last name is invalid. Names should only consists of letters.");
+            }
+
+            if (!IsValidGender(updateUserInfoDTO.Gender))
+            {
+                return (false, "Gender is invalid. Valid genders are Male, Female or Other.");
+            }
+
+            if (!IsValidBirthdate(updateUserInfoDTO.Birthdate))
+            {
+                return (false, "Birthdate is invalid. You must be at least 18 years old.");
+            }
+
+            return (true, string.Empty); // All checks passed
+        }
+
+
         public static async Task<(bool isValid, string message)> ValidateRegistrationDTO(RegisterDTO registerDTO, ApplicationDbContext _context)
         {
             if (!IsValidName(registerDTO.FirstName))
