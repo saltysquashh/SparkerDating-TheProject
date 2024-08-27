@@ -55,6 +55,23 @@ namespace sparker.Controllers
                 return BadRequest("No file uploaded.");
             }
 
+            // Check if the file is of a valid type (JPG or PNG)
+            var validContentTypes = new[] { "image/jpeg", "image/png" };
+            var validExtensions = new[] { ".jpg", ".jpeg", ".png" };
+
+            // Check content type
+            if (!validContentTypes.Contains(file.ContentType.ToLower()))
+            {
+                return BadRequest("Invalid file type. Only JPG and PNG files are allowed.");
+            }
+
+            // Check file extension (optional, additional check)
+            var fileExtension = Path.GetExtension(file.FileName).ToLower();
+            if (!validExtensions.Contains(fileExtension))
+            {
+                return BadRequest("Invalid file extension. Only .jpg, .jpeg, and .png files are allowed.");
+            }
+
             try
             {
                 byte[] fileBytes;
@@ -81,6 +98,7 @@ namespace sparker.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteImage(int id)
