@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }, []);
 
     return (
-        // provide access to context values and methods (of AuthContext), in child components
+        // provide access to context values and methods (of AuthContext), in child components - AuthProviderProps
         <AuthContext.Provider value={{ authUser, login, logout }}>
             {children}
         </AuthContext.Provider>
