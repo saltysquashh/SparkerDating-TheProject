@@ -21,14 +21,27 @@ export const uploadImage = async (file, userId) => {
     formData.append('file', file);
     formData.append('userId', userId); 
 
+    try {
     const response = await axios.post(`${API_URL}/images/upload`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
             'Authorization': `Bearer ${token}`
         },
+       
     });
-
     return response.data;
+} catch (error) {
+    // check for network or server errors
+    if (error.response) {
+        throw new Error(error.response.data);
+    } else if (error.request) {
+        // the request was made but no response was received
+        throw new Error('No response received from the server.');
+    } else {
+        // Something happened in setting up the request that triggered an Error
+        throw new Error('Error in setting up the request.');
+    }
+}
 };
 
 export const deleteImage = async (imageId) => {
