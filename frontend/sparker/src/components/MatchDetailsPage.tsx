@@ -52,7 +52,7 @@ const MatchDetailsPage = () => {
 				timeLeft.minutes <= 0 &&
 				timeLeft.seconds <= 0)
 		) {
-			return "Any minute...";
+			return "Any minute..."; // let the user know that the match will be ghosted any minute now (next time the bacgkround check runs)
 		}
 
 		const { hours, minutes, seconds } = timeLeft;
