@@ -15,7 +15,7 @@ const MatchDetailsPage = () => {
     const [match, setMatch] = useState<MatchType | null>(null);
     const [timeLeftUser1, setTimeLeftUser1] = useState<string | null>(null);
     const [timeLeftUser2, setTimeLeftUser2] = useState<string | null>(null);
-    const [createdAt, setCreatedAt] = useState<string | null>(null);
+    const [matchCreatedAt, setMatchCreatedAt] = useState<string | null>(null);
     const [isGhosted, setIsGhosted] = useState(false);
     const { authUser } = useContext(AuthContext);
     const authUserId = authUser?.id;
@@ -23,7 +23,7 @@ const MatchDetailsPage = () => {
     const cancelRef = React.useRef<HTMLButtonElement>(null);
     const [ghostedByName, setGhostedByName] = useState<string | null>(null);
 
-    const updateTimers = (matchData: MatchType) => {
+    const updateGhostingTimers = (matchData: MatchType) => {
         const { timeLeftUser1, timeLeftUser2 } = calculateTimeLeft(matchData, authUserId, matchData.matchUser?.id);
         
         setTimeLeftUser1(formatTimeLeft(timeLeftUser1));
@@ -42,13 +42,13 @@ const MatchDetailsPage = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const RetrievedMatchData = await getMatchById(matchId, authUserId);
-                setMatch(RetrievedMatchData);
-                console.log(RetrievedMatchData);
-                setCreatedAt(formatDate(RetrievedMatchData.matchedAt));
-                updateTimers(RetrievedMatchData);
-                setIsGhosted(RetrievedMatchData.isGhosted);
-                setGhostedByName(RetrievedMatchData.matchUser.firstName + ' ' + RetrievedMatchData.matchUser.lastName)
+                const RetrievedMatch = await getMatchById(matchId, authUserId);
+                setMatch(RetrievedMatch);
+                console.log(RetrievedMatch);
+                setMatchCreatedAt(formatDate(RetrievedMatch.matchedAt));
+                updateGhostingTimers(RetrievedMatch);
+                setIsGhosted(RetrievedMatch.isGhosted);
+                setGhostedByName(RetrievedMatch.matchUser.fullName)
             } catch (error) {
                 console.error('Error fetching match data:', error);
             }
@@ -64,7 +64,7 @@ const MatchDetailsPage = () => {
     useEffect(() => {
         const intervalTimeLeft = setInterval(() => {
             if (match) {
-                updateTimers(match);
+                updateGhostingTimers(match);
             }
         }, 1000);
 
@@ -135,7 +135,7 @@ const MatchDetailsPage = () => {
                         {isGhosted ? (
                             <div className="ghosted-message">
                                 The match has been ghosted and locked...
-                                It was ghosted by {ghostedByName} at {match.ghost.ghostedAt}
+                                It was ghosted by {ghostedByName} at {formatDate(match.ghost.ghostedAt)}
                             </div>
                         ) : (
                             <>
@@ -166,7 +166,7 @@ const MatchDetailsPage = () => {
                         title="Unmatch"
                         body="Are you sure you want to delete this match? You can't undo this action."
                     />
-                    <div className="matched-at-text">You matched with {match.matchUser.fullName} on {createdAt}</div>
+                    <div className="matched-at-text">You matched with {match.matchUser.fullName} on {matchCreatedAt}</div>
                 </div>
             </div>
         </div>
