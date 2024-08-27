@@ -14,11 +14,9 @@ export const post_registerUser = async (userData) => {
         if (error.response) {
             throw new Error(error.response.data);
         } else if (error.request) {
-            console.log('Scenario 2');
             // the request was made but no response was received
             throw new Error('No response received from the server.');
         } else {
-            console.log('Scenario 3');
             // Something happened in setting up the request that triggered an Error
             throw new Error('Error in setting up the request.');
         }
@@ -66,8 +64,16 @@ export const update_userInfo = async (userId, userData) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error updating user info:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
