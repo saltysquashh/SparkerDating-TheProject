@@ -24,6 +24,7 @@ import SwipeDetailsPage from './components/SwipeDetailsPage';
 import AdminPanelPage from './components/AdminPanelPage';
 import RestorePage from './components/RestorePage';
 import WelcomePage from './components/ActivitySummaryPage';
+import { ToastProvider } from './components/globalComponents/toastProvider';
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
   return (
     <ChakraProvider>
     <AuthProvider>
+    <ToastProvider>
       <Header /> {/* Include your Header component here */}
       <Routes>
         <Route path="/" element={<HomePage />} /> {/* Set HomePage as the root route */}
@@ -55,6 +57,7 @@ function App() {
         <Route path="/adminpanel/restore/:userId" element={<RestorePage />} />
         <Route path="/welcome" element={<WelcomePage />} />
       </Routes>
+      </ToastProvider>
     </AuthProvider>
     </ChakraProvider>
   );
