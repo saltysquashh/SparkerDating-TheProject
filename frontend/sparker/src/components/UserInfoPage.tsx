@@ -20,24 +20,28 @@ const UserInfoPage = () => {
 	const [loading, setLoading] = useState(true);
 	const { authUser, logout } = useContext(AuthContext);
 
-	const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	const handleUserInfoFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent the default form submit action
 
 		if (authUser && authUser.id) {
 			try {
 				await update_userInfo(authUser.id, user_Info);
 				alert("User information updated successfully!");
-			} catch (error) {
-				console.error("Error updating user information:", error);
-				alert("Failed to update user information.");
-			}
+			} catch (error: any) {
+				// check if the error has a message property and set it to errorMessage
+				if (error && error.message) {
+					alert(`Updating user information failed: ${error.message}`);
+				} else {
+					alert("Updating user information: An unexpected error occurred.");
+				}
+			};
 		}
 	};
 
 	const handleDeleteUser = async () => {
 		if (authUser && authUser.id) {
 			const confirmed = window.confirm(
-				"Are you sure you want to delete your account? This action cannot be undone."
+				"Are you sure you want to delete your account?"
 			);
 			if (confirmed) {
 				try {
@@ -98,7 +102,7 @@ const UserInfoPage = () => {
 	}
 
 	if (!authUser) {
-		return <div>No user data found.</div>;
+		return <div>Error: No user data found. User is not logged in.</div>;
 	}
 
 	return (
@@ -107,7 +111,7 @@ const UserInfoPage = () => {
 				<h2>User information</h2>
 			</div>
 			<div className="form-section">
-				<form onSubmit={handleFormSubmit}>
+				<form onSubmit={handleUserInfoFormSubmit}>
 					<input
 						type="text"
 						name="firstName"
@@ -159,5 +163,6 @@ const UserInfoPage = () => {
 		</div>
 	);
 };
+
 
 export default UserInfoPage;
