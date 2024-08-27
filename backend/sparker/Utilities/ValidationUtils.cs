@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace sparker.Utilities
 {
-    public static class RegistrationUtils
+    public static class ValidationUtils
     {
 
         public static async Task<(bool isValid, string message)> ValidateUpdateUserInfoDTO(UpdateUserInfoDTO updateUserInfoDTO, ApplicationDbContext _context)
@@ -118,7 +118,7 @@ namespace sparker.Utilities
 
         public static bool IsValidGender(string gender)
         {
-            return gender == "Male" || gender == "Female" || gender == "Both";
+            return gender == "Male" || gender == "Female" || gender == "Other";
         }
 
         public static bool IsValidName(string name)

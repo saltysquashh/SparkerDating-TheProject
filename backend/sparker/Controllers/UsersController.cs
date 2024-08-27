@@ -40,7 +40,7 @@ public class UsersController : ControllerBase
     {
         // validate the input and check if the user already exists ?
 
-        var (isValid, errorMessage) = await RegistrationUtils.ValidateRegistrationDTO(registerDTO, _context);
+        var (isValid, errorMessage) = await ValidationUtils.ValidateRegistrationDTO(registerDTO, _context);
 
         if (!isValid)
         {
@@ -83,7 +83,7 @@ public class UsersController : ControllerBase
     [HttpGet("useremailexists/{email}")]
     public async Task<IActionResult> CheckUserEmailExistsEndpoint(string email)
     {
-        bool exists = await RegistrationUtils.UserEmailExists(email, _context);
+        bool exists = await ValidationUtils.UserEmailExists(email, _context);
         return Ok(exists);
     }
 
@@ -157,7 +157,7 @@ public class UsersController : ControllerBase
             return NotFound($"User with ID {id} not found.");
 
         }
-        var (isValid, errorMessage) = await RegistrationUtils.ValidateUpdateUserInfoDTO(updateUserInfoDTO, _context);
+        var (isValid, errorMessage) = await ValidationUtils.ValidateUpdateUserInfoDTO(updateUserInfoDTO, _context);
 
         if (!isValid)
         {
