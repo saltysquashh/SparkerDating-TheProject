@@ -155,6 +155,13 @@ public class UsersController : ControllerBase
         if (user == null)
         {
             return NotFound($"User with ID {id} not found.");
+
+        }
+        var (isValid, errorMessage) = await RegistrationUtils.ValidateUpdateUserInfoDTO(updateUserInfoDTO, _context);
+
+        if (!isValid)
+        {
+            return BadRequest(errorMessage);
         }
 
         // Update user properties
@@ -162,9 +169,7 @@ public class UsersController : ControllerBase
         user.Last_Name = updateUserInfoDTO.LastName;
         user.Gender = updateUserInfoDTO.Gender;
         user.Birthdate = updateUserInfoDTO.Birthdate;
-
-        // Users are not allowed to update their e-mail
-        // user.Email = updateUserInfoDTO.Email;
+        // user.Email = updateUserInfoDTO.Email; // Users are not allowed to update their e-mail, so this line was removed
 
         try
         {
