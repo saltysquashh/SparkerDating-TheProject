@@ -6,12 +6,14 @@ import MatchType from '../interfaces/MatchInterface';
 import { Button } from '@chakra-ui/react';
 import '../styles/MatchesPage.css';
 import '../styles/RestorePage.css';
+import { useToastNotification } from './globalComponents/toastProvider';
 
 const RestorePage = () => {
     const { authUser } = useContext(AuthContext);
     const { userId } = useParams<{ userId: string }>();
     const [matches, setMatches] = useState<MatchType[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const showToast = useToastNotification();
 
     useEffect(() => {
         const loadMatches = async () => {
@@ -32,14 +34,21 @@ const RestorePage = () => {
     }, [authUser, userId]);
 
 
-    const   handleIsAliveClick = async () => {
+    const  handleIsAliveClick = async () => {
        alert('The match is still active.')
     };
 
     const handleRestoreMatch = async (matchId: number, adminUserId: number) => {
         try {
             await restoreMatch(matchId, adminUserId);
-            alert("Match restored successfully.");
+
+            // alert("Match restored successfully."); // use toast instead
+            showToast({
+                title: 'Match restored',
+                description: 'The match was restored, and are no longer ghosted.',
+                status: 'success',
+              });
+
             setMatches(prevMatches => 
                 prevMatches.map(m => m.id === matchId ? { ...m, isGhosted: false } : m)
             );
