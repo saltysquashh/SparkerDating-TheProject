@@ -10,13 +10,17 @@ import { Button } from "@chakra-ui/react";
 import "../styles/MatchesPage.css";
 import "../styles/RestorePage.css";
 import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const RestorePage = () => {
 	const { authUser } = useContext(AuthContext);
 	const { userId } = useParams<{ userId: string }>();
 	const [matches, setMatches] = useState<MatchType[]>([]);
+
 	const [isLoading, setIsLoading] = useState(true);
 	const showToast = useToastNotification();
+
+	const { handleError, clearError } = useErrorHandling();
 
 	useEffect(() => {
 		const loadMatches = async () => {
@@ -28,7 +32,12 @@ const RestorePage = () => {
 					);
 					setMatches(matches);
 				} catch (error) {
-					console.error("Error fetching matches:", error);
+					const errorMessage = handleError(error);
+					showToast({
+						title: "Error",
+						description: `${errorMessage}`,
+						status: "error",
+					});
 				}
 				setIsLoading(false);
 			}
@@ -59,8 +68,12 @@ const RestorePage = () => {
 				)
 			);
 		} catch (error) {
-			console.error("Error restoring match:", error);
-			alert("Failed to restore match.");
+			const errorMessage = handleError(error);
+			showToast({
+				title: "Error",
+				description: `${errorMessage}`,
+				status: "error",
+			});
 		}
 	};
 

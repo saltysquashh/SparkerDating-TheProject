@@ -9,10 +9,16 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Dayjs } from "dayjs";
 import { useNavigate } from "react-router-dom";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const RegisterPage = () => {
 	const navigate = useNavigate();
 	const [step, setStep] = useState(1);
+
+	// const { handleError, clearError } = useErrorHandling(); // error message already exists
+	// const showToast = useToastNotification();
+
 	const [formData, setFormData] = useState({
 		firstName: "",
 		lastName: "",

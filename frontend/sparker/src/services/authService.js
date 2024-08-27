@@ -6,6 +6,8 @@ import { useContext } from 'react';
 
 const API_URL = process.env.REACT_APP_API_URL;
 
+// TODO should this be used file even be used? or is it all handled in authcontext
+
 // axios.interceptors.response.use(
 //     response => response,
 //     error => {

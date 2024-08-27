@@ -7,8 +7,15 @@ import {
 } from "../services/userService";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "@chakra-ui/react";
+import { useErrorHandling } from '../hooks/useErrorHandling';
+import { useToastNotification } from "./globalComponents/toastProvider";
 
 const UserInfoPage = () => {
+	const { authUser, logout } = useContext(AuthContext);
+	const [loading, setLoading] = useState(true);
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
+
 	const [user_Info, setUserInfo] = useState({
 		firstName: "",
 		lastName: "",
@@ -16,25 +23,28 @@ const UserInfoPage = () => {
 		gender: "",
 		email: "",
 	});
-
-	const [loading, setLoading] = useState(true);
-	const { authUser, logout } = useContext(AuthContext);
-
+	
 	const handleUserInfoFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault(); // Prevent the default form submit action
 
 		if (authUser && authUser.id) {
 			try {
 				await update_userInfo(authUser.id, user_Info);
-				alert("User information updated successfully!");
-			} catch (error: any) {
-				// check if the error has a message property and set it to errorMessage
-				if (error && error.message) {
-					alert(`Updating user information failed: ${error.message}`);
-				} else {
-					alert("Updating user information: An unexpected error occurred.");
-				}
-			};
+				showToast({
+					title: "Success",
+					description:
+					`User information updated successfully!`,
+					status: "success"
+				});
+			} catch (error) {
+            	const errorMessage = handleError(error);
+				showToast({
+					title: "Error",
+					description:
+					`${errorMessage}`,
+					status: "error",
+				});
+        	}
 		}
 	};
 
@@ -46,11 +56,21 @@ const UserInfoPage = () => {
 			if (confirmed) {
 				try {
 					await delete_user(authUser.id, authUser.id); // user deletes themself
-					alert("Your account has been deleted.");
+					showToast({
+						title: "Success",
+						description:
+						"Your account has been deleted.",
+						status: "success"
+					});
 					logout();
 				} catch (error) {
-					console.error("Error deleting account:", error);
-					alert("Failed to delete your account.");
+					const errorMessage = handleError(error);
+					showToast({
+						title: "Error",
+						description:
+						`${errorMessage}`,
+						status: "error",
+					});
 				}
 			}
 		}
@@ -71,7 +91,7 @@ const UserInfoPage = () => {
 							date.getTime() - userTimezoneOffset
 						)
 							.toISOString()
-							.split("T")[0];
+							.split("T")[0]; // TODO
 					}
 
 					setUserInfo({
@@ -82,7 +102,13 @@ const UserInfoPage = () => {
 						email: data.email || "",
 					});
 				} catch (error) {
-					console.error("Error fetching user data:", error);
+					const errorMessage = handleError(error);
+					showToast({
+						title: "Error",
+						description:
+						`${errorMessage}`,
+						status: "error",
+					});
 				}
 				setLoading(false);
 			};

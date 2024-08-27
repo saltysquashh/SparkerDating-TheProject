@@ -17,6 +17,8 @@ import {
 import { AuthContext } from "../context/AuthContext";
 import SwipeHistoryType from "../interfaces/SwipeHistoryInterface";
 import SwipeType from "../interfaces/SwipeInterface";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const SwipeDetailsPage = () => {
 	const { swipeId } = useParams();
@@ -32,6 +34,8 @@ const SwipeDetailsPage = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef = React.useRef<HTMLButtonElement>(null);
 
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 	useEffect(() => {
 		const loadData = async () => {
 			setIsLoading(true);
@@ -50,7 +54,12 @@ const SwipeDetailsPage = () => {
 
 				setIsMatched(matchExists); // Set if a match exists
 			} catch (error) {
-				console.error("Error fetching swipe data:", error);
+				const errorMessage = handleError(error);
+				showToast({
+					title: "Error",
+					description: `${errorMessage}`,
+					status: "error",
+				});
 			}
 			setIsLoading(false);
 		};
@@ -71,7 +80,12 @@ const SwipeDetailsPage = () => {
 			const responseMsg = await deleteSwipe(swipeId);
 			// alert(responseMsg);
 		} catch (error) {
-			console.error("Error handling unswipe action:", error);
+			const errorMessage = handleError(error);
+			showToast({
+				title: "Error",
+				description: `${errorMessage}`,
+				status: "error",
+			});
 		}
 		navigate(`/swipehistory/`);
 	};

@@ -3,8 +3,13 @@ import "../styles/LoginPage.css";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/ProfilePage.css";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const LoginPage = () => {
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
+
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
@@ -39,6 +44,16 @@ const LoginPage = () => {
 				// Handle unknown errors
 				alert("An unknown error occurred");
 			}
+
+			// } catch (error) {
+			// 	const errorMessage = handleError(error);
+			// 	showToast({
+			// 		title: "Error",
+			// 		description:
+			// 		`${errorMessage}`,
+			// 		status: "error",
+			// 	});
+			// }
 		}
 	};
 

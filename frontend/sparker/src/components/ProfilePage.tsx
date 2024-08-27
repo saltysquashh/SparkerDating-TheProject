@@ -20,7 +20,6 @@ const ProfilePage = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef = React.useRef();
 	const { authUser } = useContext(AuthContext);
-
 	return (
 		<div className="global-container">
 			<div className="profile-menu-container">

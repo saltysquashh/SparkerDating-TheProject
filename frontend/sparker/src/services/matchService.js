@@ -14,8 +14,16 @@ export const getMatchById = async (matchId, userId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching match:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -29,8 +37,16 @@ export const fetch_allMatchesByUserId = async (userId) => {
         });
         return response.data; // array of matches
     } catch (error) {
-        console.error('Error fetching matches:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -45,8 +61,16 @@ export const deleteMatch = async (matchId, userId) => {
         });
         console.log(response.data);
     } catch (error) {
-        console.error('Error deleting match:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -61,8 +85,16 @@ export const restoreMatch = async (matchId, adminUserId) => {
         console.log(response.data)
         return response.data;
     } catch (error) {
-        console.error('Error restoring match:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -79,7 +111,15 @@ export const fetchUserActivitySummary = async (userId) => {
     console.log(response.data)
     return response.data;
 } catch (error) {
-    console.error('Error restoring match:', error);
-    throw error;
+    // check for network or server errors
+    if (error.response) {
+        throw new Error(error.response.data);
+    } else if (error.request) {
+        // the request was made but no response was received
+        throw new Error('No response received from the server.');
+    } else {
+        // Something happened in setting up the request that triggered an Error
+        throw new Error('Error in setting up the request.');
+    }
 }
 };

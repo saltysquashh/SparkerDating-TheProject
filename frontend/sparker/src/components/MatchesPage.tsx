@@ -4,12 +4,17 @@ import { AuthContext } from "../context/AuthContext";
 import { fetch_allMatchesByUserId } from "../services/matchService";
 import { useNavigate } from "react-router-dom";
 import MatchType from "../interfaces/MatchInterface";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const MatchesPage = () => {
 	const { authUser } = useContext(AuthContext);
 	const [matches, setMatches] = useState<MatchType[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const navigate = useNavigate();
+
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 
 	useEffect(() => {
 		const loadMatches = async () => {
@@ -19,7 +24,12 @@ const MatchesPage = () => {
 					const matches = await fetch_allMatchesByUserId(authUser.id);
 					setMatches(matches);
 				} catch (error) {
-					console.error("Error fetching matches:", error);
+					const errorMessage = handleError(error);
+					showToast({
+						title: "Error",
+						description: `${errorMessage}`,
+						status: "error",
+					});
 				}
 				setIsLoading(false);
 			}

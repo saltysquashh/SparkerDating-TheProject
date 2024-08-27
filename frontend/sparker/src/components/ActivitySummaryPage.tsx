@@ -3,12 +3,17 @@ import { AuthContext } from "../context/AuthContext";
 import { fetchUserActivitySummary } from "../services/matchService";
 import "../styles/ActivitySummaryPage.css";
 import ActivitySummaryDTO from "../interfaces/ActivitySummaryInterface";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const ActivitySummaryPage = () => {
 	const { authUser } = useContext(AuthContext);
 	const [activitySummary, setActivitySummary] =
 		useState<ActivitySummaryDTO | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
+
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -17,7 +22,12 @@ const ActivitySummaryPage = () => {
 					const summary = await fetchUserActivitySummary(authUser.id);
 					setActivitySummary(summary);
 				} catch (error) {
-					console.error("Error fetching welcome data:", error);
+					const errorMessage = handleError(error);
+					showToast({
+						title: "Error",
+						description: `${errorMessage}`,
+						status: "error",
+					});
 				} finally {
 					setIsLoading(false);
 				}

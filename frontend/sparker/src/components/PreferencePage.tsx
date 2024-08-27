@@ -15,11 +15,15 @@ import {
 	RangeSliderTrack,
 	useToast,
 } from "@chakra-ui/react";
-// Import other necessary components and hooks
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const PreferencePage = () => {
 	const [loading, setLoading] = useState(true);
 	const { authUser } = useContext(AuthContext);
+
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 
 	const [userPreferences, setUserPreferences] = useState({
 		sex: "",
@@ -43,8 +47,12 @@ const PreferencePage = () => {
 
 					setAgeRange([data.ageMin || 18, data.ageMax || 99]);
 				} catch (error) {
-					console.error("Error fetching user preferences:", error);
-					// Handle error appropriately
+					const errorMessage = handleError(error);
+					showToast({
+						title: "Error",
+						description: `${errorMessage}`,
+						status: "error",
+					});
 				}
 				setLoading(false);
 			};
@@ -69,8 +77,12 @@ const PreferencePage = () => {
 				await update_UserPreferences(authUser.id, userPreferences);
 				alert("User preferences were updated succesfully.");
 			} catch (error) {
-				console.error("Error updating user preferences:", error);
-				alert("Failed to update user preferences.");
+				const errorMessage = handleError(error);
+				showToast({
+					title: "Error",
+					description: `${errorMessage}`,
+					status: "error",
+				});
 			}
 		}
 	};

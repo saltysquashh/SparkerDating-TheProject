@@ -16,6 +16,8 @@ import SwipeHistoryType from "../interfaces/SwipeHistoryInterface";
 import { fetchSwipesByUser } from "../services/swipeService.js";
 import "../styles/Global.css";
 import "../styles/SwipeHistoryPage.css";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const SwipeHistoryPage = () => {
 	const { authUser } = useContext(AuthContext);
@@ -23,6 +25,8 @@ const SwipeHistoryPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	const navigate = useNavigate();
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 
 	useEffect(() => {
 		const loadSwipes = async () => {
@@ -33,7 +37,12 @@ const SwipeHistoryPage = () => {
 					setSwipes(fetchedSwipes);
 					// console.log("Fetched Swipes:", fetchedSwipes); // Log the fetched Swipes
 				} catch (error) {
-					console.error("Error fetching Swipes:", error);
+					const errorMessage = handleError(error);
+					showToast({
+						title: "Error",
+						description: `${errorMessage}`,
+						status: "error",
+					});
 				}
 				setIsLoading(false);
 			}
@@ -43,7 +52,6 @@ const SwipeHistoryPage = () => {
 	}, [authUser]);
 
 	const handleSwipeClick = (SwipeId: number, SwipeUserId: number) => {
-		console.log("Swipe clicked, their userId is: ", SwipeUserId);
 		navigate(`/swipehistory/swipedetails/${SwipeId}/${SwipeUserId}`);
 	};
 

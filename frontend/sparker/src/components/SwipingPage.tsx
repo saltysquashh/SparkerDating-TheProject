@@ -6,6 +6,8 @@ import { createSwipe } from "../services/swipeService";
 import axios from "axios";
 import { fetch_nextUserToSwipe } from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const SwipingPage = () => {
 	const { authUser } = useContext(AuthContext);
@@ -13,6 +15,9 @@ const SwipingPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [images, setImages] = useState<string[]>([]);
 	const navigate = useNavigate();
+
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 
 	useEffect(() => {
 		fetchNextUser();
@@ -52,25 +57,26 @@ const SwipingPage = () => {
 	const handleSwipe = async (liked: boolean) => {
 		if (!swipeUser || !authUser) return;
 		try {
-			const success = await createSwipe(
-				Number(authUser.id),
-				Number(swipeUser.id),
-				liked
-			);
-			if (success) {
-				fetchNextUser().catch((error) => {
-					console.error("Error fetching next user:", error);
-				});
-			}
+			await createSwipe(Number(authUser.id), Number(swipeUser.id), liked);
+			// if (success) {
+			fetchNextUser().catch((error) => {
+				console.error("Error fetching next user:", error);
+			});
+			// }
 		} catch (error) {
-			console.error("Error handling swipe action:", error);
+			const errorMessage = handleError(error);
+			showToast({
+				title: "Error",
+				description: `${errorMessage}`,
+				status: "error",
+			});
 		}
 	};
 
 	const handlePreferencesClick = () => {
 		navigate("/profile/preferences");
 	};
-	
+
 	if (isLoading) {
 		return <div>Loading Swipes...</div>;
 	}

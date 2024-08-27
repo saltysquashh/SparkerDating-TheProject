@@ -22,11 +22,16 @@ import {
 	Stack,
 	useDisclosure,
 } from "@chakra-ui/react";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const AdminPanelPage = () => {
 	const { authUser } = useContext(AuthContext);
 	const navigate = useNavigate();
 	const [users, setUsers] = useState<UserType[]>([]);
+
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 
 	useEffect(() => {
 		if (!authUser) {
@@ -42,7 +47,12 @@ const AdminPanelPage = () => {
 					setUsers(fetchedUsers);
 					console.log("Fetched Matches:", fetchedUsers); // Log the fetched matches
 				} catch (error) {
-					console.error("Error fetching matches: ", error);
+					const errorMessage = handleError(error);
+					showToast({
+						title: "Error",
+						description: `${errorMessage}`,
+						status: "error",
+					});
 				}
 			}
 		};
@@ -62,7 +72,12 @@ const AdminPanelPage = () => {
 				prevUsers.filter((u) => u.id !== delUserId)
 			); // prevUsers is the previous state of the 'users' array
 		} catch (error) {
-			// console.error("Error handling Delete User action: ", error);
+			const errorMessage = handleError(error);
+			showToast({
+				title: "Error",
+				description: `${errorMessage}`,
+				status: "error",
+			});
 		}
 	};
 
@@ -76,7 +91,12 @@ const AdminPanelPage = () => {
 				)
 			);
 		} catch (error) {
-			console.error("Error promoting user: ", error);
+			const errorMessage = handleError(error);
+			showToast({
+				title: "Error",
+				description: `${errorMessage}`,
+				status: "error",
+			});
 		}
 	};
 
@@ -95,7 +115,12 @@ const AdminPanelPage = () => {
 				)
 			);
 		} catch (error) {
-			console.error("Error demoting admin: ", error);
+			const errorMessage = handleError(error);
+			showToast({
+				title: "Error",
+				description: `${errorMessage}`,
+				status: "error",
+			});
 		}
 	};
 

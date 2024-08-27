@@ -16,8 +16,16 @@ export const fetch_UserPreferences = async (userId) => {
         });
         return response.data; // Return the data part of the response
     } catch (error) {
-        console.error('Error fetching preferences of user:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -32,7 +40,15 @@ export const update_UserPreferences = async (userId, preferenceData) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error updating preferences of user:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };

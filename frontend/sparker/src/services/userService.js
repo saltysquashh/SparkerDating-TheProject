@@ -33,8 +33,16 @@ export const fetch_userInfo = async (userId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching user data:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -48,8 +56,16 @@ export const fetch_swipeUserById = async (userId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching user data:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
    
@@ -88,8 +104,16 @@ export const fetch_userCustomization = async (userId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching user data:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -112,8 +136,16 @@ export const update_userBio = async (userId, newBio) => {
         }
         return response.data;
     } catch (error) {
-        console.error('Error updating user info:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -128,8 +160,16 @@ export const fetch_nextUserToSwipe = async (userId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching next user to swipe on:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -143,7 +183,16 @@ export const fetch_checkEmailExists = async (email) => {
         });
         return response.data; //
     } catch (error) {
-        throw new Error('Failed to check email');
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -157,8 +206,16 @@ export const fetch_allUsers = async () => {
         });
         return response.data; // Assuming the API returns an array of users
     } catch (error) {
-        console.error('Error fetching users:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -172,8 +229,16 @@ export const delete_user = async (delUserId, byUserId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error deleting user:', error.response.data);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -187,8 +252,16 @@ export const post_promoteUserToAdmin = async (userId, byUserId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error promoting user:', error.response.data);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -202,7 +275,15 @@ export const post_demoteAdminToUser = async (adminUserId, byUserId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error demoting admin:', error.response.data);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };

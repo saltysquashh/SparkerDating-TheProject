@@ -9,6 +9,8 @@ import {
 	sendMessage_Service,
 } from "../services/messageService";
 import "../styles/MatchChatPage.css";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const MatchChatPage = () => {
 	const { authUser } = useContext(AuthContext);
@@ -21,6 +23,9 @@ const MatchChatPage = () => {
 		useState<signalR.HubConnection | null>(null);
 
 	const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 
 	useEffect(() => {
 		const loadMessages = async () => {
@@ -66,9 +71,17 @@ const MatchChatPage = () => {
 		}
 
 		// send message to the server
-		await sendMessage(thisMatchId, senderId, receiverId, message);
-
-		setMessage("");
+		try {
+			await sendMessage(thisMatchId, senderId, receiverId, message);
+			setMessage("");
+		} catch (error) {
+			const errorMessage = handleError(error);
+			showToast({
+				title: "Error",
+				description: `${errorMessage}`,
+				status: "error",
+			});
+		}
 	};
 
 	const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {

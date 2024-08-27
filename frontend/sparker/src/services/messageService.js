@@ -34,7 +34,16 @@ export const sendMessage_Service = (hubConnection) => async (matchId, senderId, 
                 }
             });
         } catch (error) {
-            console.error("Error sending message:", error);
+            // check for network or server errors
+            if (error.response) {
+                throw new Error(error.response.data);
+            } else if (error.request) {
+                // the request was made but no response was received
+                throw new Error('No response received from the server.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                throw new Error('Error in setting up the request.');
+            }
         }
     } else {
         console.error("Cannot send message. Hub connection is not established.");
@@ -57,7 +66,15 @@ export const fetchChatMessagesForMatch = async (matchId) => {
             timeStamp: msg.timeStamp,
           }));
         } catch (error) {
-          console.error('Error fetching chat messages:', error);
-          throw error;
+            // check for network or server errors
+            if (error.response) {
+                throw new Error(error.response.data);
+            } else if (error.request) {
+                // the request was made but no response was received
+                throw new Error('No response received from the server.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                throw new Error('Error in setting up the request.');
+            }
         }
 };

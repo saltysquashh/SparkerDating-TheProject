@@ -24,14 +24,20 @@ export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
         {
             alert(message);
         }
-
-        return true;
+        return response.data;
+        // return true;
 
     } catch (error) {
-
-        alert('Error during swipe action:', error);
-
-        return false;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
@@ -45,13 +51,22 @@ export const fetchSwipesByUser = async (userId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error fetching swipes:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 
 export const fetchSwipeDetails = async (swipedId, swiperId) => {
     const token = getAuthToken();
+    try {
     const response = await axios.get(`${API_URL}/swipes/swipedetails/${swipedId}/${swiperId}`, {
         headers: {
             'Authorization': `Bearer ${token}` // JWT token
@@ -59,6 +74,18 @@ export const fetchSwipeDetails = async (swipedId, swiperId) => {
     });
     // console.log(response.data.swipe);
     return response.data; // includes swipe object, match object and info of swiped user
+} catch (error) {
+    // check for network or server errors
+    if (error.response) {
+        throw new Error(error.response.data);
+    } else if (error.request) {
+        // the request was made but no response was received
+        throw new Error('No response received from the server.');
+    } else {
+        // Something happened in setting up the request that triggered an Error
+        throw new Error('Error in setting up the request.');
+    }
+}
 };
 
 export const deleteSwipe = async (swipeId) => {
@@ -71,8 +98,16 @@ export const deleteSwipe = async (swipeId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error deleting match:', error);
-        throw error;
+        // check for network or server errors
+        if (error.response) {
+            throw new Error(error.response.data);
+        } else if (error.request) {
+            // the request was made but no response was received
+            throw new Error('No response received from the server.');
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            throw new Error('Error in setting up the request.');
+        }
     }
 };
 

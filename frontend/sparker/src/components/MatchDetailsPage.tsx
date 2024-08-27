@@ -17,6 +17,8 @@ import { AuthContext } from "../context/AuthContext";
 import { calculateTimeLeft, formatDate } from "../utilities/dateUtils";
 import MatchType from "../interfaces/MatchInterface";
 import ConfirmDialog from "./globalComponents/alertDialog";
+import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const MatchDetailsPage = () => {
 	const navigate = useNavigate();
@@ -31,6 +33,9 @@ const MatchDetailsPage = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef = React.useRef<HTMLButtonElement>(null);
 	const [ghostedByName, setGhostedByName] = useState<string | null>(null);
+
+	const { handleError, clearError } = useErrorHandling();
+	const showToast = useToastNotification();
 
 	const updateGhostingTimers = (matchData: MatchType) => {
 		const { timeLeftUser1, timeLeftUser2 } = calculateTimeLeft(
@@ -70,7 +75,12 @@ const MatchDetailsPage = () => {
 				setIsGhosted(RetrievedMatch.isGhosted);
 				setGhostedByName(RetrievedMatch.matchUser.fullName);
 			} catch (error) {
-				console.error("Error fetching match data:", error);
+				const errorMessage = handleError(error);
+				showToast({
+					title: "Error",
+					description: `${errorMessage}`,
+					status: "error",
+				});
 			}
 		};
 
@@ -104,7 +114,12 @@ const MatchDetailsPage = () => {
 			await deleteMatch(matchId, authUserId);
 			navigate(`/matches/`);
 		} catch (error) {
-			console.error("Error handling unmatch action:", error);
+			const errorMessage = handleError(error);
+			showToast({
+				title: "Error",
+				description: `${errorMessage}`,
+				status: "error",
+			});
 		}
 	};
 

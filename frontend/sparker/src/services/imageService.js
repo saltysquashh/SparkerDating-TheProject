@@ -7,12 +7,25 @@ const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchUserImages = async (userId) => {
     const token = getAuthToken();
+    try {
     const response = await axios.get(`${API_URL}/images/user/${userId}`, {
         headers: {
             'Authorization': `Bearer ${token}` // JWT token
         }
     });
     return response.data;
+} catch (error) {
+    // check for network or server errors
+    if (error.response) {
+        throw new Error(error.response.data);
+    } else if (error.request) {
+        // the request was made but no response was received
+        throw new Error('No response received from the server.');
+    } else {
+        // Something happened in setting up the request that triggered an Error
+        throw new Error('Error in setting up the request.');
+    }
+}
 };
 
 export const uploadImage = async (file, userId) => {
