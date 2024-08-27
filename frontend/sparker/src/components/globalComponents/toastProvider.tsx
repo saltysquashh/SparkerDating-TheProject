@@ -27,7 +27,7 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
 		status = "info",
 		duration = 5000,
 		isClosable = true,
-		position,
+		position = 'top'
 	}: ShowToastOptions) => {
 		toast({
 			title,
