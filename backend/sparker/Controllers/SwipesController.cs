@@ -24,57 +24,81 @@ namespace sparker.Controllers
             _configuration = configuration;
         }
 
-        [HttpPost("swipe")]
+        [HttpPost("createswipe")]
         public async Task<IActionResult> CreateSwipe([FromBody] PerformSwipeDTO performSwipeDTO)
         {
-            var swipe = new Swipe
+            try
             {
-                Swiper_UserId = performSwipeDTO.SwiperUserId,
-                Swiped_UserId = performSwipeDTO.SwipedUserId,
-                Liked = performSwipeDTO.Liked,
-                Swiped_At = DateTime.Now
-            };
+                // Check if the swipe already exists
+                var existingSwipe = await _context.Swipes
+                    .FirstOrDefaultAsync(s =>
+                        s.Swiper_UserId == performSwipeDTO.SwiperUserId &&
+                        s.Swiped_UserId == performSwipeDTO.SwipedUserId);
 
-            _context.Swipes.Add(swipe);
-            await _context.SaveChangesAsync();
-
-            if (!performSwipeDTO.Liked)
-            {
-                return Ok(new SwipeActionResponseDTO
+                if (existingSwipe != null)
                 {
-                    IsMatch = false,
-                    Message = "You passed on this user."
-                });
-            }
+                    return Conflict(new SwipeActionResponseDTO
+                    {
+                        IsMatch = false,
+                        Message = "You have already swiped on this user."
+                    });
+                }
 
-            bool isMatch = false;
-
-            // Check for match
-            var potentialMatch = await _context.Swipes.FirstOrDefaultAsync(s =>
-                s.Swiped_UserId == swipe.Swiper_UserId &&
-                s.Swiper_UserId == swipe.Swiped_UserId &&
-                s.Liked);
-
-            if (potentialMatch != null)
-            {
-                isMatch = true;
-                // Create match
-                var match = new Match
+                // If no existing swipe, between swiper and swiped, proceed with creating swipe
+                var swipe = new Swipe
                 {
-                    User1_Id = swipe.Swiper_UserId,
-                    User2_Id = swipe.Swiped_UserId,
-                    Matched_At = DateTime.Now
+                    Swiper_UserId = performSwipeDTO.SwiperUserId,
+                    Swiped_UserId = performSwipeDTO.SwipedUserId,
+                    Liked = performSwipeDTO.Liked,
+                    Swiped_At = DateTime.Now
                 };
 
-                _context.Matches.Add(match);
+                _context.Swipes.Add(swipe);
                 await _context.SaveChangesAsync();
-            }
 
-            return Ok(new SwipeActionResponseDTO
+                if (!performSwipeDTO.Liked)
+                {
+                    return Ok(new SwipeActionResponseDTO
+                    {
+                        IsMatch = false,
+                        Message = "You passed on this user."
+                    });
+                }
+
+                bool isMatch = false;
+
+                // Check for a match
+                var potentialMatch = await _context.Swipes.FirstOrDefaultAsync(s =>
+                    s.Swiped_UserId == swipe.Swiper_UserId &&
+                    s.Swiper_UserId == swipe.Swiped_UserId &&
+                    s.Liked);
+
+                if (potentialMatch != null)
+                {
+                    isMatch = true;
+
+                    // Create match
+                    var match = new Match
+                    {
+                        User1_Id = swipe.Swiper_UserId,
+                        User2_Id = swipe.Swiped_UserId,
+                        Matched_At = DateTime.Now
+                    };
+
+                    _context.Matches.Add(match);
+                    await _context.SaveChangesAsync();
+                }
+
+                return Ok(new SwipeActionResponseDTO
+                {
+                    IsMatch = isMatch,
+                    Message = isMatch ? "You have a new match!" : "Swipe recorded."
+                });
+            }
+            catch (Exception ex)
             {
-                IsMatch = isMatch,
-                Message = "You have a new match!"
-            });
+                return StatusCode(500, $"An error occurred while processing the swipe: {ex.Message}");
+            }
         }
 
         // Get Swipe History of a user
