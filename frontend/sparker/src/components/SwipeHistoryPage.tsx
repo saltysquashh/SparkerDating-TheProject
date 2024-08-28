@@ -16,7 +16,7 @@ import SwipeHistoryType from "../interfaces/SwipeHistoryInterface";
 import { fetchSwipesByUser } from "../services/swipeService.js";
 import "../styles/Global.css";
 import "../styles/SwipeHistoryPage.css";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const SwipeHistoryPage = () => {

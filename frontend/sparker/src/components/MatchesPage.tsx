@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 import { fetch_allMatchesByUserId } from "../services/matchService";
 import { useNavigate } from "react-router-dom";
 import MatchType from "../interfaces/MatchInterface";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const MatchesPage = () => {

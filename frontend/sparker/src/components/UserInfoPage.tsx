@@ -7,8 +7,8 @@ import {
 } from "../services/userService";
 import { AuthContext } from "../context/AuthContext";
 import { Button } from "@chakra-ui/react";
-import { useErrorHandling } from '../hooks/useErrorHandling';
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useErrorHandling } from "../hooks/useErrorHandling";
+import { useToastNotification } from "./providers/toastProvider";
 
 const UserInfoPage = () => {
 	const { authUser, logout } = useContext(AuthContext);
@@ -23,8 +23,10 @@ const UserInfoPage = () => {
 		gender: "",
 		email: "",
 	});
-	
-	const handleUserInfoFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+
+	const handleUserInfoFormSubmit = async (
+		e: React.FormEvent<HTMLFormElement>
+	) => {
 		e.preventDefault(); // Prevent the default form submit action
 
 		if (authUser && authUser.id) {
@@ -32,19 +34,17 @@ const UserInfoPage = () => {
 				await update_userInfo(authUser.id, user_Info);
 				showToast({
 					title: "Success",
-					description:
-					`User information updated successfully!`,
-					status: "success"
+					description: `User information updated successfully!`,
+					status: "success",
 				});
 			} catch (error) {
-            	const errorMessage = handleError(error);
+				const errorMessage = handleError(error);
 				showToast({
 					title: "Error",
-					description:
-					`${errorMessage}`,
+					description: `${errorMessage}`,
 					status: "error",
 				});
-        	}
+			}
 		}
 	};
 
@@ -58,17 +58,15 @@ const UserInfoPage = () => {
 					await delete_user(authUser.id, authUser.id); // user deletes themself
 					showToast({
 						title: "Success",
-						description:
-						"Your account has been deleted.",
-						status: "success"
+						description: "Your account has been deleted.",
+						status: "success",
 					});
 					logout();
 				} catch (error) {
 					const errorMessage = handleError(error);
 					showToast({
 						title: "Error",
-						description:
-						`${errorMessage}`,
+						description: `${errorMessage}`,
 						status: "error",
 					});
 				}
@@ -105,8 +103,7 @@ const UserInfoPage = () => {
 					const errorMessage = handleError(error);
 					showToast({
 						title: "Error",
-						description:
-						`${errorMessage}`,
+						description: `${errorMessage}`,
 						status: "error",
 					});
 				}
@@ -189,6 +186,5 @@ const UserInfoPage = () => {
 		</div>
 	);
 };
-
 
 export default UserInfoPage;

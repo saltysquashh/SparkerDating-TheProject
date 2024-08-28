@@ -9,7 +9,7 @@ import {
 	sendMessage_Service,
 } from "../services/messageService";
 import "../styles/MatchChatPage.css";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const MatchChatPage = () => {

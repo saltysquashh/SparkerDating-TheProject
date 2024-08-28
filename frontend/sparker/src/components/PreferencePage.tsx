@@ -15,7 +15,7 @@ import {
 	RangeSliderTrack,
 	useToast,
 } from "@chakra-ui/react";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const PreferencePage = () => {

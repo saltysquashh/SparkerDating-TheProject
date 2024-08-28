@@ -3,7 +3,7 @@ import { AuthContext } from "../context/AuthContext";
 import { fetchUserActivitySummary } from "../services/matchService";
 import "../styles/ActivitySummaryPage.css";
 import ActivitySummaryDTO from "../interfaces/ActivitySummaryInterface";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const ActivitySummaryPage = () => {

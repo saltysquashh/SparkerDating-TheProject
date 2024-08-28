@@ -17,7 +17,7 @@ import { AuthContext } from "../context/AuthContext";
 import { calculateTimeLeft, formatDate } from "../utilities/dateUtils";
 import MatchType from "../interfaces/MatchInterface";
 import ConfirmDialog from "./globalComponents/alertDialog";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const MatchDetailsPage = () => {
@@ -69,7 +69,6 @@ const MatchDetailsPage = () => {
 			try {
 				const RetrievedMatch = await getMatchById(matchId, authUserId);
 				setMatch(RetrievedMatch);
-				console.log(RetrievedMatch);
 				setMatchCreatedAt(formatDate(RetrievedMatch.matchedAt));
 				updateGhostingTimers(RetrievedMatch);
 				setIsGhosted(RetrievedMatch.isGhosted);

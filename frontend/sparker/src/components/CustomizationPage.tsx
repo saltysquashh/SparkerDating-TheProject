@@ -12,7 +12,7 @@ import {
 	fetch_userCustomization,
 	update_userBio,
 } from "../services/userService";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const CustomizationPage = () => {

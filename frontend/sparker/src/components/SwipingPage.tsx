@@ -6,7 +6,7 @@ import { createSwipe } from "../services/swipeService";
 import axios from "axios";
 import { fetch_nextUserToSwipe } from "../services/userService";
 import { useNavigate } from "react-router-dom";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const SwipingPage = () => {

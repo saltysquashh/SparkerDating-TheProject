@@ -9,7 +9,7 @@ import MatchType from "../interfaces/MatchInterface";
 import { Button } from "@chakra-ui/react";
 import "../styles/MatchesPage.css";
 import "../styles/RestorePage.css";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const RestorePage = () => {

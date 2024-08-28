@@ -22,8 +22,9 @@ import {
 	Stack,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
+import { formatDate } from "../utilities/dateUtils";
 
 const AdminPanelPage = () => {
 	const { authUser } = useContext(AuthContext);
@@ -158,7 +159,8 @@ const AdminPanelPage = () => {
 							<div>First name: {shownUser.firstName}</div>
 							<div>Last name: {shownUser.lastName}</div>
 							<div>
-								Registration date: {shownUser.registrationAt}
+								Registration date:{" "}
+								{formatDate(shownUser.registrationAt)}
 							</div>
 							<div>
 								Type: {shownUser.isAdmin ? "Admin" : "User"}

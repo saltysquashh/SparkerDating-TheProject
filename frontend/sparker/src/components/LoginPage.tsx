@@ -3,7 +3,7 @@ import "../styles/LoginPage.css";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import "../styles/ProfilePage.css";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const LoginPage = () => {
@@ -24,10 +24,8 @@ const LoginPage = () => {
 	const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		try {
-			await login({
-				email: formData.email,
-				password: formData.password,
-			});
+			// login call
+			await login({ email: formData.email, password: formData.password });
 			// maybe navigate the user to a different page or update the state here??
 		} catch (error) {
 			if (axios.isAxiosError(error)) {

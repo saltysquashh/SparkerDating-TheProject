@@ -17,7 +17,7 @@ import {
 import { AuthContext } from "../context/AuthContext";
 import SwipeHistoryType from "../interfaces/SwipeHistoryInterface";
 import SwipeType from "../interfaces/SwipeInterface";
-import { useToastNotification } from "./globalComponents/toastProvider";
+import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const SwipeDetailsPage = () => {
