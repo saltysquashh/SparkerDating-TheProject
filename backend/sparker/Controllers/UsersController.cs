@@ -584,11 +584,68 @@ public class UsersController : ControllerBase
 
             userInfoDTOs.Add(userInfo);
         }
+
         return Ok(userInfoDTOs);
+
         }
         catch (Exception ex)
         {
             return StatusCode(500, $"An error occurred while retrieving all users: {ex.Message}");
         }
     }
+
+    // user activity summary for welcomepage functionality
+    [HttpGet("summary/{userId}")]
+    public async Task<IActionResult> GetUserActivitySummary(int userId)
+    {
+        try
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var lastLoginTime = user.Last_Login_At;
+
+            // New Matches
+            var newMatches = await _context.Matches
+                .Where(m => (m.User1_Id == userId || m.User2_Id == userId) && m.Matched_At > lastLoginTime)
+                .ToListAsync();
+
+
+            // find expired/ghosted matches
+            var expiredMatches = await _context.Matches
+                .Where(m => (m.User1_Id == userId || m.User2_Id == userId) && (m.Is_Ghosted)) // TODO && m.Ghosted_At > lastLoginTime ) check new ghost table instead
+                .ToListAsync();
+
+            var userActivitySummaryDTO = new UserActivitySummaryDTO
+            {
+                NewMatches = newMatches.Select(m => new MatchDTO
+                {
+                    Id = m.Id,
+                    User1Id = m.User1_Id,
+                    User2Id = m.User2_Id,
+                    MatchedAt = m.Matched_At,
+                    //IsGhosted = m.Is_Ghosted
+                }).ToList(),
+
+                ExpiredMatches = expiredMatches.Select(m => new MatchDTO
+                {
+                    Id = m.Id,
+                    User1Id = m.User1_Id,
+                    User2Id = m.User2_Id,
+                    MatchedAt = m.Matched_At,
+                    //IsGhosted = m.Is_Ghosted
+                }).ToList()
+            };
+
+            return Ok(userActivitySummaryDTO);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while checking activity summary: {ex.Message}");
+        }
+    }
+
 }

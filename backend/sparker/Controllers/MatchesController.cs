@@ -256,6 +256,30 @@ namespace sparker.Controllers
                     _context.Ghosts.Remove(ghost);
                 }
 
+                // Create a chat message for both users as if they sent "I'm back."
+                var messageContent = "(The Match was restored and the user returned)";
+
+                // Message from User1 to User2
+                var messageFromUser1 = new ChatMessage
+                {
+                    Match_Id = match.Id,
+                    Sender_Id = match.User1_Id,
+                    Content = messageContent,
+                    Time_Stamp = DateTime.Now
+                };
+
+                // Message from User2 to User1
+                var messageFromUser2 = new ChatMessage
+                {
+                    Match_Id = match.Id,
+                    Sender_Id = match.User2_Id,
+                    Content = messageContent,
+                    Time_Stamp = DateTime.Now
+                };
+
+                _context.ChatMessages.Add(messageFromUser1);
+                _context.ChatMessages.Add(messageFromUser2);
+
                 await _context.SaveChangesAsync();
 
                 return Ok("Match restored successfully.");
@@ -263,62 +287,6 @@ namespace sparker.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while restoring the match: {ex.Message}");
-            }
-        }
-
-
-
-        // user activity summary for welcomepage functionality
-        [HttpGet("summary/{userId}")]
-        public async Task<IActionResult> GetUserActivitySummary(int userId)
-        {
-            try
-            {
-                var user = await _context.Users.FindAsync(userId);
-                if (user == null)
-                {
-                    return NotFound("User not found.");
-                }
-
-                var lastLoginTime = user.Last_Login_At;
-
-                // New Matches
-                var newMatches = await _context.Matches
-                    .Where(m => (m.User1_Id == userId || m.User2_Id == userId) && m.Matched_At > lastLoginTime)
-                    .ToListAsync();
-
-
-                // find expired/ghosted matches
-                var expiredMatches = await _context.Matches
-                    .Where(m => (m.User1_Id == userId || m.User2_Id == userId) && (m.Is_Ghosted)) // TODO && m.Ghosted_At > lastLoginTime ) check new ghost table instead
-                    .ToListAsync();
-
-                var userActivitySummaryDTO = new UserActivitySummaryDTO
-                {
-                    NewMatches = newMatches.Select(m => new MatchDTO
-                    {
-                        Id = m.Id,
-                        User1Id = m.User1_Id,
-                        User2Id = m.User2_Id,
-                        MatchedAt = m.Matched_At,
-                        //IsGhosted = m.Is_Ghosted
-                    }).ToList(),
-
-                    ExpiredMatches = expiredMatches.Select(m => new MatchDTO
-                    {
-                        Id = m.Id,
-                        User1Id = m.User1_Id,
-                        User2Id = m.User2_Id,
-                        MatchedAt = m.Matched_At,
-                        //IsGhosted = m.Is_Ghosted
-                    }).ToList()
-                };
-
-                return Ok(userActivitySummaryDTO);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while checking activity summary: {ex.Message}");
             }
         }
     }
