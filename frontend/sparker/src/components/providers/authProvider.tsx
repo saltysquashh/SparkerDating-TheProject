@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             setAuthUser(userData);
             setAuthToken(token); // set token in localStorage and axios
             console.log('User is now authenticated.');
-            navigate('/');
+            navigate('/welcome');
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setAuthUser(null);
         removeAuthToken();
         navigate('/login');
-        console.log('User is now unauthenticated.');
+        console.log('User is now un-authenticated.');
     };
 
     // runs when the component is first rendered and checks for existing token and sets up response interceptor
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         const token = getAuthToken(); // retrieve the token from localStorage
         if (token) {
-            axios.get(`${API_URL}/authorization/userinfobytoken`, {
+            axios.get(`${API_URL}/authentication/userinfobytoken`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -77,8 +77,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }, []);
 
     return (
-        // provide access to context values and methods (of AuthContext), in child components
-        // login used on loginpage, logout in header
+        // AuthProvider will now wrap the entire component tree with AuthContext.Provider
+        // this makes context values (authUser, login, logout) accessible to all children within that tree, through the authContext
         <AuthContext.Provider value={{ authUser, login, logout }}>
             {children}
         </AuthContext.Provider>
