@@ -15,24 +15,32 @@ const SwipingPage = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [images, setImages] = useState<string[]>([]);
 	const navigate = useNavigate();
-
 	const { handleError, clearError } = useErrorHandling();
 	const showToast = useToastNotification();
+	const [swipeReady, setSwipeReady] = useState(false);
 
 	useEffect(() => {
-		fetchNextUser();
+		getSwipeUser();
 	}, []);
 
-	const fetchNextUser = async () => {
+	const getSwipeUser = async () => {
 		setIsLoading(true);
+		setSwipeReady(false);
 		try {
 			const response = await fetch_nextUserToSwipe(authUser?.id);
-			console.log(response);
+	
+			if (response === false) {
+				setSwipeUser(null);
+				setImages([]);
+				return;
+			}
+	
 			setSwipeUser(response);
-			const userImages = response.images || [];
 
+			// set images
+			const userImages = response.images || [];
 			if (userImages.length > 0) {
-				// snsure base64 strings are correctly prefixed
+				// Ensure base64 strings are correctly prefixed
 				const formattedImages = userImages.map((img: string) =>
 					img.startsWith("data:image/")
 						? img
@@ -40,29 +48,32 @@ const SwipingPage = () => {
 				);
 				setImages(formattedImages);
 			} else {
-				// use a default user image if the user has no images
+				// Use a default user image if the user has no images
 				setImages(["/images/default-user-image.png"]);
 			}
+			
+			setSwipeReady(true);
 		} catch (error) {
-			if (axios.isAxiosError(error) && error.response?.status === 404) {
-				setSwipeUser(null);
-			} else {
-				console.error("Error fetching next user:", error);
-			}
+			console.error("Error fetching next user:", error);
 		} finally {
 			setIsLoading(false);
 		}
 	};
+	
 
-	const handleSwipe = async (liked: boolean) => {
+	const handleSwipe = async (liked: boolean) => {	
 		if (!swipeUser || !authUser) return;
+		
+		setSwipeReady(false);
+		// setSwipeUser(null);  // Immediately clear the displayed user to avoid persistence
+	
 		try {
-			await createSwipe(Number(authUser.id), Number(swipeUser.id), liked);
-			// if (success) {
-			fetchNextUser().catch((error) => {
-				console.error("Error fetching next user:", error);
-			});
-			// }
+			const newSwipe = await createSwipe(Number(authUser.id), Number(swipeUser.id), liked);
+			if (newSwipe.isMatch) {
+				toastSwipeIsMatch();
+			}
+			// get the next user
+			await getSwipeUser();  // Fetch the next user after clearing the current one
 		} catch (error) {
 			const errorMessage = handleError(error);
 			showToast({
@@ -72,14 +83,20 @@ const SwipingPage = () => {
 			});
 		}
 	};
+	
+	const toastSwipeIsMatch = () => {
+		showToast({
+			title: "New match",
+			description:
+				`You matched with ${swipeUser?.fullName}`,
+			status: "success",
+		});
+	}
 
 	const handlePreferencesClick = () => {
 		navigate("/profile/preferences");
 	};
 
-	if (isLoading) {
-		return <div>Loading Swipes...</div>;
-	}
 
 	return (
 		<div className="global-container">
@@ -88,7 +105,7 @@ const SwipingPage = () => {
 					<div className="status-box">
 						<p>Loading...</p>
 					</div>
-				) : !swipeUser ? (
+				) : (!swipeUser) ? (
 					<div className="status-box">
 						<p>
 							No more users to swipe on, that fits you and your
@@ -120,20 +137,22 @@ const SwipingPage = () => {
 						{swipeUser.bio && (
 							<p className="profile-bio">"{swipeUser.bio}"</p>
 						)}
-						<div className="action-buttons">
-							<button
-								className="pass-button"
-								onClick={() => handleSwipe(false)}
-							>
-								Pass
-							</button>
-							<button
-								className="like-button"
-								onClick={() => handleSwipe(true)}
-							>
-								Like
-							</button>
-						</div>
+						{swipeReady && ( // Conditionally render the swipe buttons
+							<div className="action-buttons">
+								<button
+									className="pass-button"
+									onClick={() => handleSwipe(false)}
+								>
+									Pass
+								</button>
+								<button
+									className="like-button"
+									onClick={() => handleSwipe(true)}
+								>
+									Like
+								</button>
+							</div>
+						)}
 					</div>
 				)}
 			</div>
