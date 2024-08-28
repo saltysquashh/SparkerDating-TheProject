@@ -110,9 +110,7 @@ const AdminPanelPage = () => {
 			alert(response);
 			setUsers((prevUsers) =>
 				prevUsers.map((u) =>
-					u.id === adminUserId
-						? { ...u, isAdmin: false, isMaster: false }
-						: u
+					u.id === adminUserId? { ...u, isAdmin: false, isMaster: false }: u
 				)
 			);
 		} catch (error) {
