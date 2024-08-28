@@ -26,7 +26,6 @@ const LoginPage = () => {
 		try {
 			// login call
 			await login({ email: formData.email, password: formData.password });
-			// maybe navigate the user to a different page or update the state here??
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				// Handle Axios error
