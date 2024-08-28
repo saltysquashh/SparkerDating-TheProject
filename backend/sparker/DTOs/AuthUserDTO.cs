@@ -1,6 +1,6 @@
 ﻿namespace sparker.DTOs
 {
-    public class LoginResponseDTO
+    public class AuthUserDTO
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
