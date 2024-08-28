@@ -146,7 +146,7 @@ const AdminPanelPage = () => {
 					Welcome, {authUser.firstName}! You have administrative
 					access.
 				</p>
-				<h2>All Users</h2>
+				<h2>All Users:</h2>
 				<ul className="user-list">
 					{users.map((shownUser) => (
 						<li
@@ -161,8 +161,8 @@ const AdminPanelPage = () => {
 								Registration date: {shownUser.registrationAt}
 							</div>
 							<div>
-								Type: {shownUser.isAdmin ? "Admin" : "User"}{" "}
-								{shownUser.isMaster ? "(Master)" : ""}
+								Type: {shownUser.isAdmin ? "Admin" : "User"}
+								{shownUser.isMaster ? " (Master)" : ""}
 							</div>
 							{!shownUser.isMaster && (
 								<div className="admin-panel-buttons">
