@@ -19,6 +19,8 @@ import SwipeHistoryType from "../interfaces/SwipeHistoryInterface";
 import SwipeType from "../interfaces/SwipeInterface";
 import { useToastNotification } from "./providers/toastProvider";
 import { useErrorHandling } from "../hooks/useErrorHandling";
+import { formatDate } from "../utilities/dateUtils";
+import MatchType from "../interfaces/MatchInterface";
 
 const SwipeDetailsPage = () => {
 	const { swipeId } = useParams();
@@ -30,6 +32,7 @@ const SwipeDetailsPage = () => {
 	const [isMatched, setIsMatched] = useState(false); // Track if a match exists
 	const navigate = useNavigate();
 	const { authUser } = useContext(AuthContext);
+	const [match, setMatch] = useState<MatchType | null>(null);
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef = React.useRef<HTMLButtonElement>(null);
@@ -40,19 +43,20 @@ const SwipeDetailsPage = () => {
 		const loadData = async () => {
 			setIsLoading(true);
 			try {
-				const swipeDetails = await fetchSwipeDetails(
-					swipeUserId,
-					authUser?.id
-				);
+				const swipeDetails = await fetchSwipeDetails(swipeUserId,authUser?.id);
 				console.log("Fetched Swipe:", swipeDetails); // Log the fetched Swipes
 				setUserInfo(swipeDetails.swipeUser);
 				setImages(swipeDetails.swipeUser.images || []);
 				setSwipe(swipeDetails.swipe);
-
+				
 				// Check if a match exists between the user and swipeUser
 				const matchExists = !!swipeDetails.match;
-
 				setIsMatched(matchExists); // Set if a match exists
+
+				if (matchExists) {
+					setMatch(swipeDetails.match)
+				}
+
 			} catch (error) {
 				const errorMessage = handleError(error);
 				showToast({
@@ -91,7 +95,7 @@ const SwipeDetailsPage = () => {
 	};
 
 	const handleGoToMatchClick = () => {
-		navigate(`/matches/match/${swipeId}/${swipeUserId}`);
+		navigate(`/matches/match/${match?.id}/${swipeUserId}`);
 	};
 
 	return (
@@ -154,8 +158,9 @@ const SwipeDetailsPage = () => {
 						<div className="swipe-status-title">
 							<h1>Status</h1>
 						</div>
-						<div className="swipe-status-text">You swiped at:</div>
-						<div>{swipe?.swiped_At}</div>
+						{swipe && (
+						<div className="swipe-status-text">You swiped at: {formatDate(swipe.swiped_At)}</div>
+					)}
 						{!isMatched ? (
 							<h1>
 								You have not matched with{" "}
