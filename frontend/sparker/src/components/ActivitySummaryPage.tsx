@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { fetchUserActivitySummary } from "../services/matchService";
+import { fetchUserActivitySummary } from "../services/userService";
 import "../styles/ActivitySummaryPage.css";
 import ActivitySummaryDTO from "../interfaces/ActivitySummaryInterface";
 import { useToastNotification } from "./providers/toastProvider";
@@ -8,8 +8,7 @@ import { useErrorHandling } from "../hooks/useErrorHandling";
 
 const ActivitySummaryPage = () => {
 	const { authUser } = useContext(AuthContext);
-	const [activitySummary, setActivitySummary] =
-		useState<ActivitySummaryDTO | null>(null);
+	const [activitySummary, setActivitySummary] = useState<ActivitySummaryDTO | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
 	const { handleError, clearError } = useErrorHandling();
