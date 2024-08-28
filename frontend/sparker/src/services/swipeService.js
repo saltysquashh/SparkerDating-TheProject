@@ -8,7 +8,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
     const token = getAuthToken();
     try {
-        const response = await axios.post(`${API_URL}/swipes/swipe`, {
+        const response = await axios.post(`${API_URL}/swipes/createswipe`, {
             SwiperUserId: swiperUserId,
             SwipedUserId: swipedUserId,
             Liked: liked
@@ -18,14 +18,11 @@ export const createSwipe = async (swiperUserId, swipedUserId, liked) => {
             }
         });
 
-        const { isMatch, message } = response.data;
+        // returns this in response:
+        // IsMatch = isMatch
+        // Message = isMatch ? "You have a new match!" : "Swipe recorded."
 
-        if (isMatch)
-        {
-            alert(message);
-        }
         return response.data;
-        // return true;
 
     } catch (error) {
         // check for network or server errors
