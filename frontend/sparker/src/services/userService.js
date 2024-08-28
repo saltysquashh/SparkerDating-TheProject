@@ -160,8 +160,10 @@ export const fetch_nextUserToSwipe = async (userId) => {
         });
         return response.data;
     } catch (error) {
-        // check for network or server errors
-        if (error.response) {
+        // If the user is not found, return false instead of throwing an error
+        if (error.response && error.response.status === 404) {
+            return false;  // Return false if no fitting users are found
+        } else if (error.response) {
             throw new Error(error.response.data);
         } else if (error.request) {
             // the request was made but no response was received
