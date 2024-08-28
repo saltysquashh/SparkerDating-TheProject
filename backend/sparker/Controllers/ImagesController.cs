@@ -20,24 +20,6 @@ namespace sparker.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllImages()
-        {
-            var images = await _context.Images.ToListAsync();
-            return Ok(images);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetImageById(int id)
-        {
-            var image = await _context.Images.FindAsync(id);
-            if (image == null)
-            {
-                return NotFound();
-            }
-            return Ok(image);
-        }
-
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetUserImages(int userId)
         {
@@ -95,7 +77,7 @@ namespace sparker.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500, $"Internal server error while uploading image: {ex.Message}");
             }
         }
 
@@ -103,15 +85,41 @@ namespace sparker.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteImage(int id)
         {
+            try
+            {
+                var image = await _context.Images.FindAsync(id);
+                if (image == null)
+                {
+                    return NotFound();
+                }
+
+                _context.Images.Remove(image);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error while deleting image: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetImageById(int id)
+        {
             var image = await _context.Images.FindAsync(id);
             if (image == null)
             {
                 return NotFound();
             }
-
-            _context.Images.Remove(image);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok(image);
         }
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllImages()
+        //{
+        //    var images = await _context.Images.ToListAsync();
+        //    return Ok(images);
+        //}
+
     }
 }

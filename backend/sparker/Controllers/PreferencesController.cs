@@ -30,63 +30,24 @@ namespace sparker.Controllers
 
 
         [HttpPost("createpreference")]
-        public async Task<IActionResult> CreatePreference(PreferenceDTO preferenceDTO)
+        public async Task<IActionResult> CreatePreference([FromBody] PreferenceDTO preferenceDTO)
         {
-            // Validate the input data
-            // Check if the user already exists
-
-            var preference = new Preference
+            // if preferenceDTO is null, though it's very unlikely if even possible that it could happen at all
+            if (preferenceDTO == null)
             {
-                User_Id = preferenceDTO.UserId,
-                Sex = preferenceDTO.Sex,
-                Age_Min = preferenceDTO.AgeMin,
-                Age_Max = preferenceDTO.AgeMax,
-            };
-
-            _context.Preferences.Add(preference);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { userId = preference.User_Id }); // or other relevant data
-        }
-
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetPreferences(int id)
-        {
-            var preference = await _context.Preferences.FindAsync(id);
-
-            if (preference == null)
-            {
-                return NotFound($"Preference with ID {id} not found.");
+                return BadRequest("Preference data is required.");
             }
-            var preferenceDetail = new PreferenceDTO
+
+            // Check if a preference for this user already exists
+            var existingPreference = await _context.Preferences.FirstOrDefaultAsync(p => p.User_Id == preferenceDTO.UserId);
+            if (existingPreference != null)
             {
-
-                Sex = preference.Sex,
-                AgeMin = preference.Age_Min,
-                AgeMax = preference.Age_Max,
-
-            };
-
-            return Ok(preferenceDetail);
-        }
-
-
-        [HttpPut("{id}")]
-        // [Authorize]
-        public async Task<IActionResult> UpdatePreferences(int id, [FromBody] PreferenceDTO preferenceDTO)
-        {
-            var preference = await _context.Preferences.FirstOrDefaultAsync(p => p.User_Id == id);
-            if (preference != null)
-            {
-                preference.Sex = preferenceDTO.Sex;
-                preference.Age_Min = preferenceDTO.AgeMin;
-                preference.Age_Max = preferenceDTO.AgeMax;
+                return BadRequest("A preference for this user already exists.");
             }
-            else
+
+            try
             {
-                // Create a new preference if one for the user did not exist
-                var newPreference = new Preference
+                var preference = new Preference
                 {
                     User_Id = preferenceDTO.UserId,
                     Sex = preferenceDTO.Sex,
@@ -94,10 +55,78 @@ namespace sparker.Controllers
                     Age_Max = preferenceDTO.AgeMax,
                 };
 
-                _context.Preferences.Add(newPreference);
+                _context.Preferences.Add(preference);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { userId = preference.User_Id });
             }
+            catch (DbUpdateException ex)
+            {
+
+                return StatusCode(500, $"An error occurred while creating the preference: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPreferences(int id)
+        {
             try
             {
+                var preference = await _context.Preferences.FindAsync(id);
+
+                if (preference == null)
+                {
+                    return NotFound($"Preference with ID {id} not found.");
+                }
+
+                var preferenceDetail = new PreferenceDTO
+                {
+                    Sex = preference.Sex,
+                    AgeMin = preference.Age_Min,
+                    AgeMax = preference.Age_Max,
+                };
+
+                return Ok(preferenceDetail);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching the preference: {ex.Message}");
+            }
+        }
+
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePreferences(int id, [FromBody] PreferenceDTO preferenceDTO)
+        {
+            if (preferenceDTO == null)
+            {
+                return BadRequest("Preference data is required.");
+            }
+
+            try
+            {
+                var preference = await _context.Preferences.FirstOrDefaultAsync(p => p.User_Id == id);
+                if (preference != null)
+                {
+                    preference.Sex = preferenceDTO.Sex;
+                    preference.Age_Min = preferenceDTO.AgeMin;
+                    preference.Age_Max = preferenceDTO.AgeMax;
+                }
+                else
+                {
+                    // Create a new preference if one for the user did not exist
+                    var newPreference = new Preference
+                    {
+                        User_Id = preferenceDTO.UserId,
+                        Sex = preferenceDTO.Sex,
+                        Age_Min = preferenceDTO.AgeMin,
+                        Age_Max = preferenceDTO.AgeMax,
+                    };
+
+                    _context.Preferences.Add(newPreference);
+                }
+
                 await _context.SaveChangesAsync();
                 return Ok(preference);
             }
@@ -105,12 +134,16 @@ namespace sparker.Controllers
             {
                 if (!PreferenceExists(id))
                 {
-                    return NotFound();
+                    return NotFound($"Preference with ID {id} not found.");
                 }
                 else
                 {
-                    throw;
+                    return StatusCode(500, "A concurrency error occurred while updating the preference.");
                 }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while updating the preference. {ex.Message}");
             }
         }
 

@@ -22,7 +22,7 @@ using System.Text;
 [ApiController]
 [Route("[controller]")]
 
-public class AuthorizationController : ControllerBase
+public class AuthenticationController : ControllerBase
 {
     // DI
     private readonly ApplicationDbContext _context;
@@ -30,7 +30,7 @@ public class AuthorizationController : ControllerBase
     private readonly IConfiguration _configuration;
 
 
-    public AuthorizationController(ApplicationDbContext context, IConfiguration configuration)
+    public AuthenticationController(ApplicationDbContext context, IConfiguration configuration)
     {
         _context = context;
         _passwordHasher = new PasswordHasher<User>(); // new instance of PasswordHasher
@@ -67,61 +67,70 @@ public class AuthorizationController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(CredentialLoginDTO credentialLoginDTO)
     {
-        // Convert to lowercase
-        var normalizedEmail = credentialLoginDTO.Email.ToLower();
-
-        // Find the user by email
-        var user = await _context.Users
-                                 .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
-
-        if (user == null)
+        try
         {
-            return Unauthorized("Invalid credentials");
-        }
+            // Convert to lowercase
+            var normalizedEmail = credentialLoginDTO.Email.ToLower();
 
-        // Verify the password
-        var result = _passwordHasher.VerifyHashedPassword(user, user.Password_Hash, credentialLoginDTO.Password);
+            // Find the user by email
+            var user = await _context.Users
+                                     .FirstOrDefaultAsync(u => u.Email == normalizedEmail);
 
-        if (result == PasswordVerificationResult.Failed)
-        {
-            return Unauthorized("Invalid credentials");
-        }
-
-        if (result == PasswordVerificationResult.Success)
-        {
-            // Update the Last_Login_At field
-            user.Last_Login_At = DateTime.Now;
-            // Save changes to the db
-            await _context.SaveChangesAsync();
-
-            // Generate JWT token
-            var token = GenerateJwtToken(user.Id.ToString());
-
-            // check if user id is also registered in admin table
-            var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the _context is included because the function is in another class
-            var isMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id);
-
-            var loginResponseDTO = new LoginResponseDTO
+            if (user == null)
             {
-                Id = user.Id,
-                FirstName = user.First_Name,
-                LastName = user.Last_Name,
-                IsAdmin = isAdmin,
-                IsMaster = isMaster,
-                Token = token
-            };
+                return Unauthorized("Invalid credentials");
+            }
 
-            return Ok(loginResponseDTO);
+            // Verify the hashed password
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password_Hash, credentialLoginDTO.Password);
+
+            // error if the password is wrong
+            if (result == PasswordVerificationResult.Failed)
+            {
+                return Unauthorized("Invalid credentials");
+            }
+
+            if (result == PasswordVerificationResult.Success)
+            {
+                // Update the Last_Login_At field
+                user.Last_Login_At = DateTime.Now;
+                // Save changes to the db
+                await _context.SaveChangesAsync();
+
+                // Generate JWT token
+                var token = GenerateJwtToken(user.Id.ToString());
+
+                // check if user id is also registered in admin table
+                var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the _context is included because the function is in another class
+                var isMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id);
+
+                var authUserDTO = new AuthUserDTO // was "loginResponseDTO"
+                {
+                    Id = user.Id,
+                    FirstName = user.First_Name,
+                    LastName = user.Last_Name,
+                    IsAdmin = isAdmin,
+                    IsMaster = isMaster,
+                    Token = token
+                };
+                return Ok(authUserDTO);
+            }
+
+            return BadRequest("An unknown error occurred during login.");
         }
-
-        return BadRequest("An unknown error occurred.");
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred during login: {ex.Message}");
+        }
     }
 
-    [HttpGet("user")]
-    public async Task<IActionResult> GetUserFromToken()
+    [HttpGet("userinfobytoken")]
+    public async Task<IActionResult> GetUserInfoByAuthToken()
     {
-        // Extract the user ID from the token
-        var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        try
+        {
+            // extract the user ID from the token, to then look up then be able to find the rest of the user information
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
         if (userIdClaim == null)
         {
@@ -148,5 +157,9 @@ public class AuthorizationController : ControllerBase
         };
 
         return Ok(userInfoDTO);
+            } catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while fetched userinfo by auth token: {ex.Message}");
+        }
     }
 }

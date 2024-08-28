@@ -34,23 +34,40 @@
             [HttpGet("getMatchMessages/{matchId}")]
             public async Task<IActionResult> GetMessagesForMatch(int matchId)
             {
-                var messages = await _context.ChatMessages
-                                        .Where(m => m.Match_Id == matchId)
-                                        .OrderBy(m => m.Time_Stamp)
-                                        .Select(m => new MessageDTO
-                                        {
-                                            MessageId = m.Id,
-                                            SenderId = m.Sender_Id,
-                                            Content = m.Content,
-                                            TimeStamp = m.Time_Stamp,
-                                            SenderName = _context.Users
-                                                .Where(u => u.Id == m.Sender_Id)
-                                                .Select(u => $"{u.First_Name} {u.Last_Name}") // subquery to get senders first name, last name
-                                                .FirstOrDefault()
-                                        })
-                                        .ToListAsync();
+                try
+                {
+                    // check if a match with the provided matchId exists
+                    var matchExists = await _context.Matches.AnyAsync(m => m.Id == matchId);
+                    if (!matchExists)
+                    {
+                        return NotFound($"Match with ID {matchId} not found.");
+                    }
 
-                return Ok(messages);
+                    // retrieve messages for the specified matchId, ordered by timestamp
+                    var messages = await _context.ChatMessages
+                        .Where(m => m.Match_Id == matchId)
+                        .OrderBy(m => m.Time_Stamp)
+                        .Select(m => new MessageDTO
+                        {
+                            MessageId = m.Id,
+                            SenderId = m.Sender_Id,
+                            Content = m.Content,
+                            TimeStamp = m.Time_Stamp,
+                            SenderName = _context.Users
+                                .Where(u => u.Id == m.Sender_Id)
+                                .Select(u => $"{u.First_Name} {u.Last_Name}") // subquery to get sender's first and last name
+                                .FirstOrDefault()
+                        })
+                        .ToListAsync();
+
+                    // Return the messages in the response
+                    return Ok(messages);
+                }
+                catch (Exception ex)
+                {
+                    // Return a generic error
+                    return StatusCode(500, $"An error occurred while retrieving messages: {ex.Message}");
+                }
             }
         }
     }

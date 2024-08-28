@@ -77,22 +77,24 @@ namespace sparker.Controllers
             });
         }
 
-
+        // Get Swipe History of a user
         [HttpGet("getswipesbyuser/{userId}")]
         public async Task<IActionResult> GetAllSwipesByUser(int userId)
         {
-            var swipes = await _context.Swipes
+            try
+            {
+                var swipes = await _context.Swipes
                 .Where(s => s.Swiper_UserId == userId)
                 .ToListAsync();
 
             var userIDs = swipes.Select(s => s.Swiper_UserId == userId ? s.Swiped_UserId : s.Swiper_UserId).Distinct().ToList();
             var users = await _context.Users.Where(u => userIDs.Contains(u.Id)).ToDictionaryAsync(u => u.Id, u => u);
 
-            // Fetch user images and convert to Base64 string
+            // Fetch user images and convert from byte[] to Base64 string
             var userImages = await _context.Images
                 .Where(i => userIDs.Contains(i.User_Id))
                 .GroupBy(i => i.User_Id)
-                .Select(g => new { UserId = g.Key, ImageData = g.FirstOrDefault().Image_Data }) // Assuming there's an ImageData property
+                .Select(g => new { UserId = g.Key, ImageData = g.FirstOrDefault().Image_Data })
                 .ToDictionaryAsync(g => g.UserId, g => Convert.ToBase64String(g.ImageData));
 
             var swipeHistoryDTOs = new List<SwipeHistoryDTO>();
@@ -120,6 +122,11 @@ namespace sparker.Controllers
             }
 
             return Ok(swipeHistoryDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching swipe history: {ex.Message}");
+            }
         }
 
         private async Task<bool> CheckIfUsersMatched(int userId1, int userId2)
@@ -128,7 +135,6 @@ namespace sparker.Controllers
                 (m.User1_Id == userId1 && m.User2_Id == userId2) ||
                 (m.User1_Id == userId2 && m.User2_Id == userId1));
         }
-
 
 
         [HttpGet("swipedetails/{swipedId}/{swiperId}")]

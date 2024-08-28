@@ -38,44 +38,48 @@ public class UsersController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDTO registerDTO)
     {
-        // validate the input and check if the user already exists ?
-
-        var (isValid, errorMessage) = await ValidationUtils.ValidateRegistrationDTO(registerDTO, _context);
-
-        if (!isValid)
+        try
         {
-            return BadRequest(errorMessage);
+            var (isValid, errorMessage) = await ValidationUtils.ValidateRegistrationDTO(registerDTO, _context);
+            if (!isValid)
+            {
+                return BadRequest(errorMessage);
+            }
+
+            var user = new User
+            {
+                First_Name = registerDTO.FirstName,
+                Last_Name = registerDTO.LastName,
+                Email = registerDTO.Email.ToLower(),
+                Gender = registerDTO.Gender,
+                Birthdate = registerDTO.Birthdate,
+                Registration_At = DateTime.Now
+            };
+
+            // generates a unique salt for the user, then hashes the salted 
+            user.Password_Hash = _passwordHasher.HashPassword(user, registerDTO.Password);
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            // create default preferences for the new user
+            var defaultPreference = new Preference
+            {
+                User_Id = user.Id,
+                Sex = "Both",
+                Age_Min = 18,
+                Age_Max = 99
+            };
+
+            _context.Preferences.Add(defaultPreference);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { userId = user.Id });
         }
-
-        var user = new User
+        catch (Exception ex)
         {
-            First_Name = registerDTO.FirstName,
-            Last_Name = registerDTO.LastName,
-            Email = registerDTO.Email.ToLower(),
-            Gender = registerDTO.Gender,
-            Birthdate = registerDTO.Birthdate,
-            Registration_At = DateTime.Now
-        };
-
-        // generates a unique salt for the user, then hashes the salted password
-        user.Password_Hash = _passwordHasher.HashPassword(user, registerDTO.Password);
-
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-
-        // create default preferences for the new user
-        var defaultPreference = new Preference
-        {
-            User_Id = user.Id,
-            Sex = "Both",
-            Age_Min = 18,
-            Age_Max = 99
-        };
-
-        _context.Preferences.Add(defaultPreference);
-        await _context.SaveChangesAsync();
-
-        return Ok(new { userId = user.Id });
+            return StatusCode(500, $"An error occurred during registration. {ex.Message}");
+        }
     }
 
     // e-mail pre-check in frontend registration form
@@ -83,109 +87,133 @@ public class UsersController : ControllerBase
     [HttpGet("useremailexists/{email}")]
     public async Task<IActionResult> CheckUserEmailExistsEndpoint(string email)
     {
-        bool exists = await ValidationUtils.UserEmailExists(email, _context);
-        return Ok(exists);
+        try
+        {
+            bool exists = await ValidationUtils.UserEmailExists(email, _context);
+            return Ok(exists);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while checking the email: {ex.Message}");
+        }
     }
 
     [HttpGet("isadmin/{userId}")]
     public async Task<IActionResult> IsAdmin(int userId)
     {
-        var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, userId); // the _context is included because the function is in another class
-        return Ok(isAdmin);
+        try
+        {
+            var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, userId); // the _context is included because the function is in another class
+            return Ok(isAdmin);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while checking admin status: {ex.Message}");
+        }
     }
-
 
     [HttpGet("userinfo/{id}")]
     public async Task<IActionResult> GetUserInfo(int id)
     {
-        var user = await _context.Users.FindAsync(id);
-
-        if (user == null)
+        try
         {
-            return NotFound($"User with ID {id} not found.");
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            var userInfoDTO = new UserInfoDTO
+            {
+                Id = user.Id,
+                FirstName = user.First_Name,
+                LastName = user.Last_Name,
+                Email = user.Email,
+                Gender = user.Gender,
+                Birthdate = user.Birthdate,
+                Bio = user.Bio,
+            };
+
+            return Ok(userInfoDTO);
         }
-
-        var userInfoDTO = new UserInfoDTO
+        catch (Exception ex)
         {
-            Id = user.Id,
-            FirstName = user.First_Name,
-            LastName = user.Last_Name,
-            Email = user.Email,
-            Gender = user.Gender,
-            Birthdate = user.Birthdate,
-            Bio = user.Bio,
-        };
-
-        return Ok(userInfoDTO);
+            return StatusCode(500, $"An error occurred while retrieving user info: {ex.Message}");
+        }
     }
 
     [HttpGet("swipeuserbyid/{id}")]
     public async Task<IActionResult> GetSwipeUserById(int id)
     {
-        var user = await _context.Users.FindAsync(id);
-
-        if (user == null)
+        try
         {
-            return NotFound($"User with ID {id} not found.");
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            var swipeUserDTO = new SwipeUserDTO
+            {
+                Id = user.Id,
+                FirstName = user.First_Name,
+                LastName = user.Last_Name,
+                Gender = user.Gender,
+                Age = DateUtils.CalculateAge(user.Birthdate),
+                Bio = user.Bio,
+                Images = _context.Images
+                        .Where(i => i.User_Id == user.Id)
+                        .Select(i => Convert.ToBase64String(i.Image_Data)) // Convert image data to base 64
+                        .ToList()
+            };
+
+            return Ok(swipeUserDTO);
         }
-
-        var swipeUserDTO = new SwipeUserDTO
+        catch (Exception ex)
         {
-            Id = user.Id,
-            FirstName = user.First_Name,
-            LastName = user.Last_Name,
-            Gender = user.Gender,
-            Age = DateUtils.CalculateAge(user.Birthdate),
-            Bio = user.Bio,
-            Images = _context.Images
-                    .Where(i => i.User_Id == user.Id)
-                    .Select(i => Convert.ToBase64String(i.Image_Data)) // Convert image data to base 64
-                    .ToList()
-        };
-
-        return Ok(swipeUserDTO);
+            return StatusCode(500, $"An error occurred while retrieving swipe user info: {ex.Message}");
+        }
     }
 
 
     [HttpPut("userinfo/{id}")]
-    [Authorize]
     public async Task<IActionResult> UpdateUserInfo(int id, [FromBody] UpdateUserInfoDTO updateUserInfoDTO)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
-        {
-            return NotFound($"User with ID {id} not found.");
-
-        }
-        var (isValid, errorMessage) = await ValidationUtils.ValidateUpdateUserInfoDTO(updateUserInfoDTO, _context);
-
-        if (!isValid)
-        {
-            return BadRequest(errorMessage);
-        }
-
-        // Update user properties
-        user.First_Name = updateUserInfoDTO.FirstName;
-        user.Last_Name = updateUserInfoDTO.LastName;
-        user.Gender = updateUserInfoDTO.Gender;
-        user.Birthdate = updateUserInfoDTO.Birthdate;
-        // user.Email = updateUserInfoDTO.Email; // Users are not allowed to update their e-mail, so this line was removed
-
         try
         {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            var (isValid, errorMessage) = await ValidationUtils.ValidateUpdateUserInfoDTO(updateUserInfoDTO, _context);
+            if (!isValid)
+            {
+                return BadRequest(errorMessage);
+            }
+
+            // Update user properties
+            user.First_Name = updateUserInfoDTO.FirstName;
+            user.Last_Name = updateUserInfoDTO.LastName;
+            user.Gender = updateUserInfoDTO.Gender;
+            user.Birthdate = updateUserInfoDTO.Birthdate;
+            // user.Email = updateUserInfoDTO.Email; // Users are not allowed to update their e-mail, so this line was removed
+
             await _context.SaveChangesAsync();
-            return Ok(user); // NoContent() will return nothing
+            return Ok(user);
         }
         catch (DbUpdateConcurrencyException)
         {
             if (!UserExists(id))
             {
-                return NotFound();
+                return NotFound($"User with ID {id} no longer exists.");
             }
-            else
-            {
-                throw;
-            }
+            return StatusCode(500, "A concurrency error occurred while updating user info.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while updating user info: {ex.Message}");
         }
     }
     private bool UserExists(int id)
@@ -196,70 +224,80 @@ public class UsersController : ControllerBase
     [HttpGet("usercustomization/{id}")]
     public async Task<IActionResult> GetUserCustomization(int id)
     {
-        var user = await _context.Users.FindAsync(id);
-
-        if (user == null)
+        try
         {
-            return NotFound($"User with ID {id} not found.");
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            var userCustomizationDTO = new UserCustomizationDTO
+            {
+                Bio = user.Bio,
+            };
+
+            return Ok(userCustomizationDTO);
         }
-
-        var userCustomizationDTO = new UserCustomizationDTO
+        catch (Exception ex)
         {
-            Bio = user.Bio,
-            // do i want more properties in "Customization"?
-        };
-
-        return Ok(userCustomizationDTO);
+            return StatusCode(500, $"An error occurred while retrieving user customization: {ex.Message}");
+        }
     }
 
 
     [HttpPut("userbio/{id}/{newBio}")]
-    // [Authorize]
     public async Task<IActionResult> UpdateUserBio(int id, string newBio)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user == null)
-        {
-            return NotFound($"User with ID {id} not found.");
-        }
-
-        if (user.Bio == newBio)
-        {
-            // return user bio is the same as before
-            return Ok(false);
-        }
- 
-        user.Bio = newBio;
-
         try
         {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound($"User with ID {id} not found.");
+            }
+
+            if (user.Bio == newBio)
+            {
+                // return user bio is the same as before
+                return Ok(false);
+            }
+
+            user.Bio = newBio;
+
             await _context.SaveChangesAsync();
-            return Ok(true); // or NoContent() to return nothing
+            return Ok(true);
         }
         catch (DbUpdateConcurrencyException)
         {
             if (!UserExists(id))
             {
-                return NotFound();
+                return NotFound($"User with ID {id} no longer exists."); // i added this because theoretically the user could be deleted concurrent with this call/action
             }
-            else
-            {
-                throw;
-            }
+            return StatusCode(500, "A concurrency error occurred while updating user bio.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while updating user bio: {ex.Message}");
         }
     }
 
     [HttpGet("getnextswipeuser/{userId}")]
     public async Task<IActionResult> GetNextSwipeUser(int userId)
     {
-        var nextUserDTO = new NextUserDTO();
-
-        nextUserDTO = await FindNextUser(userId);
-        if (nextUserDTO == null)
+        try
         {
-            return NotFound("No suitable matches found.");
+            var nextUserDTO = await FindNextUser(userId);
+            if (nextUserDTO == null)
+            {
+                return NotFound("No fitting users to swipe on was found.");
+            }
+            return Ok(nextUserDTO);
         }
-        return Ok(nextUserDTO); // Return the DTO instead of the full User entity
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while filtering the next swipe user. {ex.Message}");
+        }
     }
 
     private async Task<NextUserDTO> FindNextUser(int userId)
@@ -317,43 +355,60 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("delete/{delUserId}/{byUserId}")]
-    public async Task<IActionResult> DeleteUser(int delUserId, int byUserId) // Didnt have enough time to look into deletion Cascades
+    public async Task<IActionResult> DeleteUser(int delUserId, int byUserId)
     {
-        var delUser = await _context.Users.FindAsync(delUserId);
-        if (delUser == null)
+        try
         {
-            return NotFound("User to be deleted not found.");
-        }
-
-        var byUser = await _context.Users.FindAsync(byUserId);
-        if (byUser == null)
-        {
-            return NotFound("The user performing the deletion was not found.");
-        }
-
-        // Check if the user being deleted is an admin
-        var isDelUserAdmin = await _context.Admins.AnyAsync(a => a.User_Id == delUserId);
-
-        if (isDelUserAdmin)
-        {
-            // Check if the user performing the deletion is a master admin
-            var isByUserMasterAdmin = await _context.Admins
-                .Where(a => a.User_Id == byUserId)
-                .Select(a => a.Is_Master)
-                .FirstOrDefaultAsync();
-
-            // If the user performing the deletion is not a master admin, deny the operation
-            if (!isByUserMasterAdmin)
+            var delUser = await _context.Users.FindAsync(delUserId);
+            if (delUser == null)
             {
-                return Unauthorized("Only a master admin can delete another admin.");
+                return NotFound("User to be deleted not found.");
             }
-        }
 
-        // Delete related matches and chat messages
+            var byUser = await _context.Users.FindAsync(byUserId);
+            if (byUser == null)
+            {
+                return NotFound("The user performing the deletion was not found.");
+            }
+
+            // check if the user being deleted is an admin
+            var isDelUserAdmin = await _context.Admins.AnyAsync(a => a.User_Id == delUserId);
+
+            if (isDelUserAdmin)
+            {
+                // Check if the user performing the deletion is a master admin
+                var isByUserMasterAdmin = await _context.Admins
+                    .Where(a => a.User_Id == byUserId)
+                    .Select(a => a.Is_Master)
+                    .FirstOrDefaultAsync();
+
+                // if the user performing the deletion is not a master admin, deny the operation
+                if (!isByUserMasterAdmin)
+                {
+                    return Unauthorized("Only a master admin can delete another admin.");
+                }
+            }
+
+            await DeleteUserData(delUserId);
+            _context.Users.Remove(delUser);
+            await _context.SaveChangesAsync();
+
+            return Ok("User and related data deleted successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while deleting the user: {ex.Message}");
+        }
+    }
+    // didnt have enough time to implement deletion Cascades...
+    private async Task DeleteUserData(int userId) 
+    {
+        // find matches where the user are in
         var matches = await _context.Matches
-            .Where(m => m.User1_Id == delUserId || m.User2_Id == delUserId)
+            .Where(m => m.User1_Id == userId || m.User2_Id == userId)
             .ToListAsync();
 
+        // delete related chatmessages of related matches
         foreach (var match in matches)
         {
             var chatMessages = await _context.ChatMessages
@@ -363,123 +418,130 @@ public class UsersController : ControllerBase
             _context.ChatMessages.RemoveRange(chatMessages);
         }
 
+        // delete related matches
         _context.Matches.RemoveRange(matches);
 
-        // Delete related swipes
+        // delete related swipes
         var swipes = await _context.Swipes
-            .Where(s => s.Swiper_UserId == delUserId || s.Swiped_UserId == delUserId)
+            .Where(s => s.Swiper_UserId == userId || s.Swiped_UserId == userId)
             .ToListAsync();
 
         _context.Swipes.RemoveRange(swipes);
 
-        // Delete related preferences
+        // delete related preferences
         var preference = await _context.Preferences
-            .Where(p => p.User_Id == delUserId)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(p => p.User_Id == userId);
 
         if (preference != null)
         {
             _context.Preferences.Remove(preference);
         }
 
-        // Delete related images
+        // delete user images 
         var images = await _context.Images
-            .Where(i => i.User_Id == delUserId)
+            .Where(i => i.User_Id == userId)
             .ToListAsync();
 
         _context.Images.RemoveRange(images);
 
-        // Delete related admin record if it exists
+        // delete admin entry of the user, if they were an admin
         var adminRecord = await _context.Admins
-            .Where(a => a.User_Id == delUserId)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(a => a.User_Id == userId);
 
         if (adminRecord != null)
         {
             _context.Admins.Remove(adminRecord);
         }
-
-        // Delete user
-        _context.Users.Remove(delUser);
-        await _context.SaveChangesAsync();
-
-        return Ok("User and related data deleted successfully.");
     }
 
     [HttpPost("promote/{userId}/{byUserId}")]
     public async Task<IActionResult> PromoteUserToAdmin(int userId, int byUserId)
     {
-        // Find the user to be promoted by their ID
-        var userToPromote = await _context.Users.FindAsync(userId);
-        if (userToPromote == null)
+        try
         {
-            return NotFound("User to be promoted not found.");
+            // Find the user to be promoted by their ID
+            var userToPromote = await _context.Users.FindAsync(userId);
+            if (userToPromote == null)
+            {
+                return NotFound("User to be promoted not found.");
+            }
+
+            // Find the user performing the promotion by their ID
+            var byUser = await _context.Users.FindAsync(byUserId);
+            if (byUser == null)
+            {
+                return NotFound("The user performing the promotion was not found.");
+            }
+
+            // Check if the user performing the promotion is a master admin
+            var isByUserMasterAdmin = await _context.Admins
+                .Where(a => a.User_Id == byUserId)
+                .Select(a => a.Is_Master)
+                .FirstOrDefaultAsync();
+
+            if (!isByUserMasterAdmin)
+            {
+                return Unauthorized("Only a master admin can promote another user to admin.");
+            }
+
+            // Promote the user to admin
+            var newAdmin = new Admin
+            {
+                User_Id = userToPromote.Id,
+                Is_Master = false // Default to false when promoting to a regular admin
+            };
+
+            _context.Admins.Add(newAdmin);
+            await _context.SaveChangesAsync();
+
+            return Ok("User promoted to admin successfully.");
         }
-
-        // Find the user performing the promotion by their ID
-        var byUser = await _context.Users.FindAsync(byUserId);
-        if (byUser == null)
+        catch (Exception ex)
         {
-            return NotFound("The user performing the promotion was not found.");
+            return StatusCode(500, $"An error occurred while promoting the user to admin: {ex.Message}");
         }
-
-        // Check if the user performing the promotion is a master admin
-        var isByUserMasterAdmin = await _context.Admins
-            .Where(a => a.User_Id == byUserId)
-            .Select(a => a.Is_Master)
-            .FirstOrDefaultAsync();
-
-        if (!isByUserMasterAdmin)
-        {
-            return Unauthorized("Only a master admin can promote another user to admin.");
-        }
-
-        // Promote the user to admin
-        var newAdmin = new Admin
-        {
-            User_Id = userToPromote.Id,
-            Is_Master = false // Default to false when promoting to a regular admin
-        };
-
-        _context.Admins.Add(newAdmin);
-        await _context.SaveChangesAsync();
-
-        return Ok("User promoted to admin successfully.");
     }
 
     [HttpPost("demote/{adminUserId}/{byUserId}")]
     public async Task<IActionResult> DemoteAdminToUser(int adminUserId, int byUserId)
     {
-        // Find the admin to be demoted by their ID
-        var adminUserToDemote = await _context.Admins.FirstOrDefaultAsync(a => a.User_Id == adminUserId);
-        if (adminUserToDemote == null)
+        try
         {
-            return NotFound("Admin to be demoted not found.");
-        }
+            // Find the admin to be demoted by their ID
+            var adminUserToDemote = await _context.Admins.FirstOrDefaultAsync(a => a.User_Id == adminUserId);
+            if (adminUserToDemote == null)
+            {
+                return NotFound("Admin to be demoted not found.");
+            }
 
-        // Find the user performing the demotion by their ID
-        var byUser = await _context.Users.FindAsync(byUserId);
-        if (byUser == null)
+            // Find the user performing the demotion by their ID
+            var byUser = await _context.Users.FindAsync(byUserId);
+            if (byUser == null)
+            {
+                return NotFound("The user performing the demotion was not found.");
+            }
+
+            // Check if the user performing the demotion is a master admin
+            var isByUserMasterAdmin = await _context.Admins
+                .Where(a => a.User_Id == byUserId)
+                .Select(a => a.Is_Master)
+                .FirstOrDefaultAsync();
+
+            if (!isByUserMasterAdmin)
+            {
+                return Unauthorized("Only a master admin can demote an admin to a regular user.");
+            }
+
+            // Demote the admin to a regular user by removing the entry from the Admins table
+            _context.Admins.Remove(adminUserToDemote);
+            await _context.SaveChangesAsync();
+
+            return Ok("Admin demoted to regular user successfully.");
+        }
+        catch (Exception ex)
         {
-            return NotFound("The user performing the demotion was not found.");
+            return StatusCode(500, $"An error occurred while demoting the admin. {ex.Message}");
         }
-
-        // Check if the user performing the demotion is a master admin
-        var isByUserMasterAdmin = await _context.Admins
-            .Where(a => a.User_Id == byUserId)
-            .Select(a => a.Is_Master)
-            .FirstOrDefaultAsync();
-
-        if (!isByUserMasterAdmin)
-        {
-            return Unauthorized("Only a master admin can demote an admin to a regular user.");
-        }
-
-        // Demote the admin to a regular user by removing the entry from the Admins table
-        _context.Admins.Remove(adminUserToDemote);
-        await _context.SaveChangesAsync();
-
-        return Ok("Admin demoted to regular user successfully.");
     }
 
 
@@ -487,18 +549,20 @@ public class UsersController : ControllerBase
     [HttpGet("all")]
     public async Task<IActionResult> GetAllUsers()
     {
-        // fetch all users from the database
-        var users = await _context.Users.ToListAsync();
+        try
+        {
+            // fetch all users from the database
+            var users = await _context.Users.ToListAsync();
 
         // create a list to store the UserInfoDTOs
         var userInfoDTOs = new List<UserInfoDTO>();
 
-        // loop through each user to populate the UserInfoDTO and check admin status
+        // loop through each user to populate the UserInfoDTO and check admin privileges
         foreach (var user in users)
         {
             var isAdmin = await PrivilegeUtils.IsUserAdmin(_context, user.Id); // the context is included because the function is in another class
+            
             var isMaster = false;
-
             if (isAdmin)
             {
                 isMaster = await PrivilegeUtils.IsUserMasterAdmin(_context, user.Id);
@@ -521,5 +585,10 @@ public class UsersController : ControllerBase
             userInfoDTOs.Add(userInfo);
         }
         return Ok(userInfoDTOs);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while retrieving all users: {ex.Message}");
+        }
     }
 }
