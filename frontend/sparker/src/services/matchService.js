@@ -98,28 +98,3 @@ export const restoreMatch = async (matchId, adminUserId) => {
     }
 };
 
-
-// for useractivitysummary page
-export const fetchUserActivitySummary = async (userId) => {
-    const token = getAuthToken();
-    try {
-    const response = await axios.get(`${API_URL}/matches/summary/${userId}`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-    console.log(response.data)
-    return response.data;
-} catch (error) {
-    // check for network or server errors
-    if (error.response) {
-        throw new Error(error.response.data);
-    } else if (error.request) {
-        // the request was made but no response was received
-        throw new Error('No response received from the server.');
-    } else {
-        // Something happened in setting up the request that triggered an Error
-        throw new Error('Error in setting up the request.');
-    }
-}
-};
