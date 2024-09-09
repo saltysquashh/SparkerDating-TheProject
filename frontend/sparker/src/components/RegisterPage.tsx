@@ -17,7 +17,7 @@ const RegisterPage = () => {
 	const [step, setStep] = useState(1);
 
 	// const { handleError, clearError } = useErrorHandling(); // error message already exists
-	// const showToast = useToastNotification();
+	const showToast = useToastNotification();
 
 	const [formData, setFormData] = useState({
 		firstName: "",
@@ -161,9 +161,14 @@ const RegisterPage = () => {
 
 			try {
 				await post_registerUser(submitData);
-				alert(
-					"Registration successful. Please log in to your new account on the next page."
-				);
+				
+				// 	alert("Registration successful. Please log in to your new account on the next page.");
+				showToast({
+					title: "Registration success",
+					description: `Registration successful. Please log in to your new account on the next page.`,
+					status: "success",
+				});
+
 				navigate("/login");
 			} catch (error: any) {
 				// check if the error has a message property and set it to errorMessage

@@ -24,7 +24,7 @@ public class GhostingCheckerService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await CheckForGhostedMatches();
-            await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken); // runs every hour
+            await Task.Delay(TimeSpan.FromMinutes(15), stoppingToken);
         }
     }
 

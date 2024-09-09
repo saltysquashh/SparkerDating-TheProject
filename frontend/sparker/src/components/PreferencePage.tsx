@@ -29,7 +29,6 @@ const PreferencePage = () => {
 		sex: "",
 		ageMin: 18,
 		ageMax: 99,
-		// ageRange: [18, 99] // Initialize with default age range
 	});
 
 	const [ageRange, setAgeRange] = useState([18, 99]);
@@ -42,8 +41,8 @@ const PreferencePage = () => {
 					setUserPreferences({
 						sex: data.sex || "",
 						ageMin: data.ageMin || 18,
-						ageMax: data.ageMax || 99, // Assuming data contains these fields
-					}); // Update form fields with fetched data
+						ageMax: data.ageMax || 99,
+					});
 
 					setAgeRange([data.ageMin || 18, data.ageMax || 99]);
 				} catch (error) {
@@ -75,7 +74,12 @@ const PreferencePage = () => {
 		if (authUser && authUser.id) {
 			try {
 				await update_UserPreferences(authUser.id, userPreferences);
-				alert("User preferences were updated succesfully.");
+				// alert("User preferences were updated succesfully.");
+				showToast({
+					title: "Success",
+					description: `User preferences were updated successfully.`,
+					status: "success",
+				});
 			} catch (error) {
 				const errorMessage = handleError(error);
 				showToast({

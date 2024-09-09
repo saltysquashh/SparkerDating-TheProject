@@ -24,7 +24,7 @@ namespace sparker.Controllers
             _configuration = configuration;
         }
 
-        // get a single match by its ID, and by the ID of the client-user it's fetched for
+        // get a single match by its ID, and by the ID of the client-user it's fetched for -- (For MatchDetailsPg)
         [HttpGet("matchbyid/{matchId}/byuserid/{userId}")]
         public async Task<IActionResult> GetMatch(int matchId, int userId)
         {
@@ -65,7 +65,6 @@ namespace sparker.Controllers
                     LastMessageUser2 = await DateUtils.LastUserMsg(_context, match.Id, match.User2_Id),
                     MatchedAt = match.Matched_At,
                     IsGhosted = match.Is_Ghosted,
-                    //GhostedAt = match.Ghosted_At,
 
                     MatchUser = new MatchUserDTO
                     {

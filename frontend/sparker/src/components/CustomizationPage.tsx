@@ -131,7 +131,27 @@ const CustomizationPage = () => {
 			return;
 		}
 		try {
-			await update_userBio(authUserId, userBio);
+			const response = await update_userBio(authUserId, userBio);
+			if (!response)
+				{
+					showToast({
+						title: "Biography unchanged",
+						description:
+							"The bio was not saved, as it is unchanged.",
+						status: "warning",
+					});
+				}
+			else
+				{
+					showToast({
+						title: "Biography saved",
+						description:
+							"The bio was updated successfully.",
+						status: "success",
+					});
+				}
+			
+		
 		} catch (error) {
 			const errorMessage = handleError(error);
 			showToast({

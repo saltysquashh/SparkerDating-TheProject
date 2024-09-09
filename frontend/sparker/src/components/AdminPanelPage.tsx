@@ -68,7 +68,15 @@ const AdminPanelPage = () => {
 		try {
 			const response = await delete_user(delUserId, byUserId);
 			// navigate(`/adminpanel`); // ikke her, men først når knappet er lavet inde på user details
-			alert(response);
+			// alert(response);
+
+			showToast({
+				title: "User deleted",
+				description:
+					"The user was deleted successfully.",
+				status: "success",
+			});
+
 			setUsers((prevUsers) =>
 				prevUsers.filter((u) => u.id !== delUserId)
 			); // prevUsers is the previous state of the 'users' array
@@ -85,7 +93,14 @@ const AdminPanelPage = () => {
 	const handleUserPromote = async (userId: number, byUserId: number) => {
 		try {
 			const response = await post_promoteUserToAdmin(userId, byUserId);
-			alert(response);
+			// alert(response);
+
+			showToast({
+				title: "User promoted",
+				description:
+					`${response}`,
+				status: "success",
+			});
 			setUsers((prevUsers) =>
 				prevUsers.map((u) =>
 					u.id === userId ? { ...u, isAdmin: true } : u
@@ -103,11 +118,14 @@ const AdminPanelPage = () => {
 
 	const handleUserDemote = async (adminUserId: number, byUserId: number) => {
 		try {
-			const response = await post_demoteAdminToUser(
-				adminUserId,
-				byUserId
-			);
-			alert(response);
+			const response = await post_demoteAdminToUser(adminUserId, byUserId);
+			// alert(response);
+			showToast({
+				title: "User demoted",
+				description:
+					`${response}`,
+				status: "success",
+			});
 			setUsers((prevUsers) =>
 				prevUsers.map((u) =>
 					u.id === adminUserId? { ...u, isAdmin: false, isMaster: false }: u

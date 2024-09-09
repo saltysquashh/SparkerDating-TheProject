@@ -126,14 +126,7 @@ export const update_userBio = async (userId, newBio) => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        if (!response.data)
-        {
-            alert('The bio was not saved, as it was unchanged.')
-        }
-        else
-        {
-            alert('Bio updated successfully');
-        }
+
         return response.data;
     } catch (error) {
         // check for network or server errors

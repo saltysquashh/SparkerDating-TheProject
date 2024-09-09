@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             setAuthUser(userData);
             setAuthToken(token); // set token in localStorage and axios
             console.log('User is now authenticated.');
-            navigate('/welcome');
+            navigate('/'); // Was changed from navigate('/welcome'); after the due date of the project, because i realized that the login date is being updated before welcome summary code is loaded
         } catch (error) {
             console.error('Login failed:', error);
             throw error;

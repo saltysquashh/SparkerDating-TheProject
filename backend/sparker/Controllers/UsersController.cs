@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using sparker.Database;
 using sparker.DTOs;
-using sparker.Migrations;
+
 using sparker.Models;
 using sparker.Utilities;
 using System.IdentityModel.Tokens.Jwt;
@@ -304,12 +304,8 @@ public class UsersController : ControllerBase
     {
         var userPreferences = await _context.Preferences
                                             .FirstOrDefaultAsync(p => p.User_Id == userId);
-        if (userPreferences == null)
-        {
-            //return NotFound("User preferences not found. Check if user has preferences selected on their user profile.");
-        }
 
-        // Retrieve users who have not been swiped by the swiping user and who have not disliked the swiping user, and are not the swiping user themselves
+        // Retrieve users who 1. have not been swiped by the swiping user, and 2. Who have not disliked the swiping user, and 3. Are not the swiping user themselves
         var potentialMatches = await _context.Users
             .Where(u => u.Id != userId && // Exclude the current user
                        !_context.Swipes.Any(s => (s.Swiper_UserId == userId && s.Swiped_UserId == u.Id) ||
@@ -613,11 +609,33 @@ public class UsersController : ControllerBase
                 .Where(m => (m.User1_Id == userId || m.User2_Id == userId) && m.Matched_At > lastLoginTime)
                 .ToListAsync();
 
-
-            // find expired/ghosted matches
-            var expiredMatches = await _context.Matches
+            // find all matches that are ghosted, of the user
+            var ghostedMatches = await _context.Matches
                 .Where(m => (m.User1_Id == userId || m.User2_Id == userId) && (m.Is_Ghosted)) // TODO && m.Ghosted_At > lastLoginTime ) check new ghost table instead
                 .ToListAsync();
+
+            // add only the ones recently ghosted since last login
+            var recentlyGhostedMatches = new List<MatchDTO>();
+            foreach (var ghostedMatch in ghostedMatches)
+            {
+                var ghost = await _context.Ghosts
+                    .Where(g => (g.Match_Id == ghostedMatch.Id) && (g.Ghosted_At > lastLoginTime))
+                    .FirstOrDefaultAsync();
+
+                if (ghost != null)
+                {
+                    // Map the ghosted match to a MatchDTO
+                    var matchDTO = new MatchDTO
+                    {
+                        Id = ghostedMatch.Id,
+                        User1Id = ghostedMatch.User1_Id,
+                        User2Id = ghostedMatch.User2_Id,
+                        MatchedAt = ghostedMatch.Matched_At,
+                    };
+
+                    recentlyGhostedMatches.Add(matchDTO);
+                }
+            }
 
             var userActivitySummaryDTO = new UserActivitySummaryDTO
             {
@@ -630,14 +648,7 @@ public class UsersController : ControllerBase
                     //IsGhosted = m.Is_Ghosted
                 }).ToList(),
 
-                ExpiredMatches = expiredMatches.Select(m => new MatchDTO
-                {
-                    Id = m.Id,
-                    User1Id = m.User1_Id,
-                    User2Id = m.User2_Id,
-                    MatchedAt = m.Matched_At,
-                    //IsGhosted = m.Is_Ghosted
-                }).ToList()
+                ExpiredMatches = recentlyGhostedMatches,
             };
 
             return Ok(userActivitySummaryDTO);

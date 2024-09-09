@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -8,6 +9,7 @@ using sparker.Database;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,7 +24,6 @@ var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
 // Certificate path and password
 var certificatePath = Environment.GetEnvironmentVariable("CERTIFICATE_PATH");
 var certificatePassword = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
-
 
 // Add services to the container.
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -83,8 +84,8 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.Listen(IPAddress.Any, 5001, listenOptions =>
     {
-        listenOptions.UseHttps(certificatePath, certificatePassword);
-    });
+    listenOptions.UseHttps(certificatePath, certificatePassword);
+});
 });
 
 var app = builder.Build();
